@@ -79,10 +79,11 @@
     "electrobun": "^1.18.1",
     "happy-dom": "^20.14.3",
     "png-to-ico": "^3.0.2",
-    "rcedit": "^5.0.2"
+    "rcedit": "^5.0.2",
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": ">=5.9.3"
   },
   "dependencies": {
     "@opentui/core": "^0.3.4",

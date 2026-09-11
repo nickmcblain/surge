@@ -11,7 +11,10 @@ import { formatPercentRaw } from "../../utils/format";
 import { formatMarketPrice } from "../../market-data/market/format";
 import { getActiveQuoteDisplay, marketStateColor, marketStateCountdown, marketStateLabel } from "../../market-data/market/status";
 
-const SPY_REFRESH_MS = 5 * 60_000; // 5 min
+/** Front-month Dutch TTF gas: the benchmark an EU power desk glances at all day. */
+const BENCHMARK_SYMBOL = "TTF=F";
+const BENCHMARK_LABEL = "TTF";
+const BENCHMARK_REFRESH_MS = 5 * 60_000; // 5 min
 
 export interface MarketSummary {
   baseCurrency: string;
@@ -62,7 +65,7 @@ export function useMarketSummary(): MarketSummary {
   const colors = useThemeColors();
   const appActive = useAppActive();
   const baseCurrency = useAppSelector(selectBaseCurrency);
-  const spyQuoteEntry = useQuoteEntry("SPY", null);
+  const spyQuoteEntry = useQuoteEntry(BENCHMARK_SYMBOL, null);
   const spyQuote = useResolvedEntryValue(spyQuoteEntry);
   const mktState = spyQuote?.marketState;
   const [now, setNow] = useState(Date.now());
@@ -79,18 +82,18 @@ export function useMarketSummary(): MarketSummary {
     const coordinator = getSharedMarketDataCoordinator();
     if (!coordinator) return;
     const fetchSpy = async () => {
-      await coordinator.loadQuote({ symbol: "SPY" }).catch(() => {});
+      await coordinator.loadQuote({ symbol: BENCHMARK_SYMBOL }).catch(() => {});
     };
     fetchSpy();
-    const id = setInterval(fetchSpy, SPY_REFRESH_MS);
+    const id = setInterval(fetchSpy, BENCHMARK_REFRESH_MS);
     return () => { clearInterval(id); };
   }, [appActive]);
 
   const activeSpyQuote = getActiveQuoteDisplay(spyQuote);
   const spyColor = activeSpyQuote?.change != null ? priceColor(activeSpyQuote.change, colors) : colors.textDim;
   const spyText = activeSpyQuote
-    ? `SPY ${formatMarketPrice(activeSpyQuote.price, { assetCategory: "ETF" })} ${formatPercentRaw(activeSpyQuote.changePercent)}`
-    : "SPY —";
+    ? `${BENCHMARK_LABEL} ${formatMarketPrice(activeSpyQuote.price, { assetCategory: "FUT" })} ${formatPercentRaw(activeSpyQuote.changePercent)}`
+    : `${BENCHMARK_LABEL} —`;
 
   const mktCountdown = mktState ? marketStateCountdown(mktState, now) : null;
   const marketLabelShort = mktState ? t(marketStateLabel(mktState)) : "";

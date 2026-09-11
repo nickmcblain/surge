@@ -743,7 +743,7 @@ export function createDefaultConfig(dataDir: string): AppConfig {
   return {
     dataDir,
     configVersion: CURRENT_CONFIG_VERSION,
-    baseCurrency: "USD",
+    baseCurrency: "EUR",
     refreshIntervalMinutes: 30,
     portfolios: [{ id: "main", name: "Main Portfolio", currency: "USD" }],
     watchlists: [{ id: "watchlist", name: "Watchlist" }],

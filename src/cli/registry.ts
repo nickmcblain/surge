@@ -91,7 +91,7 @@ function renderHelpSections(registry: CliCommandRegistry): string[] {
 
 export function renderCliHelp(registry: CliCommandRegistry, version: string): string {
   const lines = [
-    `${cliStyles.bold(`surge v${version}`)}\n${cliStyles.muted("Market research and portfolio tracker for the terminal")}`,
+    `${cliStyles.bold(`surge v${version}`)}\n${cliStyles.muted("Energy markets terminal for power and gas traders")}`,
     "",
     renderSection("Usage"),
     "surge [command]",

@@ -1,102 +1,92 @@
 <div align="center">
 
-<img src="https://gloom.sh/surge-logo-grayscale.svg" alt="Surge logo" width="76" />
-
 # Surge
 
-**Open-source finance terminal. Fast, keyboard-driven, and extensible.**
+**Open-source energy markets terminal. Fast, keyboard-driven, and extensible.**
 
 Desktop app for macOS and Windows. Terminal UI for macOS, Linux, and Windows.
 
-<a href="https://gloom.sh/download/desktop"><strong>Download desktop</strong></a>
-&nbsp;&middot;&nbsp;
-<a href="#install"><strong>Install the TUI</strong></a>
-&nbsp;&middot;&nbsp;
-<a href="https://term.gloom.sh"><strong>Open in browser</strong></a>
-&nbsp;&middot;&nbsp;
-<a href="README.zh-CN.md">简体中文</a>
-
-<br />
-<br />
-
-<img src="https://gloom.sh/landing-terminal.png" alt="Surge terminal showing portfolio, watchlists, market data, and chart panels." width="720" />
-
 </div>
 
-- **Research companies:** quotes, charts, financials, filings, options, and analyst ratings.
-- **Follow markets:** news, global indices, FX, economic events, and market scanners.
-- **Manage your workspace:** portfolios, watchlists, broker connections, alerts, notes, and AI tools.
+Surge is a terminal for power and gas traders: European day-ahead prices, load,
+renewables, cross-border flows and generation stacks from ENTSO-E, next to the
+commodity futures, FX and news that move them. It is a fork of
+[Gloomberb](https://github.com/gloom-sh/gloomberb) with the equity research
+replaced by energy markets.
 
-The desktop app and TUI share the command language and plugin system. The [browser app](https://term.gloom.sh) offers a smaller feature set and requires a free Surge Cloud account: free market data is rate-limited and delayed by 15 minutes; Pro provides realtime data. See [browser features and limits](docs/browser.md).
+- **Watch the grid:** day-ahead prices for every bidding zone, load vs forecast, wind and solar forecast vs actual, cross-border flows, zone spreads, and the generation mix.
+- **Follow the wider market:** Brent, WTI, TTF, Henry Hub, products, metals, FX and rates, plus an energy-focused news wire.
+- **Never miss a gate:** the market schedule counts down SDAC and IDA gate closures, ENTSO-E publications, AGSI storage and futures settlements in CET.
+- **Make it yours:** docked and floating panes, saved layouts, alerts, notes, and a plugin system for new data sources and panes.
+
+The desktop app and TUI share the command language and plugin system.
 
 ## Install
 
-### Desktop
-
-On **macOS (Apple Silicon)**:
+Requires [Bun](https://bun.sh) 1.4 or newer.
 
 ```bash
-brew install --cask vincelwt/tap/surge
+git clone https://github.com/nickmc-lumion/surge
+cd surge
+bun install
+bun run dev            # terminal UI
+bun run desktop:dev    # desktop app
 ```
 
-On **Windows 11**, [download the installer](https://github.com/nickmc-lumion/surge/releases/latest/download/stable-win-x64-SurgeSetup.exe). It supports x64, and ARM64 through x64 emulation.
+For graphics in the terminal, use a Kitty-compatible terminal such as Ghostty,
+Kitty, or WezTerm. See the [installation guide](docs/installation.md) for
+packaged builds.
 
-Both desktop installers include the `surge` terminal command.
+## ENTSO-E token
 
-### Terminal
-
-On **macOS or Linux**:
+Power data comes from the [ENTSO-E Transparency Platform](https://transparency.entsoe.eu/).
+Register there, request a *Restful API* token from your account settings, then either
 
 ```bash
-curl -fsSL gloom.sh/install | bash
+export SURGE_ENTSOE_TOKEN=...
 ```
 
-On Apple Silicon Macs, this installs the desktop app and TUI. On Intel Macs and Linux, it installs the standalone TUI.
-
-Or install with [Bun](https://bun.sh) on macOS, Linux, or Windows x64:
-
-```bash
-bun install -g surge
-```
-
-Run `surge` to launch. For graphics, use a Kitty-compatible terminal such as Ghostty, Kitty, or WezTerm. See the [installation guide](docs/installation.md) for direct downloads, install locations, and updates.
+or run `ENTSOE` in the command bar to store it locally. Everything else works
+without a token.
 
 ## Start
 
-Press `Ctrl+P` to open the command bar, or press `` ` `` to search for a ticker. Desktop also supports `Cmd/Ctrl+K`.
+Press `Ctrl+P` to open the command bar. Desktop also supports `Cmd/Ctrl+K`.
 
 | Try | Opens |
 |-----|-------|
-| `DES AAPL` | Company details |
-| `GP NVDA` | Price chart |
-| `TOP` | Market stories |
-| `PF` | Portfolios and watchlists |
+| `ZP` | Zone price board: today, yesterday and tomorrow across Europe |
+| `DA FR` | Day-ahead price curve for a bidding zone |
+| `ZONE DE-LU` | Zone overview: prices, load, renewables, generation stack |
+| `LOAD NL` | Actual load vs forecast |
+| `RES DE-LU` | Wind and solar forecast vs actual |
+| `FLOW DE-LU > FR` | Cross-border scheduled flow |
+| `SPRD DE-LU FR` | Day-ahead spread between two zones |
+| `GEN ES` | Generation mix by fuel |
+| `CAL` | Market schedule with countdowns |
+| `FUT` | Energy commodities board |
 | `HELP` | Commands and keyboard shortcuts |
 
-Use `Tab` to switch panes and `j` / `k` to navigate lists. The [user guide](docs/usage.md) covers charts, broker setup, keyboard shortcuts, and the full command reference.
+Use `Tab` to switch panes and `j` / `k` to navigate lists. The [user guide](docs/usage.md)
+covers layouts, keyboard shortcuts, and the full command reference.
 
 ## CLI
 
 Run commands directly from your shell:
 
 ```bash
-surge quote AAPL
-surge quote AAPL --json
+surge da DE-LU
+surge da FR --json
+surge quote TTF=F
 surge help
 ```
 
-Output is human-readable by default; use `--json`, `--csv`, or `--ndjson` for scripts. See the [CLI reference](docs/usage.md#cli) for commands and flags.
+Output is human-readable by default; use `--json`, `--csv`, or `--ndjson` for scripts.
 
 ## Plugins and contributing
 
-Plugins add panes, data providers, broker connections, and commands. Install one from GitHub:
+Plugins add panes, data providers, and commands. See the
+[plugin development guide](PLUGINS.md) and the [contributing guide](CONTRIBUTING.md).
 
-```bash
-surge install nickmc-lumion/surge-tv
-```
-
-See the [plugin development guide](PLUGINS.md), [TV setup](docs/usage.md#live-tv), or [contributing guide](CONTRIBUTING.md) to get started.
-
-Available in English, Spanish, Simplified Chinese, Traditional Chinese, Japanese, and Korean. Use `LANG` in the command bar to switch; see [language settings](docs/usage.md#localized-interface).
-
-[MIT licensed](LICENSE). Built with [OpenTUI](https://opentui.com/).
+[MIT licensed](LICENSE). Forked from [Gloomberb](https://github.com/gloom-sh/gloomberb).
+Built with [OpenTUI](https://opentui.com/) and [Electrobun](https://electrobun.dev/).

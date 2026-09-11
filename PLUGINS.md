@@ -1,6 +1,8 @@
 # Building Plugins
 
-Surge is built on a plugin architecture — top-level product areas such as Portfolio and Ticker Research are plugins themselves. You can extend the app by writing your own.
+Surge is built on a plugin architecture — top-level product areas such as European Power (the ENTSO-E panes), News and the Energy Commodities board are plugins themselves. You can extend the app by writing your own.
+
+> Surge is a fork of Gloomberb. The plugin host contract is inherited unchanged, so this guide still documents Ticker Research tabs and broker adapters; those registration points compile and work, but Surge ships no built-in Ticker Research pane or broker, so they are only useful to plugins that bring their own.
 
 ## Installing plugins
 
@@ -108,20 +110,8 @@ rather than reporting a compile error.
 
 ### Where plugins run
 
-Plugins run in the terminal and in the desktop app. The hosted web app at
-term.gloom.sh ships only the built-ins compiled into it (`catalog-browser.ts`)
-and does not load plugins from outside the build.
-
-That is a product decision rather than a gap. Third-party code on the web
-would run on the origin that holds the user's session, and there is no
-sandbox that can contain a plugin written as a React component sharing the
-host's module registry. The desktop app and the terminal run on the user's own
-machine, where installing a plugin is an explicit choice with a bounded blast
-radius.
-
-The marketplace still lists every plugin on the web, labelled with where it
-runs, so the web app works as a storefront. Listing `"web"` in `targets` is
-harmless but has no effect today.
+Plugins run in the terminal and in the desktop app. There is no hosted web
+build of Surge; listing `"web"` in `targets` is harmless but has no effect.
 
 ## What plugins can do
 

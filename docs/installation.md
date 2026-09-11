@@ -2,62 +2,58 @@
 
 [Back to README](../README.md)
 
-## macOS
+Packaged builds (Homebrew cask, Windows installer, standalone TUI binaries) are
+produced by the release workflow in `.github/workflows/release.yml` and attach to
+[GitHub Releases](https://github.com/nickmc-lumion/surge/releases). Until a
+release is published, run from source.
 
-Install the desktop app and the `surge` terminal command:
+## From source
+
+Requires [Bun](https://bun.sh) 1.4 or newer.
 
 ```bash
-brew install --cask vincelwt/tap/surge
-# or
-curl -fsSL gloom.sh/install | bash
+git clone https://github.com/nickmc-lumion/surge
+cd surge
+bun install
+bun run dev            # terminal UI
+bun run desktop:dev    # desktop app (macOS / Windows)
 ```
 
-Both install `Surge.app` and a `surge` command that runs the TUI through the app bundle, so the bundled runtime is stored once.
+`bun run build` compiles the standalone `surge` TUI binary for the current
+platform into `dist/`; `bun run build:all` cross-compiles every target.
+`bun run desktop:build` produces the Electrobun desktop bundle.
 
-`Surge.app` is Apple Silicon (arm64) only. On an Intel Mac the install script installs the standalone `surge` terminal app instead, and the Homebrew cask refuses to install rather than leaving an app that cannot launch.
+## macOS
 
-Prefer a direct download?
+Once a release exists:
 
-- [Download Surge for Mac](https://gloom.sh/download/desktop)
+```bash
+brew install --cask nickmc-lumion/tap/surge
+```
+
+This installs `Surge.app` and a `surge` command that runs the TUI through the app
+bundle. `Surge.app` is Apple Silicon (arm64) only; on an Intel Mac use the
+standalone `surge` terminal binary from the release page instead.
 
 ## Linux
 
-Install the standalone TUI binary:
-
-```bash
-curl -fsSL gloom.sh/install | bash
-```
-
-This installs `surge` to `~/.local/bin` by default. A Linux desktop package is not published yet.
+Download the standalone TUI binary for your architecture from the release page
+and place it on your `PATH`. A Linux desktop package is not published.
 
 ## Windows
 
-Install the desktop app:
+Download `stable-win-x64-SurgeSetup.exe` from the release page. The installer
+supports Windows 11 on x64 and ARM64 (via x64 emulation) and includes the
+`surge` terminal command.
 
-- [Download SurgeSetup.exe for Windows](https://github.com/nickmc-lumion/surge/releases/latest/download/stable-win-x64-SurgeSetup.exe)
+## Terminal
 
-The installer supports Windows 11 on x64 and ARM64. On ARM64, the desktop app and its bundled `surge` terminal command use Windows' built-in x64 emulation.
+For charts in the terminal, use a [Kitty](https://sw.kovidgoyal.net/kitty/)-compatible
+terminal such as Ghostty, Kitty, or WezTerm. Other terminals fall back to
+block-character charts.
 
-For a terminal-only setup on x64, install Bun and use the package:
+## Configuration
 
-```powershell
-bun install -g surge
-```
-
-## Terminal Package
-
-Already have Bun installed on any supported OS?
-
-```bash
-bun install -g surge
-```
-
-Then run:
-
-```bash
-surge
-```
-
-On macOS and Windows, desktop updates replace the installed app in place and keep the terminal command pointing at the updated runtime. Homebrew users can also update through `brew upgrade --cask surge`.
-
-For the best terminal experience, use a [Kitty](https://sw.kovidgoyal.net/kitty/)-compatible terminal such as Ghostty, Kitty, or WezTerm.
+Surge stores its configuration, cache and plugins under `~/.surge`. Set
+`SURGE_ENTSOE_TOKEN` (or run `ENTSOE` inside the app) to enable the European
+power panes; see the [user guide](usage.md#entso-e-token).

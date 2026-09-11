@@ -8,25 +8,27 @@ Requires [Bun](https://bun.sh).
 git clone https://github.com/nickmc-lumion/surge.git
 cd surge
 bun install
-bun dev
+bun run dev            # terminal UI
+bun run desktop:dev    # desktop app
 ```
 
 ## Building plugins
 
 See [PLUGINS.md](PLUGINS.md) for a guide on building your own plugins.
 
-## Browser development
+## Verifying a change
 
 ```bash
-bun run web:build
-bunx wrangler dev
+bun run typecheck
+bun test
+bun run plugins:manifest:check
 ```
 
-Validate the public artifacts with `bun run web:audit` and `bun run cloudflare:dry-run`. `wrangler.jsonc` is the local configuration. After verification passes on `main`, GitHub Actions deploys `term.gloom.sh` with `wrangler.production.jsonc`. The private Surge Cloud API is deployed separately.
+`bun run typecheck` runs TypeScript 7 over the TUI, desktop and script projects. Plugin manifest changes must be regenerated with `bun run plugins:manifest`.
 
-Cloud REST and WebSocket traffic uses the same-origin `/api` path, which the Worker forwards only to `https://api.gloom.sh`; it is not an arbitrary network proxy. Public shares open under `/s/:id` in a separate slim bundle. Share creation and owner deletion use the signed-in Surge Cloud session through the same API path; public reads require no account.
+## Energy data
 
-See the [browser guide](docs/browser.md) for account requirements and supported features.
+European power data comes from the ENTSO-E Transparency Platform. Set `SURGE_ENTSOE_TOKEN` (or run `ENTSOE` in the app) to exercise the live panes; the XML parser and series helpers are covered by unit tests that do not need a token.
 
 ## Localization
 

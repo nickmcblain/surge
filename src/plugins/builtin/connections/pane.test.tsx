@@ -23,7 +23,7 @@ function harness() {
   health.registerSource({ id: "quotes", name: "Quotes", kind: "asset-data" });
   health.reportRequest("quotes", { operation: "getQuote", success: true, latencyMs: 12 });
   const runtime = createTestPluginRuntime({ getConnectionHealth: () => health });
-  const state = createInitialState(createDefaultConfig("/tmp/gloomberb-connections-pane-test"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-connections-pane-test"));
 
   return (
     <TestPaneProvider state={state} paneId="connections:test" pluginId="application" runtime={runtime}>

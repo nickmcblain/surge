@@ -101,7 +101,7 @@ export async function resolvePaneFunction(
   resolutionSettings: { strictHeadlessOptions?: boolean } = {},
 ): Promise<ResolvedPaneFunction> {
   if (!args.target) {
-    throw new Error("Usage: gloomberb fn <function-or-pane> [argument] [--key value]");
+    throw new Error("Usage: surge fn <function-or-pane> [argument] [--key value]");
   }
 
   const lookup = buildPaneFunctionLookup(registry);

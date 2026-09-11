@@ -1,4 +1,4 @@
-import type { GloomPlugin } from "../types/plugin";
+import type { SurgePlugin } from "../types/plugin";
 import type { LoadedExternalPlugin } from "./loader";
 import { newsPlugin } from "./builtin/news";
 import { notesPlugin } from "./builtin/notes";
@@ -9,7 +9,7 @@ import {
   marketOverviewPlugin,
 } from "./builtin/composite-plugins";
 
-export const uiBuiltinPlugins: GloomPlugin[] = [
+export const uiBuiltinPlugins: SurgePlugin[] = [
   applicationPlugin,
   energyPlugin,
   newsPlugin,
@@ -18,7 +18,7 @@ export const uiBuiltinPlugins: GloomPlugin[] = [
   alertsPlugin,
 ];
 
-export function getRendererBuiltinPlugins(): GloomPlugin[] {
+export function getRendererBuiltinPlugins(): SurgePlugin[] {
   return uiBuiltinPlugins;
 }
 
@@ -30,7 +30,7 @@ export function getRendererBuiltinPlugins(): GloomPlugin[] {
  * carries the Yahoo fallback provider and the debug plugin. Routing the desktop
  * through it would quietly change which plugins the app runs.
  */
-export function getRendererPlugins(externalPlugins: readonly LoadedExternalPlugin[] = []): GloomPlugin[] {
+export function getRendererPlugins(externalPlugins: readonly LoadedExternalPlugin[] = []): SurgePlugin[] {
   return [
     ...uiBuiltinPlugins,
     ...externalPlugins

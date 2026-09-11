@@ -112,8 +112,8 @@ async function smokeTestBinary(outfile: string, os: string, arch: string) {
   }
 
   console.log("Smoke testing packaged binary...");
-  const smokeDir = mkdtempSync(join(tmpdir(), "gloomberb-smoke-"));
-  const smokeBinary = join(smokeDir, os === "windows" ? "gloomberb.exe" : "gloomberb");
+  const smokeDir = mkdtempSync(join(tmpdir(), "surge-smoke-"));
+  const smokeBinary = join(smokeDir, os === "windows" ? "surge.exe" : "surge");
   copyFileSync(outfile, smokeBinary);
   if (os !== "windows") chmodSync(smokeBinary, 0o755);
 
@@ -176,15 +176,15 @@ function compressGzip(path: string): string {
 async function build(targetConfig: BuildTarget) {
   const { os, arch, bunOs, extension, nativePackageName } = targetConfig;
   mkdirSync(join(rootDir, "dist"), { recursive: true });
-  const outfile = join(rootDir, `dist/gloomberb-${os}-${arch}${extension}`);
-  const compileEntry = join(rootDir, "dist", `.gloomberb-compile-entry-${os}-${arch}.ts`);
+  const outfile = join(rootDir, `dist/surge-${os}-${arch}${extension}`);
+  const compileEntry = join(rootDir, "dist", `.surge-compile-entry-${os}-${arch}.ts`);
   const target = `bun-${bunOs}-${arch}`;
   console.log(`Building ${target}...`);
   writeFileSync(compileEntry, buildCompileEntrySource(nativePackageName));
   const buildExitCode = await runProcess(
     ["bun", "build", "--compile", `--target=${target}`, compileEntry, `--outfile=${outfile}`],
     `Failed to build ${target}`,
-    { env: { ...process.env, GLOOMBERB_API_URL: "https://api.gloom.sh" } },
+    { env: { ...process.env, SURGE_API_URL: "https://api.gloom.sh" } },
     true,
   );
   rmSync(compileEntry, { force: true });

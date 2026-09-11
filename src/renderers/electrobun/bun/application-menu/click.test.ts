@@ -15,7 +15,7 @@ describe("applicationMenuCommand", () => {
   test("ignores events for other actions", () => {
     expect(applicationMenuCommand({
       data: {
-        action: "gloom.other-action",
+        action: "surge.other-action",
         data: { type: "open-command-bar", query: "DES " },
       },
     })).toBeNull();

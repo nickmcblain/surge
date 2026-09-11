@@ -1,35 +1,35 @@
 # Building Plugins
 
-Gloomberb is built on a plugin architecture — top-level product areas such as Portfolio and Ticker Research are plugins themselves. You can extend the app by writing your own.
+Surge is built on a plugin architecture — top-level product areas such as Portfolio and Ticker Research are plugins themselves. You can extend the app by writing your own.
 
 ## Installing plugins
 
 Install plugins from GitHub:
 
 ```bash
-gloomberb install user/repo        # from GitHub shorthand
-gloomberb install https://github.com/user/repo  # from full URL
+surge install user/repo        # from GitHub shorthand
+surge install https://github.com/user/repo  # from full URL
 ```
 
 Manage installed plugins:
 
 ```bash
-gloomberb plugins                  # list installed plugins
-gloomberb update                   # update all plugins
-gloomberb update my-plugin         # update a specific plugin
-gloomberb remove my-plugin         # remove a plugin
+surge plugins                  # list installed plugins
+surge update                   # update all plugins
+surge update my-plugin         # update a specific plugin
+surge remove my-plugin         # remove a plugin
 ```
 
-Plugins are installed to `~/.gloomberb/plugins/`.
+Plugins are installed to `~/.surge/plugins/`.
 
 ## Plugin structure
 
-A plugin implements the `GloomPlugin` interface:
+A plugin implements the `SurgePlugin` interface:
 
 ```typescript
-import type { GloomPlugin } from "gloomberb/types/plugin";
+import type { SurgePlugin } from "surge/types/plugin";
 
-export const myPlugin: GloomPlugin = {
+export const myPlugin: SurgePlugin = {
   id: "my-plugin",
   name: "My Plugin",
   version: "1.0.0",
@@ -59,16 +59,16 @@ export default myPlugin;
 
 ### Built-in plugin composition
 
-Only independently owned, registered product areas implement `GloomPlugin`. Larger built-ins may compose internal `PluginModule` objects for panes, commands, capabilities, and lifecycle code, but those modules do not have their own identity, toggle, version, or persistence namespace. Small plugins such as Substack can declare their contributions directly without an extra module wrapper.
+Only independently owned, registered product areas implement `SurgePlugin`. Larger built-ins may compose internal `PluginModule` objects for panes, commands, capabilities, and lifecycle code, but those modules do not have their own identity, toggle, version, or persistence namespace. Small plugins such as Substack can declare their contributions directly without an extra module wrapper.
 
-`PluginModule` is an internal organization tool for first-party plugins, not a second external plugin API. External plugins should continue exporting one `GloomPlugin`.
+`PluginModule` is an internal organization tool for first-party plugins, not a second external plugin API. External plugins should continue exporting one `SurgePlugin`.
 
 Plugin IDs must not reuse current or retired built-in IDs. Retired module IDs remain reserved so saved configuration can be migrated safely to their current owning plugin.
 
-For external plugins, create a directory in `~/.gloomberb/plugins/`:
+For external plugins, create a directory in `~/.surge/plugins/`:
 
 ```
-~/.gloomberb/plugins/my-plugin/
+~/.surge/plugins/my-plugin/
   index.ts          # export default myPlugin
   index.browser.ts  # optional, see below
   package.json      # optional, for dependencies
@@ -125,7 +125,7 @@ harmless but has no effect today.
 
 ## What plugins can do
 
-Use `setup()` for interactive runtime registration, `capabilities` for reusable headless services, and `cliCommands` for root-level CLI commands that should be discoverable without rendering panes. Capability operations can still declare `cli` manifests (`summary`, input/output shape, formats, safety notes, side-effect level) for `gloomberb api list`.
+Use `setup()` for interactive runtime registration, `capabilities` for reusable headless services, and `cliCommands` for root-level CLI commands that should be discoverable without rendering panes. Capability operations can still declare `cli` manifests (`summary`, input/output shape, formats, safety notes, side-effect level) for `surge api list`.
 
 ## Headless pane models
 
@@ -133,9 +133,9 @@ A data pane should expose the renderer-neutral model that sits behind its compon
 
 ```typescript
 import type {
-  GloomPlugin,
+  SurgePlugin,
   HeadlessPaneDefinition,
-} from "gloomberb/types/plugin";
+} from "surge/types/plugin";
 
 export const statsHeadless = {
   shape: "bundle",
@@ -170,14 +170,14 @@ export default {
     defaultPosition: "right",
     headless: statsHeadless,
   }],
-} satisfies GloomPlugin;
+} satisfies SurgePlugin;
 ```
 
 A pane with `headless` automatically gets:
 
-- `gloomberb fn <TOKEN>` text output with shared aligned tables and section headings
-- `gloomberb fn <TOKEN> --json` through the normal `{ ok, data }` result envelope
-- `reportReadiness: "ready"` plus its declared options in `gloomberb catalog`
+- `surge fn <TOKEN>` text output with shared aligned tables and section headings
+- `surge fn <TOKEN> --json` through the normal `{ ok, data }` result envelope
+- `reportReadiness: "ready"` plus its declared options in `surge catalog`
 - strict option validation for `fn`, including allowed enum values and numeric bounds
 
 The definition is the only structured report contract. Optional `discovery` metadata supplies semantic aliases, a stable capability ID, limitations, and screenshot readiness; the catalog derives argument cardinality and options directly. No central pane capability map or report switch is needed.
@@ -205,7 +205,7 @@ Options use the existing pane-function schema: `key`, `type`, `description`, opt
 `ctx` contains:
 
 - `marketData`: the active plugin-aware market data provider
-- `apiClient`: the Gloom Cloud client
+- `apiClient`: the Surge Cloud client
 - `config`: the loaded app configuration
 - `signal`: the abort signal for this invocation
 - `settings`: effective instance settings after template creation and option normalization
@@ -240,11 +240,11 @@ For a pane that currently fetches inside its component:
 3. Make the React pane call those same client and projection functions.
 4. Export a typed `headless` definition and attach it to the pane registration, or to each template when one pane has multiple contracts.
 5. Declare every supported argument and option. Do not read pane or renderer state from `load`.
-6. Verify text, JSON, option errors, and catalog readiness with `gloomberb fn` and `gloomberb catalog`.
+6. Verify text, JSON, option errors, and catalog readiness with `surge fn` and `surge catalog`.
 
 ## Renderer-neutral UI
 
-Plugins should treat Gloomberb's UI APIs as the renderer contract. Official plugins may render panes, Ticker Research tabs, and slot widgets with React, but plugin UI should import shared Gloom APIs such as `gloomberb/ui`, `gloomberb/react`, or the plugin runtime hooks instead of importing OpenTUI, Electrobun, DOM, or terminal renderer packages directly. Renderer-specific details like terminal keyboard events, kitty images, DOM pointer behavior, dialogs, and notifications belong in the renderer adapters.
+Plugins should treat Surge's UI APIs as the renderer contract. Official plugins may render panes, Ticker Research tabs, and slot widgets with React, but plugin UI should import shared Surge APIs such as `surge/ui`, `surge/react`, or the plugin runtime hooks instead of importing OpenTUI, Electrobun, DOM, or terminal renderer packages directly. Renderer-specific details like terminal keyboard events, kitty images, DOM pointer behavior, dialogs, and notifications belong in the renderer adapters.
 
 React plugin panes and Ticker Research tabs are wrapped in a plugin render context. Use plugin runtime hooks for app services from render code.
 
@@ -268,7 +268,7 @@ The `setup()` function receives a context object with these capabilities:
 
 ### Context menus
 
-Plugins can contribute items to native desktop context menus without importing Electrobun, the DOM, or OpenTUI directly. Use Gloomberb APIs from the plugin context, and let the renderer decide whether a native menu is available.
+Plugins can contribute items to native desktop context menus without importing Electrobun, the DOM, or OpenTUI directly. Use Surge APIs from the plugin context, and let the renderer decide whether a native menu is available.
 
 ```typescript
 ctx.registerContextMenuProvider({
@@ -352,9 +352,9 @@ The returned function withdraws the provider; otherwise it is removed with the p
 Plugins can declare root CLI commands directly on the plugin object with `cliCommands`.
 
 ```typescript
-import type { GloomPlugin } from "gloomberb/types/plugin";
+import type { SurgePlugin } from "surge/types/plugin";
 
-export const myPlugin: GloomPlugin = {
+export const myPlugin: SurgePlugin = {
   id: "my-plugin",
   name: "My Plugin",
   version: "1.0.0",
@@ -368,7 +368,7 @@ export const myPlugin: GloomPlugin = {
       },
       async execute(args, ctx) {
         if (args[0] !== "run") {
-          ctx.fail("Usage: gloomberb my-plugin run");
+          ctx.fail("Usage: surge my-plugin run");
         }
 
         const services = await ctx.initServices();
@@ -459,7 +459,7 @@ Capability operations can also include CLI manifest metadata. This is what makes
     formats: ["text", "json"],
     sideEffectLevel: "none",
     requirements: ["enabled plugin"],
-    examples: ['gloomberb api invoke my-plugin.research \'{"symbol":"AAPL"}\' --json'],
+    examples: ['surge api invoke my-plugin.research \'{"symbol":"AAPL"}\' --json'],
   },
   handler: async (input) => ({ symbol: input.symbol, rating: "watch", notes: [] }),
 }
@@ -468,10 +468,10 @@ Capability operations can also include CLI manifest metadata. This is what makes
 Use `sideEffectLevel: "local-write"` for local mutations, `"network-write"` for remote writes, `"external-trade"` for order placement/cancel/modify, and `"external-side-effect"` for other irreversible external actions. Mutating CLI commands should support `--dry-run` where practical and require `--yes` for dangerous operations.
 
 ```typescript
-import { assetDataProvider, newsProvider } from "gloomberb/capabilities";
-import type { GloomPlugin } from "gloomberb/types/plugin";
+import { assetDataProvider, newsProvider } from "surge/capabilities";
+import type { SurgePlugin } from "surge/types/plugin";
 
-export const myPlugin: GloomPlugin = {
+export const myPlugin: SurgePlugin = {
   id: "my-plugin",
   name: "My Plugin",
   version: "1.0.0",
@@ -675,7 +675,7 @@ await ctx.paneSettings.delete("quote-monitor:main", "symbol");
 Inside pane components, use `usePaneSettingValue()` to read and update the current pane's persisted settings:
 
 ```typescript
-import { usePaneSettingValue } from "gloomberb/components";
+import { usePaneSettingValue } from "surge/components";
 
 function MyPane() {
   const [hideTabs, setHideTabs] = usePaneSettingValue("hideTabs", false);
@@ -779,7 +779,7 @@ ctx.notify({ body: "FYI..." }); // defaults to an in-app info toast
 Panes with `defaultMode: "floating"` open as draggable/resizable floating windows:
 
 ```typescript
-import { Box, Text } from "gloomberb/ui";
+import { Box, Text } from "surge/ui";
 
 ctx.registerPane({
   id: "my-pane",
@@ -850,14 +850,14 @@ ctx.createPaneFromTemplate("my-chart-new", { symbol: "AAPL" });
 
 ## Reusable components
 
-Import basic UI from `gloomberb/components`, layout and specialized rendering primitives from `gloomberb/ui`, hooks from `gloomberb/react`, colors from `gloomberb/theme`, and formatters from `gloomberb/utils`:
+Import basic UI from `surge/components`, layout and specialized rendering primitives from `surge/ui`, hooks from `surge/react`, colors from `surge/theme`, and formatters from `surge/utils`:
 
 ```typescript
-import { Box } from "gloomberb/ui";
-import { Button, DataTableView, PaneStatusBody, Section, KeyValueRow, usePaneFooter } from "gloomberb/components";
-import { usePaneTicker, usePluginPaneState } from "gloomberb/react";
-import { colors, priceColor } from "gloomberb/theme";
-import { formatCurrency, formatNumber } from "gloomberb/utils";
+import { Box } from "surge/ui";
+import { Button, DataTableView, PaneStatusBody, Section, KeyValueRow, usePaneFooter } from "surge/components";
+import { usePaneTicker, usePluginPaneState } from "surge/react";
+import { colors, priceColor } from "surge/theme";
+import { formatCurrency, formatNumber } from "surge/utils";
 ```
 
 Choose the existing control that owns the interaction you need:
@@ -897,7 +897,7 @@ Use `Box` and `ScrollBox` to arrange content. Custom chart surfaces, order-book 
 </PaneStatusBody>
 ```
 
-Use `usePaneSettingValue(key, fallback)` from `gloomberb/react` for persistent pane settings and `usePaneTitle(title)` for a content-derived pane title. They update the active saved layout without requiring direct app-config writes. Both accept an optional explicit pane ID.
+Use `usePaneSettingValue(key, fallback)` from `surge/react` for persistent pane settings and `usePaneTitle(title)` for a content-derived pane title. They update the active saved layout without requiring direct app-config writes. Both accept an optional explicit pane ID.
 
 Pane footers show changing status such as loading, errors, stale data, or live/delayed feeds. Do not repeat the pane title, fixed labels, row counts, or generic keyboard hints:
 
@@ -922,7 +922,7 @@ import {
   usePluginConfigState,
   usePluginTickerActions,
   usePluginAppActions,
-} from "gloomberb/react";
+} from "surge/react";
 
 const marketData = useMarketData();
 const assetData = useAssetData();
@@ -989,10 +989,10 @@ The simplest plugin type. This adds a new tab to the Ticker Research pane:
 
 ```typescript
 import React from "react";
-import { Box, Text } from "gloomberb/ui";
-import type { GloomPlugin, TickerResearchTabProps } from "gloomberb/types/plugin";
-import { EmptyState, usePaneTicker } from "gloomberb/components";
-import { colors } from "gloomberb/theme";
+import { Box, Text } from "surge/ui";
+import type { SurgePlugin, TickerResearchTabProps } from "surge/types/plugin";
+import { EmptyState, usePaneTicker } from "surge/components";
+import { colors } from "surge/theme";
 
 function SentimentTab({ width, height, focused }: TickerResearchTabProps) {
   const { ticker } = usePaneTicker();
@@ -1037,7 +1037,7 @@ export default {
       component: SentimentTab,
     });
   },
-} satisfies GloomPlugin;
+} satisfies SurgePlugin;
 ```
 
 ## UI guidelines for plugins
@@ -1184,14 +1184,14 @@ slots: {
 },
 ```
 
-Other historical `GloomSlots` names have no render sites. Use the explicit registration methods for ticker tabs, columns, commands, events, and capabilities.
+Other historical `SurgeSlots` names have no render sites. Use the explicit registration methods for ticker tabs, columns, commands, events, and capabilities.
 
 ## Tips
 
 - Look at the built-in plugins in `src/plugins/builtin/` for real-world examples
 - Use `order` on Ticker Research tabs to control position (core tabs use 10, 20, 30)
 - Toggleable plugins can be enabled/disabled by users from settings (`Ctrl+,`)
-- The terminal renderer is backed by [OpenTUI](https://opentui.com/) packages such as `@opentui/core` and `@opentui/react`; plugin UI should stay on `gloomberb/ui` and `gloomberb/components`
+- The terminal renderer is backed by [OpenTUI](https://opentui.com/) packages such as `@opentui/core` and `@opentui/react`; plugin UI should stay on `surge/ui` and `surge/components`
 - Use `ctx.persistence` for cached resources, `ctx.resume` for local resume state, and `ctx.configState` for configuration
 - Use `ctx.on()` to react to app events without polling
 - Use `ctx.notify()` for non-intrusive user feedback and desktop notifications

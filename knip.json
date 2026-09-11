@@ -1,7 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@latest/schema.json",
   "entry": [
-    "bin/gloomberb",
+    "bin/surge",
     "electrobun.config.ts",
     "scripts/install-electrobun-tui-shim.ts",
     "scripts/build-web.ts",

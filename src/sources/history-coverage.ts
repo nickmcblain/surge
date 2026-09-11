@@ -40,7 +40,7 @@ export function hasUnverifiedShellHistory(
   requestedStart?: number,
 ): boolean {
   if (!isShellLondonTarget(target.symbol, target.exchange)
-    || !["provider:yahoo", "provider:gloomberb-cloud"].includes(sourceKey)) return false;
+    || !["provider:yahoo", "provider:surge-cloud"].includes(sourceKey)) return false;
   const cutoff = Date.parse(SHELL_VERIFIED_LINEAGE_START);
   return points.some((point) => getPricePointTimestamp(point) < cutoff)
     // Older clients dropped even corrected source provenance. Refetch those

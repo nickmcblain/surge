@@ -53,7 +53,7 @@ describe("StatusBar", () => {
   }
 
   test("opens the current version changelog from the version chip", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-test");
+    const config = createDefaultConfig("/tmp/surge-test");
     config.layouts = [{ name: "Home", layout: cloneLayout(config.layout) }];
     const state = {
       ...createInitialState(config),
@@ -81,7 +81,7 @@ describe("StatusBar", () => {
   });
 
   test("shows a transient focus layout tab without replacing saved layouts", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-transient-layout-test");
+    const config = createDefaultConfig("/tmp/surge-transient-layout-test");
     config.layouts = [
       { name: "Default", layout: cloneLayout(config.layout) },
       { name: "Monitor", layout: cloneLayout(config.layout) },
@@ -153,7 +153,7 @@ describe("StatusBar", () => {
   });
 
   test("reorders saved layout tabs by dragging them left and right", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-layout-tab-reorder-test");
+    const config = createDefaultConfig("/tmp/surge-layout-tab-reorder-test");
     config.layouts = [
       { name: "Home", layout: cloneLayout(config.layout) },
       { name: "Research", layout: cloneLayout(config.layout) },
@@ -188,7 +188,7 @@ describe("StatusBar", () => {
   });
 
   test("offers to tidy three floating windows and tiles them on click", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-tidy-test");
+    const config = createDefaultConfig("/tmp/surge-tidy-test");
     const floatingLayout: LayoutConfig = {
       dockRoot: null,
       instances: Array.from({ length: 3 }, (_, index) => createPaneInstance("chat", { instanceId: `chat-${index}` })),
@@ -249,7 +249,7 @@ describe("StatusBar", () => {
   });
 
   test("tidies covered windows instead of leaving them floating", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-covered-test");
+    const config = createDefaultConfig("/tmp/surge-covered-test");
     const floatingLayout: LayoutConfig = {
       dockRoot: null,
       instances: Array.from({ length: 3 }, (_, index) => createPaneInstance("chat", { instanceId: `chat-${index}` })),

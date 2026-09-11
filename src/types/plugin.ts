@@ -49,7 +49,7 @@ import type { CachePolicy, PersistedResourceValue } from "./persistence";
 import type { TickerRecord } from "./ticker";
 import type { InstrumentSearchResult } from "./instrument";
 
-export interface GloomSlots {
+export interface SurgeSlots {
   "ticker-research:tab": { ticker: TickerRecord; financials: TickerFinancials | null };
   "ticker-research:section": { ticker: TickerRecord; financials: TickerFinancials | null };
   "list:column": { ticker: TickerRecord; financials: TickerFinancials | null };
@@ -405,7 +405,7 @@ export interface CliCommandContext {
   initMarketData(): Promise<import("../cli/types").MarketContext>;
   initServices(): Promise<import("../cli/types").CliServicesContext>;
   cliOptions: CliGlobalOptions;
-  plugins: GloomPlugin[];
+  plugins: SurgePlugin[];
   fail(message: string, details?: string): never;
   closeAndFail(
     persistence: import("../data/app-persistence").AppPersistence,
@@ -605,7 +605,7 @@ export interface PinTickerOptions {
   tabId?: string;
 }
 
-export interface GloomPluginContext {
+export interface SurgePluginContext {
   registerPane(pane: PaneDef): void;
   registerPaneTemplate(template: PaneTemplateDef): void;
   registerCommand(command: CommandDef): void;
@@ -674,7 +674,7 @@ export type PluginTarget = "cli" | "tui" | "desktop" | "web";
 
 export const ALL_PLUGIN_TARGETS: readonly PluginTarget[] = ["cli", "tui", "desktop", "web"];
 
-export interface GloomPlugin {
+export interface SurgePlugin {
   id: string;
   name: string;
   version: string;
@@ -687,7 +687,7 @@ export interface GloomPlugin {
   /** Shown in the marketplace pane and on the website. */
   homepage?: string;
 
-  setup?(ctx: GloomPluginContext): void | Promise<void>;
+  setup?(ctx: SurgePluginContext): void | Promise<void>;
   dispose?(): void;
 
   panes?: PaneDef[];
@@ -695,6 +695,6 @@ export interface GloomPlugin {
   broker?: BrokerAdapter;
   capabilities?: PluginCapability[];
   slots?: Partial<{
-    [K in keyof GloomSlots]: (props: GloomSlots[K]) => ReactNode;
+    [K in keyof SurgeSlots]: (props: SurgeSlots[K]) => ReactNode;
   }>;
 }

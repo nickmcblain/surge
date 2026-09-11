@@ -148,7 +148,7 @@ function DesktopMultiSelectMenu({
               width="100%"
               flexDirection="column"
               style={{ borderRadius: 6, padding: "5px 6px" }}
-              hoverBackgroundColor="color-mix(in srgb, var(--gloom-text-bright) 7%, transparent)"
+              hoverBackgroundColor="color-mix(in srgb, var(--surge-text-bright) 7%, transparent)"
             >
               <Checkbox
                 label={option.label}

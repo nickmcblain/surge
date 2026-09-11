@@ -98,7 +98,7 @@ export function WebDialogHostProvider({ children }: { children: ReactNode }) {
       {children}
       {dialogState && (
         <div
-          className="gloom-dialog-backdrop"
+          className="surge-dialog-backdrop"
           onMouseDown={(event) => {
             if (
               dialogState.closeOnClickOutside
@@ -114,7 +114,7 @@ export function WebDialogHostProvider({ children }: { children: ReactNode }) {
             aria-modal="true"
             aria-label="Dialog"
             tabIndex={-1}
-            className="gloom-dialog"
+            className="surge-dialog"
             style={{
               borderColor: dialogBorder,
               background: dialogBg,

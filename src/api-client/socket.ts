@@ -13,7 +13,7 @@ import { canonicalExchange, normalizeSymbol } from "../utils/exchanges";
 import { mergeQuoteSubscriptionTargets } from "../market-data/quote-subscription-target";
 import {
   connectionHealth,
-  GLOOM_CLOUD_SOCKET_CONNECTION_ID,
+  SURGE_CLOUD_SOCKET_CONNECTION_ID,
   type ConnectionHealthRegistry,
 } from "../core/connection-health";
 
@@ -132,7 +132,7 @@ export class CloudApiSocket {
     if (ws) {
       cloudApiLog.info("teardown websocket");
       this.health.reportSocketState(
-        GLOOM_CLOUD_SOCKET_CONNECTION_ID,
+        SURGE_CLOUD_SOCKET_CONNECTION_ID,
         "idle",
         "Socket closed locally",
       );
@@ -546,7 +546,7 @@ export class CloudApiSocket {
       channelTargets: this.channelListeners.size,
     });
     this.health.reportSocketState(
-      GLOOM_CLOUD_SOCKET_CONNECTION_ID,
+      SURGE_CLOUD_SOCKET_CONNECTION_ID,
       "connecting",
       this.getWebSocketBaseUrl(),
     );
@@ -555,7 +555,7 @@ export class CloudApiSocket {
       ws = new WebSocket(url);
     } catch (error) {
       this.health.reportSocketState(
-        GLOOM_CLOUD_SOCKET_CONNECTION_ID,
+        SURGE_CLOUD_SOCKET_CONNECTION_ID,
         "error",
         error instanceof Error ? error.message : String(error),
       );
@@ -567,7 +567,7 @@ export class CloudApiSocket {
       if (this.ws !== ws) return;
       cloudApiLog.info("websocket open");
       this.health.reportSocketState(
-        GLOOM_CLOUD_SOCKET_CONNECTION_ID,
+        SURGE_CLOUD_SOCKET_CONNECTION_ID,
         "open",
         this.getWebSocketBaseUrl(),
       );
@@ -594,7 +594,7 @@ export class CloudApiSocket {
       });
       if (!activeSocket) return;
       this.health.reportSocketState(
-        GLOOM_CLOUD_SOCKET_CONNECTION_ID,
+        SURGE_CLOUD_SOCKET_CONNECTION_ID,
         "closed",
         closeEvent?.reason ||
           (closeEvent?.code ? `Closed (${closeEvent.code})` : "Socket closed"),
@@ -615,7 +615,7 @@ export class CloudApiSocket {
     ws.onerror = () => {
       if (this.ws !== ws) return;
       this.health.reportSocketState(
-        GLOOM_CLOUD_SOCKET_CONNECTION_ID,
+        SURGE_CLOUD_SOCKET_CONNECTION_ID,
         "error",
         "WebSocket error",
       );

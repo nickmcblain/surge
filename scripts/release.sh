@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="gloom-sh/gloomberb"
+REPO="nickmc-lumion/surge"
 
 usage() {
   cat <<'EOF'
@@ -34,7 +34,7 @@ build_release_notes() {
     range="$previous_tag..$current_tag"
   fi
 
-  changes_file="$(mktemp "${TMPDIR:-/tmp}/gloomberb-release-changes-$current_tag.XXXXXX")"
+  changes_file="$(mktemp "${TMPDIR:-/tmp}/surge-release-changes-$current_tag.XXXXXX")"
   git log --reverse --format='%s' "$range" \
     | sed -E "s/[[:space:]]+\\(#([0-9]+)\\)$/ #\\1/" \
     | awk '
@@ -136,7 +136,7 @@ fi
 
 ./scripts/bump-version.sh "$VERSION"
 
-NOTES_FILE="$(mktemp "${TMPDIR:-/tmp}/gloomberb-release-notes-$TAG.XXXXXX")"
+NOTES_FILE="$(mktemp "${TMPDIR:-/tmp}/surge-release-notes-$TAG.XXXXXX")"
 build_release_notes "$NOTES_FILE" "$LATEST_RELEASE_TAG" "$TAG"
 
 create_args=(

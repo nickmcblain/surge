@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   ConnectionHealthRegistry,
-  registerGloomCloudConnectionSources,
+  registerSurgeCloudConnectionSources,
 } from "../core/connection-health";
 import { CloudApiRequestTransport } from "./request";
 
@@ -15,9 +15,9 @@ function responseWithBody(body: () => Promise<string>): Response {
 }
 
 describe("CloudApiRequestTransport connection reporting", () => {
-  test("reports real FRED requests to both Gloom and FRED sources", async () => {
+  test("reports real FRED requests to both Surge and FRED sources", async () => {
     const health = new ConnectionHealthRegistry();
-    const dispose = registerGloomCloudConnectionSources(health);
+    const dispose = registerSurgeCloudConnectionSources(health);
     const transport = new CloudApiRequestTransport({
       connectionHealth: health,
       fetchTransport: async () =>
@@ -38,13 +38,13 @@ describe("CloudApiRequestTransport connection reporting", () => {
       })),
     ).toEqual([
       {
-        id: "gloom-cloud-http",
+        id: "surge-cloud-http",
         status: "connected",
         operation: "GET /cloud/econ/series/VIXCLS",
       },
-      { id: "gloom-cloud-socket", status: "idle", operation: null },
+      { id: "surge-cloud-socket", status: "idle", operation: null },
       {
-        id: "gloom-cloud-fred",
+        id: "surge-cloud-fred",
         status: "connected",
         operation: "GET /cloud/econ/series/VIXCLS",
       },

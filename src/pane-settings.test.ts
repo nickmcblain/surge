@@ -5,7 +5,7 @@ import { deletePaneSetting, getPaneSettingValue, setPaneSetting } from "./pane-s
 
 describe("pane settings helpers", () => {
   test("cloneLayout deep-clones pane settings", () => {
-    const layout = cloneLayout(createResearchTestConfig("/tmp/gloomberb-pane-settings").layout);
+    const layout = cloneLayout(createResearchTestConfig("/tmp/surge-pane-settings").layout);
     const cloned = cloneLayout(layout);
     const clonedSettings = cloned.instances.find((instance) => instance.instanceId === "ticker-detail:main")?.settings;
     const originalSettings = layout.instances.find((instance) => instance.instanceId === "ticker-detail:main")?.settings;
@@ -18,7 +18,7 @@ describe("pane settings helpers", () => {
   });
 
   test("setPaneSetting and deletePaneSetting update pane-scoped settings immutably", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-pane-settings");
+    const config = createResearchTestConfig("/tmp/surge-pane-settings");
     const extraPane = createPaneInstance("quote-monitor", {
       instanceId: "quote-monitor:test",
       binding: { kind: "fixed", symbol: "AAPL" },

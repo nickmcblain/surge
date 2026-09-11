@@ -8,7 +8,7 @@ const DESKTOP_PANE_SIDEBAR_MIN_WIDTH = 14;
 const DESKTOP_PANE_SIDEBAR_MAX_WIDTH = 19;
 const DESKTOP_PANE_SIDEBAR_WIDTH_RATIO = 0.192;
 const PANE_SIDEBAR_BREAKPOINT = 72;
-const PANE_SIDEBAR_MOUSE_HANDLED = "__gloomberbPaneSidebarHandled";
+const PANE_SIDEBAR_MOUSE_HANDLED = "__surgePaneSidebarHandled";
 
 export function shouldShowPaneSidebar(
   itemCount: number,
@@ -79,7 +79,7 @@ export function PaneSidebar({
         flexDirection="row"
         position="relative"
         style={nativeFillStyle}
-        data-gloom-role="pane-sidebar"
+        data-surge-role="pane-sidebar"
       >
         <Box
           width={listWidth}
@@ -165,7 +165,7 @@ export function PaneSidebarRow({
       flexDirection="row"
       backgroundColor={rowBackgroundColor}
       aria-label={ariaLabel}
-      data-gloom-role="pane-sidebar-item"
+      data-surge-role="pane-sidebar-item"
       onMouseDown={handleMouseDown}
       onMouseOver={() => {
         if (!disabled) setHovered((current) => current ? current : true);
@@ -225,7 +225,7 @@ export function PaneSidebarAction({
       justifyContent="center"
       backgroundColor={hovered && highlightOnHover ? hoverBg() : undefined}
       aria-label={ariaLabel}
-      data-gloom-role="pane-sidebar-action"
+      data-surge-role="pane-sidebar-action"
       onMouseOver={() => {
         if (!disabled) setHovered((current) => current ? current : true);
       }}

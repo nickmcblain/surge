@@ -27,22 +27,22 @@ afterEach(() => {
 describe("web wordmark variant", () => {
   test("trusts a real platform from the desktop host over the navigator", () => {
     stubNavigator("MacIntel");
-    expect(webAsciiTextWordmarkVariant("Gloomberb", "wordmark", "darwin")).toBe("legacy");
-    expect(webAsciiTextWordmarkVariant("Gloomberb", "wordmark", "win32")).toBe("compat");
-    expect(webAsciiTextWordmarkVariant("Gloomberb", "wordmark", "linux")).toBe("compat");
+    expect(webAsciiTextWordmarkVariant("Surge", "wordmark", "darwin")).toBe("legacy");
+    expect(webAsciiTextWordmarkVariant("Surge", "wordmark", "win32")).toBe("compat");
+    expect(webAsciiTextWordmarkVariant("Surge", "wordmark", "linux")).toBe("compat");
   });
 
   test("falls back to the navigator when the host names no OS", () => {
     stubNavigator("MacIntel");
-    expect(webAsciiTextWordmarkVariant("Gloomberb", "wordmark", "browser")).toBe("legacy");
-    expect(webAsciiTextWordmarkVariant("Gloomberb", "wordmark", "")).toBe("legacy");
+    expect(webAsciiTextWordmarkVariant("Surge", "wordmark", "browser")).toBe("legacy");
+    expect(webAsciiTextWordmarkVariant("Surge", "wordmark", "")).toBe("legacy");
     stubNavigator("Win32");
-    expect(webAsciiTextWordmarkVariant("Gloomberb", "wordmark", "browser")).toBe("compat");
+    expect(webAsciiTextWordmarkVariant("Surge", "wordmark", "browser")).toBe("compat");
   });
 
   test("leaves anything that is not the wordmark alone", () => {
     stubNavigator("MacIntel");
-    expect(webAsciiTextWordmarkVariant("Gloomberb", "tiny", "darwin")).toBeNull();
+    expect(webAsciiTextWordmarkVariant("Surge", "tiny", "darwin")).toBeNull();
     expect(webAsciiTextWordmarkVariant("Portfolio", "wordmark", "darwin")).toBeNull();
   });
 });

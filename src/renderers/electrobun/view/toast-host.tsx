@@ -43,7 +43,7 @@ export function WebToastHostProvider({ children }: { children: ReactNode }) {
   const host = useMemo<ToastHost>(() => ({
     Viewport() {
       return (
-        <div className="gloom-toast-viewport" aria-label="Notifications" aria-live="polite">
+        <div className="surge-toast-viewport" aria-label="Notifications" aria-live="polite">
           {toasts.map((toast) => {
             const activate = () => {
               if (!toast.action) return;
@@ -56,26 +56,26 @@ export function WebToastHostProvider({ children }: { children: ReactNode }) {
             return (
               <div
                 key={toast.id}
-                className="gloom-toast"
+                className="surge-toast"
                 data-type={toast.type}
                 data-actionable={toast.action ? "true" : "false"}
                 onClick={toast.action ? activate : undefined}
               >
-                <span className="gloom-toast-indicator" aria-hidden="true" />
-                <div className="gloom-toast-content">
+                <span className="surge-toast-indicator" aria-hidden="true" />
+                <div className="surge-toast-content">
                   {(toast.title || toast.subtitle) && (
-                    <div className="gloom-toast-heading">
-                      {toast.title && <span className="gloom-toast-title">{toast.title}</span>}
-                      {toast.subtitle && <span className="gloom-toast-subtitle">{toast.subtitle}</span>}
+                    <div className="surge-toast-heading">
+                      {toast.title && <span className="surge-toast-title">{toast.title}</span>}
+                      {toast.subtitle && <span className="surge-toast-subtitle">{toast.subtitle}</span>}
                     </div>
                   )}
-                  <div className="gloom-toast-body">{toast.body}</div>
+                  <div className="surge-toast-body">{toast.body}</div>
                 </div>
-                <div className="gloom-toast-controls">
+                <div className="surge-toast-controls">
                   {toast.action && (
                     <button
                       type="button"
-                      className="gloom-toast-action"
+                      className="surge-toast-action"
                       onClick={(event) => {
                         event.stopPropagation();
                         activate();
@@ -87,7 +87,7 @@ export function WebToastHostProvider({ children }: { children: ReactNode }) {
                   {toast.secondaryAction && (
                     <button
                       type="button"
-                      className="gloom-toast-action gloom-toast-action-secondary"
+                      className="surge-toast-action surge-toast-action-secondary"
                       onClick={(event) => {
                         event.stopPropagation();
                         try {
@@ -102,7 +102,7 @@ export function WebToastHostProvider({ children }: { children: ReactNode }) {
                   )}
                   <button
                     type="button"
-                    className="gloom-toast-dismiss"
+                    className="surge-toast-dismiss"
                     aria-label="Dismiss notification"
                     onClick={(event) => {
                       event.stopPropagation();

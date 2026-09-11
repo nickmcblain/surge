@@ -12,7 +12,7 @@ afterEach(async () => {
 });
 
 test("keeps existing exports instead of overwriting them", async () => {
-  directory = await mkdtemp(join(tmpdir(), "gloomberb-export-"));
+  directory = await mkdtemp(join(tmpdir(), "surge-export-"));
 
   const first = await saveTextFileToDirectory(directory, "prices.csv", "first");
   const second = await saveTextFileToDirectory(directory, "prices.csv", "second");

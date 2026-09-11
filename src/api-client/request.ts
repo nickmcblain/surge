@@ -7,8 +7,8 @@ import {
 } from "./errors";
 import {
   connectionHealth,
-  GLOOM_CLOUD_FRED_CONNECTION_ID,
-  GLOOM_CLOUD_HTTP_CONNECTION_ID,
+  SURGE_CLOUD_FRED_CONNECTION_ID,
+  SURGE_CLOUD_HTTP_CONNECTION_ID,
   type ConnectionHealthRegistry,
 } from "../core/connection-health";
 
@@ -17,8 +17,8 @@ const DEFAULT_MARKET_REQUEST_TIMEOUT_MS = 10_000;
 /** Local status for "this runtime cannot stream", never returned by the server. */
 export const STREAMING_UNSUPPORTED_STATUS = 0;
 const SESSION_COOKIE_NAMES = [
-  "__Secure-gloomberb.session_token",
-  "gloomberb.session_token",
+  "__Secure-surge.session_token",
+  "surge.session_token",
 ] as const;
 
 type CloudApiResponse = Pick<Response, "ok" | "status" | "headers" | "text">;
@@ -69,12 +69,12 @@ export function getCloudApiStreamFetch(): CloudApiStreamFetch | null {
   return isHttpFetchStreaming() ? httpFetch : null;
 }
 
-declare const __GLOOMBERB_API_URL__: string | undefined;
+declare const __SURGE_API_URL__: string | undefined;
 
 export function getCloudApiBaseUrl(): string {
   // Browser bundles have no `process`; the build replaces this with a literal.
   const bundled =
-    typeof __GLOOMBERB_API_URL__ === "string" ? __GLOOMBERB_API_URL__ : "";
+    typeof __SURGE_API_URL__ === "string" ? __SURGE_API_URL__ : "";
   if (bundled) {
     return typeof location !== "undefined" && bundled === location.origin
       ? `${bundled}/api`
@@ -83,7 +83,7 @@ export function getCloudApiBaseUrl(): string {
   if (typeof process === "undefined") {
     return DEFAULT_API_URL;
   }
-  return process.env.GLOOMBERB_API_URL ?? DEFAULT_API_URL;
+  return process.env.SURGE_API_URL ?? DEFAULT_API_URL;
 }
 
 function throwIfRequestAborted(signal: AbortSignal | null | undefined): void {
@@ -190,7 +190,7 @@ export class CloudApiRequestTransport {
 
     const operation = `${options.method ?? "GET"} ${path.split("?")[0]}`;
     return this.connectionHealth.track(
-      GLOOM_CLOUD_HTTP_CONNECTION_ID,
+      SURGE_CLOUD_HTTP_CONNECTION_ID,
       operation,
       async () => {
         const response = await streamFetch(`${this.baseUrl}${path}`, {
@@ -293,12 +293,12 @@ export class CloudApiRequestTransport {
       return parsed as T;
     };
     return this.connectionHealth.track(
-      GLOOM_CLOUD_HTTP_CONNECTION_ID,
+      SURGE_CLOUD_HTTP_CONNECTION_ID,
       operation,
       () =>
         path.startsWith("/cloud/econ/series/")
           ? this.connectionHealth.track(
-              GLOOM_CLOUD_FRED_CONNECTION_ID,
+              SURGE_CLOUD_FRED_CONNECTION_ID,
               operation,
               request,
             )

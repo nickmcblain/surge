@@ -42,7 +42,7 @@ export const PaneContent = memo(function PaneContent({
         minWidth={0}
         minHeight={0}
         overflow="hidden"
-        data-gloom-role="pane-content"
+        data-surge-role="pane-content"
       >
         <Component
           paneId={paneId}

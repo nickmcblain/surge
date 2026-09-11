@@ -44,11 +44,11 @@ const runtimeHostName = getRuntimeHostName();
 const DEFAULT_SEC_FROM =
   getEnv("SEC_FROM_EMAIL")?.trim()
   || extractEmail(getEnv("SEC_USER_AGENT"))
-  || `${sanitizeIdentityPart(getEnv("USER") ?? "gloomberb", "gloomberb")}@${sanitizeIdentityPart(`${runtimeHostName}.local`, "localhost.localdomain")}`;
+  || `${sanitizeIdentityPart(getEnv("USER") ?? "surge", "surge")}@${sanitizeIdentityPart(`${runtimeHostName}.local`, "localhost.localdomain")}`;
 
 const DEFAULT_SEC_USER_AGENT =
   getEnv("SEC_USER_AGENT")?.trim()
-  || `Gloomberb/0.1 (${sanitizeIdentityPart(runtimeHostName, "localhost")}; contact=${DEFAULT_SEC_FROM})`;
+  || `Surge/0.1 (${sanitizeIdentityPart(runtimeHostName, "localhost")}; contact=${DEFAULT_SEC_FROM})`;
 
 type LookupEntry = {
   cik: string;

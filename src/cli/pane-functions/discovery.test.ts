@@ -1,12 +1,12 @@
 import { expect, test } from "bun:test";
 import { createDefaultConfig } from "../../types/config";
-import type { GloomPlugin } from "../../types/plugin";
+import type { SurgePlugin } from "../../types/plugin";
 import type { MarketContext } from "../types";
 import { createPaneCatalog } from "./discovery";
 
 const context = { config: createDefaultConfig("/tmp/discovery-test") } as MarketContext;
 
-function plugin(id: string, overrides: Partial<GloomPlugin> = {}): GloomPlugin {
+function plugin(id: string, overrides: Partial<SurgePlugin> = {}): SurgePlugin {
   return { id, name: id, version: "1", setup() {}, ...overrides };
 }
 

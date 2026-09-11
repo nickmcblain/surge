@@ -59,11 +59,11 @@ describe("theme colors", () => {
 
     applyTheme("midnight");
 
-    expect(values.get("--gloom-bg")).toBe(theme.bg);
-    expect(values.get("--gloom-panel")).toBe(theme.panel);
-    expect(values.get("--gloom-text-dim")).toBe(theme.textDim);
-    expect(values.get("--gloom-selected")).toBe(theme.selected);
-    expect(values.get("--gloom-hover-bg")).toBeString();
+    expect(values.get("--surge-bg")).toBe(theme.bg);
+    expect(values.get("--surge-panel")).toBe(theme.panel);
+    expect(values.get("--surge-text-dim")).toBe(theme.textDim);
+    expect(values.get("--surge-selected")).toBe(theme.selected);
+    expect(values.get("--surge-hover-bg")).toBeString();
   });
 
   test("does not let provider sync clobber a pending preview", () => {
@@ -74,12 +74,12 @@ describe("theme colors", () => {
     syncTheme(DEFAULT_THEME);
 
     expect(getCurrentThemeId()).toBe("midnight");
-    expect(values.get("--gloom-bg")).toBe(preview.bg);
+    expect(values.get("--surge-bg")).toBe(preview.bg);
 
     clearTransientThemePreview();
     syncTheme(DEFAULT_THEME);
 
     expect(getCurrentThemeId()).toBe(DEFAULT_THEME);
-    expect(values.get("--gloom-bg")).toBe(getTheme(DEFAULT_THEME).bg);
+    expect(values.get("--surge-bg")).toBe(getTheme(DEFAULT_THEME).bg);
   });
 });

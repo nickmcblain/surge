@@ -14,9 +14,9 @@ import { zhTW } from "./zh-tw";
 
 function restoreEnvironmentLanguageOverride(value: string | undefined): void {
   if (value === undefined) {
-    delete process.env.GLOOMBERB_LANG;
+    delete process.env.SURGE_LANG;
   } else {
-    process.env.GLOOMBERB_LANG = value;
+    process.env.SURGE_LANG = value;
   }
 }
 
@@ -42,10 +42,10 @@ describe("language selection", () => {
   });
 
   test("keeps a valid environment override ahead of runtime preferences", () => {
-    const previousOverride = process.env.GLOOMBERB_LANG;
+    const previousOverride = process.env.SURGE_LANG;
     const previousLanguage = getLanguage();
     try {
-      process.env.GLOOMBERB_LANG = "ko";
+      process.env.SURGE_LANG = "ko";
       setLanguage("en");
 
       applyLanguagePreference("ja");
@@ -58,10 +58,10 @@ describe("language selection", () => {
   });
 
   test("ignores an unsupported override instead of blocking saved config", () => {
-    const previousOverride = process.env.GLOOMBERB_LANG;
+    const previousOverride = process.env.SURGE_LANG;
     const previousLanguage = getLanguage();
     try {
-      process.env.GLOOMBERB_LANG = "fr-FR";
+      process.env.SURGE_LANG = "fr-FR";
       setLanguage("en");
 
       applyLanguageFromConfig({ language: "zh-CN" });
@@ -74,10 +74,10 @@ describe("language selection", () => {
   });
 
   test("applies every persisted localized language", () => {
-    const previousOverride = process.env.GLOOMBERB_LANG;
+    const previousOverride = process.env.SURGE_LANG;
     const previousLanguage = getLanguage();
     try {
-      delete process.env.GLOOMBERB_LANG;
+      delete process.env.SURGE_LANG;
       for (const language of ["es", "zh-CN", "zh-TW", "ja", "ko"] as const) {
         setLanguage("en");
         applyLanguageFromConfig({ language });
@@ -90,7 +90,7 @@ describe("language selection", () => {
   });
 
   test("auto-selects every supported locale family", () => {
-    const previousOverride = process.env.GLOOMBERB_LANG;
+    const previousOverride = process.env.SURGE_LANG;
     const previousLanguage = getLanguage();
     try {
       const cases = [
@@ -108,12 +108,12 @@ describe("language selection", () => {
         ["ko-KR", "ko"],
       ] as const;
       for (const [locale, expected] of cases) {
-        process.env.GLOOMBERB_LANG = locale;
+        process.env.SURGE_LANG = locale;
         applyLanguagePreference("auto");
         expect(getLanguage()).toBe(expected);
       }
 
-      process.env.GLOOMBERB_LANG = "zh-US";
+      process.env.SURGE_LANG = "zh-US";
       applyLanguagePreference("auto");
       expect(getLanguage()).toBe("en");
     } finally {

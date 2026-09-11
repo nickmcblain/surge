@@ -15,7 +15,7 @@ afterEach(() => {
 });
 
 test("opens the command bar by clicking the header prompt", async () => {
-  const state = createInitialState(createDefaultConfig("/tmp/gloomberb-header-test"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-header-test"));
   const actions: Array<{ type: string; open?: boolean; query?: string }> = [];
   testSetup = await testRender(
     <AppContext value={{ state, dispatch: (action) => actions.push(action as { type: string }) }}>
@@ -43,7 +43,7 @@ test("opens the command bar by clicking the header prompt", async () => {
  */
 test("hosts the command bar input while a list screen is published", async () => {
   const state = {
-    ...createInitialState(createDefaultConfig("/tmp/gloomberb-header-test")),
+    ...createInitialState(createDefaultConfig("/tmp/surge-header-test")),
     commandBarOpen: true,
   };
   const typed: string[] = [];

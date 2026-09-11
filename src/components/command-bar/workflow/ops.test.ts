@@ -56,7 +56,7 @@ test("command ticker resolution persists the verified future without switching t
 
 describe("createPaneTemplateOrThrow", () => {
   test("treats createInstance null as cancellation and does not create a pane", async () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/surge-workflow-ops-test");
     const state = createInitialState(config);
     const buildCalls: unknown[] = [];
     const placeCalls: unknown[] = [];
@@ -105,7 +105,7 @@ describe("createPaneTemplateOrThrow", () => {
   });
 
   test("uses an explicit shared symbol instead of the recipient's active ticker", async () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/surge-workflow-ops-test");
     const state = createInitialState(config);
     const msft: TickerRecord = {
       metadata: {
@@ -158,7 +158,7 @@ describe("createPaneTemplateOrThrow", () => {
   });
 
   test("passes pane template instance ids through to pane creation", async () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/surge-workflow-ops-test");
     const state = createInitialState(config);
     const buildCalls: unknown[] = [];
 
@@ -221,7 +221,7 @@ describe("createPaneTemplateOrThrow pane reuse", () => {
     createdWith: Record<string, unknown> | null;
     layouts: LayoutConfig[];
   }> {
-    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-reuse");
+    const config = createResearchTestConfig("/tmp/surge-workflow-ops-reuse");
     const layout = cloneLayout(config.layout);
     layout.instances = existing as never;
     const state = createInitialState({ ...config, layout });
@@ -349,7 +349,7 @@ describe("createPaneTemplateOrThrow pane reuse", () => {
 
 describe("applyPaneSettingFieldValue", () => {
   test("lets a pane map derived setting fields back to its canonical settings object", async () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/surge-workflow-ops-test");
     const layout = cloneLayout(config.layout);
     const pane = findPaneInstance(layout, "portfolio-list:main");
     if (!pane) throw new Error("missing test pane");
@@ -411,7 +411,7 @@ describe("applyPaneSettingFieldValue", () => {
   });
 
   test("atomically clears dependent plugin settings when a selector changes", async () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/surge-workflow-ops-test");
     config.pluginConfig.ai = { defaultProviderId: "claude", defaultModelId: "opus" };
     const state = createInitialState(config);
     const updates: unknown[] = [];
@@ -463,7 +463,7 @@ describe("applyPaneSettingFieldValue", () => {
   });
 
   test("clears a pane model override in the same layout update as its provider", async () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/surge-workflow-ops-test");
     const state = createInitialState(config);
     const pane = findPaneInstance(state.config.layout, "ticker-detail:main")!;
     pane.settings = { providerId: "claude", modelId: "opus" };

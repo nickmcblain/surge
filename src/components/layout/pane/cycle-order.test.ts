@@ -16,7 +16,7 @@ function createRegistry(options: {
 
 describe("getVisiblePaneCycleOrder", () => {
   test("skips disabled and unregistered panes when cycling focus", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-pane-cycle-order");
+    const config = createResearchTestConfig("/tmp/surge-pane-cycle-order");
     const registry = createRegistry({
       paneIds: ["portfolio-list", "chat", TICKER_RESEARCH_PANE_ID],
       disabledPaneIds: { chat: ["chat"] },

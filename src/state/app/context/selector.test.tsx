@@ -14,7 +14,7 @@ let capturedDispatch: Dispatch<AppAction> | null = null;
 let capturedPaneSetting: ((value: string) => void) | null = null;
 
 function createTickerDetailConfig(symbol: string): AppConfig {
-  const config = createDefaultConfig("/tmp/gloomberb-test");
+  const config = createDefaultConfig("/tmp/surge-test");
   const layout = {
     dockRoot: { kind: "pane" as const, instanceId: TEST_PANE_ID },
     instances: [{
@@ -353,7 +353,7 @@ describe("pane selectors", () => {
     });
 
     testSetup = await testRender(
-      <AppProvider config={createDefaultConfig("/tmp/gloomberb-layout-race")} desktopBridge={bridge}>
+      <AppProvider config={createDefaultConfig("/tmp/surge-layout-race")} desktopBridge={bridge}>
         <DispatchCapture />
         <ActiveLayoutHarness />
       </AppProvider>,

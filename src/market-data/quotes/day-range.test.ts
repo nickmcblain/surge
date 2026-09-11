@@ -7,7 +7,7 @@ import { resolveCanonicalQuote } from "./resolution";
 const now = Date.parse("2026-09-10T15:00:00Z");
 function quote(overrides: Partial<Quote> = {}): Quote {
   return {
-    symbol: "NVDA", providerId: "gloomberb-cloud", price: 219, currency: "USD",
+    symbol: "NVDA", providerId: "surge-cloud", price: 219, currency: "USD",
     change: 0, changePercent: 0, lastUpdated: now,
     listingExchangeName: "NASDAQ", marketState: "REGULAR", sessionConfidence: "explicit",
     high: 220.99, low: 218.05,
@@ -23,7 +23,7 @@ test("sparse regular ticks widen cached extrema and later snapshots cannot shrin
   const rebound = mergeQuoteContribution(lower, quote({ price: 222, high: undefined, low: undefined, lastUpdated: now + 2_000 }));
   const delayedBar = mergeQuoteContribution(rebound, quote({ price: 221, high: 221, low: 218, lastUpdated: now + 3_000 }));
   expect(delayedBar).toMatchObject({ high: 222, low: 217.87 });
-  expect(resolveCanonicalQuote({ "gloomberb-cloud": delayedBar }, now + 4_000).quote)
+  expect(resolveCanonicalQuote({ "surge-cloud": delayedBar }, now + 4_000).quote)
     .toMatchObject({ price: 221, high: 222, low: 217.87 });
 });
 

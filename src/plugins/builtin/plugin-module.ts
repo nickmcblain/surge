@@ -1,7 +1,7 @@
 import { Fragment, createElement, type ReactNode } from "react";
 import type {
-  GloomPlugin,
-  GloomPluginContext,
+  SurgePlugin,
+  SurgePluginContext,
 } from "../../types/plugin";
 
 type PluginMetadataKey =
@@ -13,9 +13,9 @@ type PluginMetadataKey =
   | "order"
   | "targets"
   | "homepage";
-type PluginMetadata = Pick<GloomPlugin, PluginMetadataKey>;
+type PluginMetadata = Pick<SurgePlugin, PluginMetadataKey>;
 
-export type PluginModule = Omit<GloomPlugin, PluginMetadataKey>;
+export type PluginModule = Omit<SurgePlugin, PluginMetadataKey>;
 
 const HANDLED_MODULE_KEYS = [
   "cliCommands",
@@ -36,7 +36,7 @@ interface CompositePluginOptions extends PluginMetadata {
   modules: readonly PluginModule[];
 }
 
-function composeSlots(modules: readonly PluginModule[]): GloomPlugin["slots"] {
+function composeSlots(modules: readonly PluginModule[]): SurgePlugin["slots"] {
   const renderersBySlot = new Map<string, Array<(props: unknown) => ReactNode>>();
 
   for (const module of modules) {
@@ -59,7 +59,7 @@ function composeSlots(modules: readonly PluginModule[]): GloomPlugin["slots"] {
     );
   }
 
-  return slots as GloomPlugin["slots"];
+  return slots as SurgePlugin["slots"];
 }
 
 /**
@@ -68,7 +68,7 @@ function composeSlots(modules: readonly PluginModule[]): GloomPlugin["slots"] {
  * Modules deliberately have no identity or toggle metadata. Every contribution
  * is owned, persisted, enabled, and disposed through the returned parent plugin.
  */
-export function composeBuiltinPlugin(options: CompositePluginOptions): GloomPlugin {
+export function composeBuiltinPlugin(options: CompositePluginOptions): SurgePlugin {
   const { modules, ...metadata } = options;
   const cliCommands = modules.flatMap((module) => module.cliCommands ?? []);
   const panes = modules.flatMap((module) => module.panes ?? []);
@@ -86,7 +86,7 @@ export function composeBuiltinPlugin(options: CompositePluginOptions): GloomPlug
     ...(capabilities.length > 0 ? { capabilities } : {}),
     ...(slots ? { slots } : {}),
 
-    async setup(ctx: GloomPluginContext) {
+    async setup(ctx: SurgePluginContext) {
       startedModules = [];
       for (const broker of brokers) {
         ctx.registerBroker(broker);

@@ -41,7 +41,7 @@ function createSessionSnapshot(overrides: Partial<AppSessionSnapshot> = {}): App
 
 describe("app bootstrap state", () => {
   test("keeps detached panes materialized only for terminal app launches", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-app-bootstrap");
+    const config = createResearchTestConfig("/tmp/surge-app-bootstrap");
     config.layout.instances.push(createPaneInstance("ticker-detail", {
       instanceId: "ticker-detail:detached",
       binding: { kind: "fixed", symbol: "AAPL" },
@@ -76,7 +76,7 @@ describe("app bootstrap state", () => {
   });
 
   test("applies CLI launch config before the app provider boots", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-cli-bootstrap");
+    const config = createResearchTestConfig("/tmp/surge-cli-bootstrap");
     const request: CliLaunchRequest<{ paneInstanceId: string }> = {
       applyConfig(baseConfig, env) {
         return {
@@ -101,7 +101,7 @@ describe("app bootstrap state", () => {
   });
 
   test("overlays detached window state on the persisted app session", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-detached-bootstrap");
+    const config = createResearchTestConfig("/tmp/surge-detached-bootstrap");
     const persisted = createSessionSnapshot({
       paneState: { "portfolio-list:main": { cursorSymbol: "MSFT" } },
       activePanel: "left",
@@ -131,7 +131,7 @@ describe("app bootstrap state", () => {
   });
 
   test("lets CLI launches adjust the reconciled main-window session", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-main-bootstrap");
+    const config = createResearchTestConfig("/tmp/surge-main-bootstrap");
     const persisted = createSessionSnapshot();
     const request: CliLaunchRequest<string> = {
       applyConfig(baseConfig) {

@@ -261,7 +261,7 @@ describe("CompositeChart", () => {
   });
 
   test("does not allocate a native raster when braille rendering is forced", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-composite-braille");
+    const config = createDefaultConfig("/tmp/surge-composite-braille");
     config.chartPreferences.renderer = "braille";
 
     testSetup = await testRender(
@@ -1836,7 +1836,7 @@ describe("CompositeChart", () => {
 
   test("restores persisted drawings from pane settings on mount", async () => {
     const renderWithSettings = async (settings: Record<string, unknown>) => {
-      const config = createDefaultConfig("/tmp/gloomberb-composite-drawings");
+      const config = createDefaultConfig("/tmp/surge-composite-drawings");
       config.layout.instances.push({
         instanceId: "chart:test",
         paneId: "chart-composer",

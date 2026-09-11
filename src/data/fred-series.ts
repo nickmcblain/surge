@@ -5,7 +5,7 @@ import type {
 } from "../api-client";
 
 const CACHE_KIND = "fred-series";
-const CACHE_SOURCE = "gloomberb-cloud";
+const CACHE_SOURCE = "surge-cloud";
 // Refresh persisted metadata that predates FRED's source coverage dates.
 const CACHE_SCHEMA_VERSION = 2;
 const CACHE_POLICY = {

@@ -92,7 +92,7 @@ export const WebBox = forwardRef<HTMLDivElement, Record<string, unknown> & { chi
       cancelPendingFrame();
       pendingMoveRef.current = null;
       pendingDragRef.current = null;
-      document.body.classList.remove("gloom-dragging");
+      document.body.classList.remove("surge-dragging");
     }, []);
 
     const handlesWheel = typeof props.onMouseScroll === "function";
@@ -109,7 +109,7 @@ export const WebBox = forwardRef<HTMLDivElement, Record<string, unknown> & { chi
     const stopDocumentDrag = () => {
       if (!draggingRef.current) return;
       draggingRef.current = false;
-      document.body.classList.remove("gloom-dragging");
+      document.body.classList.remove("surge-dragging");
       document.removeEventListener("mousemove", handleDocumentMove);
       document.removeEventListener("mouseup", handleDocumentUp);
     };
@@ -137,7 +137,7 @@ export const WebBox = forwardRef<HTMLDivElement, Record<string, unknown> & { chi
       if (!hasSyntheticDrag && !hasDirectDrag) return;
       callMouseHandler(propsRef.current.onMouse, event, "down");
       draggingRef.current = true;
-      document.body.classList.add("gloom-dragging");
+      document.body.classList.add("surge-dragging");
       document.addEventListener("mousemove", handleDocumentMove);
       document.addEventListener("mouseup", handleDocumentUp);
     };
@@ -158,7 +158,7 @@ export const WebBox = forwardRef<HTMLDivElement, Record<string, unknown> & { chi
     return (
       <div
         {...cleanDomProps(props)}
-        data-gloom-hover-bg={hoverBackgroundColor ? "true" : undefined}
+        data-surge-hover-bg={hoverBackgroundColor ? "true" : undefined}
         ref={elementRef}
         onMouseDownCapture={typeof props.onMouseDownCapture === "function" ? handleMouseDownCapture : undefined}
         onMouseDown={handleMouseDown}
@@ -168,7 +168,7 @@ export const WebBox = forwardRef<HTMLDivElement, Record<string, unknown> & { chi
         onMouseOut={handleMouseOut}
         style={{
           ...commonStyle(props),
-          "--gloom-box-hover-bg": hoverBackgroundColor,
+          "--surge-box-hover-bg": hoverBackgroundColor,
           ...(props.style as CSSProperties | undefined),
           ...(props.visible === false ? { display: "none" } : undefined),
         } as CSSProperties}

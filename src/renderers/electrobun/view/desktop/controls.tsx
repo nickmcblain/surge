@@ -66,8 +66,8 @@ export function WebButton({
         event.stopPropagation();
         if (!event.repeat) onPress?.();
       }}
-      data-gloom-role="desktop-button"
-      data-gloom-interactive={disabled ? undefined : "true"}
+      data-surge-role="desktop-button"
+      data-surge-interactive={disabled ? undefined : "true"}
       style={{
         display: "inline-flex",
         flexShrink: 0,
@@ -144,8 +144,8 @@ export function WebCheckbox({
     <Box
       flexDirection="column"
       width={width}
-      data-gloom-role="desktop-checkbox"
-      data-gloom-interactive={disabled ? undefined : "true"}
+      data-surge-role="desktop-checkbox"
+      data-surge-interactive={disabled ? undefined : "true"}
       style={{ opacity: disabled ? 0.55 : 1 }}
     >
       <label
@@ -285,7 +285,7 @@ export function WebTextField({
           resolvedInputRef.current?.focus?.();
           void renderer.showContextMenu(editableTextContextMenuItems());
         }}
-        data-gloom-role="desktop-text-field"
+        data-surge-role="desktop-text-field"
         style={{
           border: plain ? "none" : `1px solid ${controlBorderColor(focused, false, colors)}`,
           borderRadius: plain ? 0 : CONTROL_RADIUS,
@@ -368,7 +368,7 @@ export function WebMessageComposer({
       height={height}
       backgroundColor={panelFill(colors)}
       onMouseDown={requestFocus}
-      data-gloom-role="desktop-message-composer"
+      data-surge-role="desktop-message-composer"
       style={{
         borderTop: `1px solid ${borderColor}`,
         overflow: "hidden",
@@ -445,7 +445,7 @@ export function WebSegmentedControl({
             onMouseDown={() => {
               if (!option.disabled) onChange?.(option.value);
             }}
-            data-gloom-interactive={option.disabled ? undefined : "true"}
+            data-surge-interactive={option.disabled ? undefined : "true"}
             role="radio"
             aria-checked={active}
             aria-disabled={option.disabled || undefined}
@@ -571,7 +571,7 @@ export function WebPageStackView({
             event.stopPropagation?.();
             onBack();
           }}
-          data-gloom-interactive="true"
+          data-surge-interactive="true"
           style={{
             border: `1px solid ${panelBorder(colors)}`,
             borderRadius: CONTROL_RADIUS,

@@ -163,7 +163,7 @@ describe("resolveBrowserAttribution", () => {
   test("a first touch forwarded by the website is adopted over inventing one", () => {
     const result = resolveBrowserAttribution({
       href:
-        "https://term.gloom.sh/?ticker=NVDA&_gloom=" +
+        "https://term.gloom.sh/?ticker=NVDA&_surge=" +
         ANON +
         "&first_touch_at=2026-09-08T09:00:00.000Z&first_touch_landing_page=%2Fcloud&first_touch_referrer=https%3A%2F%2Ft.co%2Fabc&first_touch_utm_source=x&first_touch_twclid=click_9",
       now: NOW,
@@ -253,28 +253,28 @@ describe("readStoredAttribution", () => {
 
 describe("desktop handoff", () => {
   test("carriesHandoff recognises ids, campaigns, and first touches only", () => {
-    expect(carriesHandoff("gloomberb://ticker/NVDA?tab=earnings-calls")).toBe(false);
-    expect(carriesHandoff(`gloomberb://cloud/success?_gloom=${ANON}`)).toBe(true);
-    expect(carriesHandoff("gloomberb://ticker/NVDA?utm_source=x")).toBe(true);
-    expect(carriesHandoff("gloomberb://ticker/NVDA?first_touch_at=2026-09-10T11:00:00.000Z")).toBe(true);
+    expect(carriesHandoff("surge://ticker/NVDA?tab=earnings-calls")).toBe(false);
+    expect(carriesHandoff(`surge://cloud/success?_surge=${ANON}`)).toBe(true);
+    expect(carriesHandoff("surge://ticker/NVDA?utm_source=x")).toBe(true);
+    expect(carriesHandoff("surge://ticker/NVDA?first_touch_at=2026-09-10T11:00:00.000Z")).toBe(true);
     expect(carriesHandoff("not a url")).toBe(false);
   });
 
   test("a plain deep link leaves storage untouched", () => {
     const storage = memoryStorage();
-    expect(adoptDesktopHandoff("gloomberb://ticker/NVDA?tab=chart", storage, NOW)).toBe(false);
+    expect(adoptDesktopHandoff("surge://ticker/NVDA?tab=chart", storage, NOW)).toBe(false);
     expect(storage.map.size).toBe(0);
   });
 
   test("a website link persists the visitor id and touches for later sign-in", () => {
     const storage = memoryStorage();
     const href =
-      `gloomberb://cloud/success?_gloom=${ANON}` +
+      `surge://cloud/success?_surge=${ANON}` +
       "&utm_source=x&utm_campaign=c1&twclid=click_1" +
       "&first_touch_at=2026-09-08T09:00:00.000Z&first_touch_landing_page=%2F&first_touch_referrer=https%3A%2F%2Ft.co%2Fabc";
     expect(adoptDesktopHandoff(href, storage, NOW)).toBe(true);
-    expect(storage.getItem("gloomberb.web.anonymous-id")).toBe(ANON);
-    expect(JSON.parse(storage.getItem("gloomberb.web.attribution")!)).toEqual({
+    expect(storage.getItem("surge.web.anonymous-id")).toBe(ANON);
+    expect(JSON.parse(storage.getItem("surge.web.attribution")!)).toEqual({
       first_touch_at: "2026-09-08T09:00:00.000Z",
       first_touch_landing_page: "/",
       first_touch_referrer: "https://t.co/abc",
@@ -287,8 +287,8 @@ describe("desktop handoff", () => {
 
   test("a campaign-only link without a forwarded first touch records the link as the first touch", () => {
     const storage = memoryStorage();
-    adoptDesktopHandoff("gloomberb://cloud/success?utm_source=x&twclid=click_1", storage, NOW);
-    const saved = JSON.parse(storage.getItem("gloomberb.web.attribution")!);
+    adoptDesktopHandoff("surge://cloud/success?utm_source=x&twclid=click_1", storage, NOW);
+    const saved = JSON.parse(storage.getItem("surge.web.attribution")!);
     expect(saved.first_touch_landing_page).toBe("cloud/success");
     expect(saved.first_touch_twclid).toBe("click_1");
     expect(saved.first_touch_referrer).toBeUndefined();
@@ -297,7 +297,7 @@ describe("desktop handoff", () => {
   test("observeDesktopDeepLinks inspects every link and still delivers it to the app", () => {
     const storage = memoryStorage();
     const listeners = new Set<(link: { url: string }) => void>();
-    const pending = [{ url: `gloomberb://cloud/success?_gloom=${ANON}&utm_source=x` }];
+    const pending = [{ url: `surge://cloud/success?_surge=${ANON}&utm_source=x` }];
     const bridge = {
       subscribe(listener: (link: { url: string }) => void) {
         listeners.add(listener);
@@ -307,9 +307,9 @@ describe("desktop handoff", () => {
     };
     const seen: string[] = [];
     const unsubscribe = observeDesktopDeepLinks(bridge, storage).subscribe((link) => seen.push(link.url));
-    for (const listener of listeners) listener({ url: "gloomberb://ticker/NVDA" });
-    expect(seen).toEqual([`gloomberb://cloud/success?_gloom=${ANON}&utm_source=x`, "gloomberb://ticker/NVDA"]);
-    expect(storage.getItem("gloomberb.web.anonymous-id")).toBe(ANON);
+    for (const listener of listeners) listener({ url: "surge://ticker/NVDA" });
+    expect(seen).toEqual([`surge://cloud/success?_surge=${ANON}&utm_source=x`, "surge://ticker/NVDA"]);
+    expect(storage.getItem("surge.web.anonymous-id")).toBe(ANON);
     unsubscribe();
     expect(listeners.size).toBe(0);
   });

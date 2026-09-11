@@ -14,7 +14,7 @@ export interface ModalSurfaceOptions {
 
 /**
  * Border, background and shadow for a floating panel on the DOM renderer,
- * matching the `.gloom-dialog` surface so the onboarding modal and the hosted
+ * matching the `.surge-dialog` surface so the onboarding modal and the hosted
  * terminal's sign-in gate sit at the same elevation as a real dialog.
  */
 export function modalSurfaceStyle(colors: ThemeColors, options: ModalSurfaceOptions = {}) {

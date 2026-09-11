@@ -251,7 +251,7 @@ describe("useQuoteStreaming", () => {
   test("inherits disabled streaming from a followed portfolio pane", async () => {
     let subscribeCalls = 0;
     let loadCalls = 0;
-    const config = createResearchTestConfig("/tmp/gloomberb-live-streaming-test");
+    const config = createResearchTestConfig("/tmp/surge-live-streaming-test");
     const portfolioPane = config.layout.instances.find((pane) => pane.instanceId === "portfolio-list:main");
     if (!portfolioPane) throw new Error("expected default portfolio pane");
     portfolioPane.settings = { ...portfolioPane.settings, liveStreaming: false };

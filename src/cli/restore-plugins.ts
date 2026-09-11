@@ -31,7 +31,7 @@ export async function restoreExtractedPlugins(): Promise<string[] | null> {
 
     await saveConfig({ ...config, seededPlugins: seeded });
     if (result.installed.length > 0) {
-      log.info(`Restored ${result.installed.join(", ")} into ~/.gloomberb/plugins`);
+      log.info(`Restored ${result.installed.join(", ")} into ~/.surge/plugins`);
     }
     return seeded;
   } catch (error) {

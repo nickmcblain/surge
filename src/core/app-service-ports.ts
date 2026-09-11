@@ -6,7 +6,7 @@ import type { MarketDataCoordinator } from "../market-data/coordinator";
 import type { PluginRegistry } from "../plugins/registry";
 import type { AppConfig } from "../types/config";
 import type { DataProvider } from "../types/data-provider";
-import type { GloomPlugin } from "../types/plugin";
+import type { SurgePlugin } from "../types/plugin";
 
 export type AppPluginStateStorePort = Pick<
   PluginStateStore,
@@ -40,7 +40,7 @@ export interface AppRuntimeServices {
 
 export interface AppServicesFactoryOptions {
   config: AppConfig;
-  plugins: readonly GloomPlugin[];
+  plugins: readonly SurgePlugin[];
 }
 
 export type AppServicesFactory = (options: AppServicesFactoryOptions) => AppRuntimeServices;

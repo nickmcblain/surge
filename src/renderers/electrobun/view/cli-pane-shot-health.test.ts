@@ -6,9 +6,9 @@ describe("CLI pane shot connection health", () => {
     const sources = createCliPaneShotConnectionHealth(1_000).getSnapshot().sources;
 
     expect(sources.map((source) => source.id)).toEqual([
-      "gloom-cloud-http",
-      "gloom-cloud-socket",
-      "gloom-cloud-fred",
+      "surge-cloud-http",
+      "surge-cloud-socket",
+      "surge-cloud-fred",
       "asset-data.yahoo",
     ]);
     expect(sources.map((source) => ({

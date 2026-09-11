@@ -51,7 +51,7 @@ export function TickerBadge({
       <Box
         paddingX={1}
         backgroundColor={backgroundColor}
-        data-gloom-context-menu-surface="true"
+        data-surge-context-menu-surface="true"
         onMouseOver={() => {
           onHoverStart?.();
         }}

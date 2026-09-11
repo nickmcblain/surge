@@ -8,7 +8,7 @@ import type { ReleaseInfo, UpdateCheckResult, UpdateProgress } from "../../../up
 import type { CapabilityManifest } from "../../../capabilities";
 import type { RemoteControlRequest, RemoteControlResponse } from "../../../remote/types";
 
-export const ELECTROBUN_CONTEXT_MENU_ACTION = "gloom.context-menu.select";
+export const ELECTROBUN_CONTEXT_MENU_ACTION = "surge.context-menu.select";
 
 export interface ElectrobunBackendInit {
   config: AppConfig;

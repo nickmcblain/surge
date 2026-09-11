@@ -16,7 +16,7 @@ export function EmptyState({ title, message, hint, actions, status = "empty" }: 
   const colors = useThemeColors();
   // Provider messages must wrap at narrow pane widths rather than lose their tail.
   return (
-    <Box flexDirection="column" data-gloom-status={status} data-gloom-ui="empty-state">
+    <Box flexDirection="column" data-surge-status={status} data-surge-ui="empty-state">
       <Box><Text fg={status === "error" ? colors.negative : colors.textDim} wrapText>{t(title)}</Text></Box>
       {message && <Box><Text fg={colors.textMuted} wrapText>{t(message)}</Text></Box>}
       {hint && <Box><Text fg={colors.textMuted} wrapText>{t(hint)}</Text></Box>}
@@ -34,7 +34,7 @@ export interface NoticeProps {
 export function Notice({ children, tone = "warning" }: NoticeProps) {
   const colors = useThemeColors();
   return (
-    <Box data-gloom-status={tone === "negative" ? "error" : "notice"} data-gloom-ui="notice">
+    <Box data-surge-status={tone === "negative" ? "error" : "notice"} data-surge-ui="notice">
       <Text fg={tone === "muted" ? colors.textDim : colors[tone]} wrapText>{children}</Text>
     </Box>
   );
@@ -94,8 +94,8 @@ export function PaneStatusBody({
       paddingY={1}
       alignItems={align === "center" ? "center" : undefined}
       justifyContent={align === "center" ? "center" : undefined}
-      data-gloom-status={status}
-      data-gloom-ui="pane-status"
+      data-surge-status={status}
+      data-surge-ui="pane-status"
     >
       {status === "loading" ? <Spinner label={loadingLabel ?? loadingText(subject)} /> : (
         <EmptyState

@@ -7,31 +7,31 @@
 #endif
 
 #ifndef SourceDir
-#define SourceDir "..\build\stable-win-x64\Gloomberb-inno-source\Gloomberb"
+#define SourceDir "..\build\stable-win-x64\Surge-inno-source\Surge"
 #endif
 
 [Setup]
 AppId={{D7B2304C-840B-4E5F-956A-3D1C66E67B35}
-AppName=Gloomberb
+AppName=Surge
 AppVersion={#AppVersion}
-AppPublisher=Gloomberb
-AppPublisherURL=https://gloom.sh
-AppSupportURL=https://github.com/gloom-sh/gloomberb/issues
-AppUpdatesURL=https://github.com/gloom-sh/gloomberb/releases
-DefaultDirName={localappdata}\Programs\Gloomberb
-DefaultGroupName=Gloomberb
+AppPublisher=Surge
+AppPublisherURL=https://github.com/nickmc-lumion/surge
+AppSupportURL=https://github.com/nickmc-lumion/surge/issues
+AppUpdatesURL=https://github.com/nickmc-lumion/surge/releases
+DefaultDirName={localappdata}\Programs\Surge
+DefaultGroupName=Surge
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 AppendDefaultDirName=no
 OutputDir={#OutputDir}
-OutputBaseFilename=GloomberbSetup
+OutputBaseFilename=SurgeSetup
 Compression=lzma2
 SolidCompression=yes
 SetupLogging=yes
-SetupIconFile={#SourceDir}\Resources\gloomberb-logo.ico
-UninstallDisplayIcon={app}\Resources\gloomberb-logo.ico
+SetupIconFile={#SourceDir}\Resources\surge-logo.ico
+UninstallDisplayIcon={app}\Resources\surge-logo.ico
 WizardStyle=modern
 ChangesEnvironment=yes
 
@@ -42,11 +42,11 @@ Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription:
 Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\Gloomberb"; Filename: "{app}\bin\launcher.exe"; WorkingDir: "{app}\bin"; IconFilename: "{app}\Resources\gloomberb-logo.ico"
-Name: "{autodesktop}\Gloomberb"; Filename: "{app}\bin\launcher.exe"; WorkingDir: "{app}\bin"; IconFilename: "{app}\Resources\gloomberb-logo.ico"; Tasks: desktopicon
+Name: "{autoprograms}\Surge"; Filename: "{app}\bin\launcher.exe"; WorkingDir: "{app}\bin"; IconFilename: "{app}\Resources\surge-logo.ico"
+Name: "{autodesktop}\Surge"; Filename: "{app}\bin\launcher.exe"; WorkingDir: "{app}\bin"; IconFilename: "{app}\Resources\surge-logo.ico"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\bin\launcher.exe"; Description: "Launch Gloomberb"; Flags: nowait postinstall skipifsilent; WorkingDir: "{app}\bin"
+Filename: "{app}\bin\launcher.exe"; Description: "Launch Surge"; Flags: nowait postinstall skipifsilent; WorkingDir: "{app}\bin"
 
 [Code]
 const

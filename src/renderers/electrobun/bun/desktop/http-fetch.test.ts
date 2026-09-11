@@ -1,21 +1,21 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import {
   connectionHealth,
-  registerGloomCloudConnectionSources,
+  registerSurgeCloudConnectionSources,
 } from "../../../../core/connection-health";
 import { handleHttpFetch } from "./http-fetch";
 
 let server: ReturnType<typeof Bun.serve> | null = null;
 let disposeConnections: (() => void) | null = null;
-const originalApiUrl = process.env.GLOOMBERB_API_URL;
+const originalApiUrl = process.env.SURGE_API_URL;
 
 afterEach(() => {
   server?.stop(true);
   server = null;
   disposeConnections?.();
   disposeConnections = null;
-  if (originalApiUrl === undefined) delete process.env.GLOOMBERB_API_URL;
-  else process.env.GLOOMBERB_API_URL = originalApiUrl;
+  if (originalApiUrl === undefined) delete process.env.SURGE_API_URL;
+  else process.env.SURGE_API_URL = originalApiUrl;
 });
 
 describe("handleHttpFetch", () => {
@@ -50,13 +50,13 @@ describe("handleHttpFetch", () => {
     expect(response.setCookie).toEqual(["substack.sid=sid123; Path=/; HttpOnly"]);
   });
 
-  test("reports proxied Gloom FRED requests in the backend registry", async () => {
+  test("reports proxied Surge FRED requests in the backend registry", async () => {
     server = Bun.serve({
       port: 0,
       fetch: () => Response.json({ observations: [], info: null }),
     });
-    process.env.GLOOMBERB_API_URL = server.url.origin;
-    disposeConnections = registerGloomCloudConnectionSources(connectionHealth);
+    process.env.SURGE_API_URL = server.url.origin;
+    disposeConnections = registerSurgeCloudConnectionSources(connectionHealth);
 
     await handleHttpFetch({
       url: new URL("/cloud/econ/series/VIXCLS", server.url).toString(),
@@ -67,9 +67,9 @@ describe("handleHttpFetch", () => {
       status: source.status,
       operation: source.lastOperation,
     }))).toEqual([
-      { id: "gloom-cloud-http", status: "connected", operation: "GET /cloud/econ/series/VIXCLS" },
-      { id: "gloom-cloud-socket", status: "idle", operation: null },
-      { id: "gloom-cloud-fred", status: "connected", operation: "GET /cloud/econ/series/VIXCLS" },
+      { id: "surge-cloud-http", status: "connected", operation: "GET /cloud/econ/series/VIXCLS" },
+      { id: "surge-cloud-socket", status: "idle", operation: null },
+      { id: "surge-cloud-fred", status: "connected", operation: "GET /cloud/econ/series/VIXCLS" },
     ]);
   });
 

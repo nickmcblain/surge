@@ -28,7 +28,7 @@ function fixture() {
       },
     }),
     apiClient: {} as HeadlessPaneContext["apiClient"],
-    config: createDefaultConfig("/tmp/gloom-headless-chart"),
+    config: createDefaultConfig("/tmp/surge-headless-chart"),
     signal: new AbortController().signal,
     settings: { chartSpec: spec },
   };

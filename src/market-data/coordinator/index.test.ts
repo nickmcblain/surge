@@ -53,7 +53,7 @@ describe("MarketDataCoordinator", () => {
       getTickerFinancials: async () => ({
         quote: {
           symbol: "AAPL",
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           price: 189.12,
           currency: "USD",
           change: 2.1,
@@ -373,7 +373,7 @@ describe("MarketDataCoordinator", () => {
       { symbol: "MSFT", exchange: "NASDAQ" },
       {
         symbol: "MSFT",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 412.5,
         currency: "USD",
         change: 3.2,
@@ -393,7 +393,7 @@ describe("MarketDataCoordinator", () => {
         {
           quote: {
             symbol: "VICR",
-            providerId: "gloomberb-cloud",
+            providerId: "surge-cloud",
             price: 292.83,
             currency: "USD",
             previousClose: 282.95,
@@ -404,9 +404,9 @@ describe("MarketDataCoordinator", () => {
             dataSource: "live",
           },
           quoteContributions: {
-            "gloomberb-cloud": {
+            "surge-cloud": {
               symbol: "VICR",
-              providerId: "gloomberb-cloud",
+              providerId: "surge-cloud",
               price: 292.83,
               currency: "USD",
               previousClose: 380.07,
@@ -468,7 +468,7 @@ describe("MarketDataCoordinator", () => {
       },
       {
         symbol: "VICR",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 293.07,
         currency: "USD",
         previousClose: 380.07,
@@ -494,7 +494,7 @@ describe("MarketDataCoordinator", () => {
         {
           quote: {
             symbol: "VICR",
-            providerId: "gloomberb-cloud",
+            providerId: "surge-cloud",
             price: 292.83,
             currency: "USD",
             previousClose: 282.95,
@@ -505,9 +505,9 @@ describe("MarketDataCoordinator", () => {
             dataSource: "live",
           },
           quoteContributions: {
-            "gloomberb-cloud": {
+            "surge-cloud": {
               symbol: "VICR",
-              providerId: "gloomberb-cloud",
+              providerId: "surge-cloud",
               price: 292.83,
               currency: "USD",
               previousClose: 380.07,
@@ -539,7 +539,7 @@ describe("MarketDataCoordinator", () => {
         target,
         quote: {
           symbol: target.symbol,
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           price: 293.07,
           currency: "USD",
           previousClose: 380.07,
@@ -676,7 +676,7 @@ describe("MarketDataCoordinator", () => {
       },
       {
         symbol: "AAPL",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 103.5,
         currency: "USD",
         change: 2.5,
@@ -711,7 +711,7 @@ describe("MarketDataCoordinator", () => {
       }),
       getQuote: async () => ({
         symbol: "IQE",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 24.5,
         currency: "GBP",
         change: -2.1,
@@ -764,7 +764,7 @@ describe("MarketDataCoordinator", () => {
       { symbol: "IQE", exchange: "LSE" },
       {
         symbol: "IQE",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 24.5,
         currency: "GBP",
         change: -2.1,
@@ -819,7 +819,7 @@ describe("MarketDataCoordinator", () => {
         { symbol: "HY9H", exchange: "FWB2" },
         {
           symbol: "HY9H",
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           dataSource: "delayed",
           price: 528,
           currency: "EUR",
@@ -863,7 +863,7 @@ describe("MarketDataCoordinator", () => {
         { symbol: "2337", exchange: "TWSE" },
         {
           symbol: "2337",
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           dataSource: "delayed",
           price: 150,
           currency: "TWD",
@@ -1044,7 +1044,7 @@ describe("MarketDataCoordinator", () => {
             lastUpdated: Date.parse("2026-05-08T06:24:00Z"),
             marketState: "CLOSED",
             listingExchangeName: "JPX",
-            providerId: "gloomberb-cloud",
+            providerId: "surge-cloud",
           },
           annualStatements: [],
           quarterlyStatements: [],

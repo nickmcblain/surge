@@ -43,7 +43,7 @@ export function OnboardingModal({
         <Box
           flexDirection="column"
           style={modalSurfaceStyle(colors)}
-          data-gloom-role="onboarding-modal"
+          data-surge-role="onboarding-modal"
         >
           {children}
         </Box>
@@ -81,7 +81,7 @@ export function OnboardingModal({
         backgroundColor={colors.panel}
         borderStyle="single"
         borderColor={colors.borderFocused}
-        data-gloom-role="onboarding-modal"
+        data-surge-role="onboarding-modal"
       >
         {children}
       </Box>
@@ -122,7 +122,7 @@ export function OnboardingCoach({
           boxShadow: `0 14px 34px color-mix(in srgb, ${colors.bg} 42%, transparent), inset 0 1px 0 color-mix(in srgb, ${colors.textBright} 5%, transparent)`,
           boxSizing: "border-box",
         }}
-        data-gloom-role="onboarding-coach"
+        data-surge-role="onboarding-coach"
       >
         <Text
           fg={colors.borderFocused}
@@ -164,7 +164,7 @@ export function OnboardingCoach({
       backgroundColor={colors.panel}
       borderStyle="single"
       borderColor={colors.borderFocused}
-      data-gloom-role="onboarding-coach"
+      data-surge-role="onboarding-coach"
     >
       <Box height={1} flexDirection="row">
         <Text fg={colors.borderFocused} attributes={TextAttributes.BOLD}>{step}</Text>
@@ -279,14 +279,14 @@ export function OnboardingHeader({
   const desktop = useUiHost().kind === "desktop-web";
   const sections: Array<{ id: OnboardingSectionId; label: string }> = [
     { id: "portfolio", label: t("Portfolio") },
-    { id: "cloud", label: t("Gloom Cloud") },
+    { id: "cloud", label: t("Surge Cloud") },
     { id: "pro", label: t("Pro") },
   ];
 
   if (!desktop) {
     return (
       <Box height={1} flexDirection="row" justifyContent="space-between">
-        <Text fg={colors.textMuted}>{t("GLOOMBERB SETUP")}</Text>
+        <Text fg={colors.textMuted}>{t("SURGE SETUP")}</Text>
         {showDismiss ? (
           <Button
             label={dismissing ? "Closing..." : "Skip setup"}
@@ -319,7 +319,7 @@ export function OnboardingHeader({
           />
         ) : (
           <Text fg={colors.textMuted} attributes={TextAttributes.BOLD}>
-            {t("GLOOMBERB SETUP")}
+            {t("SURGE SETUP")}
           </Text>
         )}
       </Box>

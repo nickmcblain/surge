@@ -37,7 +37,7 @@ describe("PaneContent", () => {
 
   test("rerenders legacy pane colors when the theme preview changes", async () => {
     const config = {
-      ...createDefaultConfig("/tmp/gloomberb-test"),
+      ...createDefaultConfig("/tmp/surge-test"),
       theme: "amber",
     };
 
@@ -71,7 +71,7 @@ describe("PaneContent", () => {
   });
 
   test("rerenders pane bodies when the app language changes", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-language-test");
+    const config = createDefaultConfig("/tmp/surge-language-test");
 
     testSetup = await testRender(
       <AppProvider config={config}>

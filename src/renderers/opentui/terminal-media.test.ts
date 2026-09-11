@@ -7,7 +7,7 @@ import { createTerminalMediaReaper, type TerminalMediaChild } from "./terminal-m
 const dirs: string[] = [];
 
 function stateFile(): string {
-  const dir = mkdtempSync(join(tmpdir(), "gloom-media-"));
+  const dir = mkdtempSync(join(tmpdir(), "surge-media-"));
   dirs.push(dir);
   return join(dir, "terminal-media.pid");
 }

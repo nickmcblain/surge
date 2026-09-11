@@ -1,16 +1,16 @@
 import type { ElectrobunConfig } from "electrobun/bun";
 import pkg from "./package.json";
 
-const RELEASE_BASE_URL = "https://github.com/gloom-sh/gloomberb/releases/latest/download";
+const RELEASE_BASE_URL = "https://github.com/nickmc-lumion/surge/releases/latest/download";
 const GENERATE_RELEASE_PATCH = process.platform !== "win32";
 
 const config: ElectrobunConfig = {
   app: {
-    name: "Gloomberb",
-    identifier: "com.vincelwt.gloomberb",
+    name: "Surge",
+    identifier: "dev.surge.terminal",
     version: pkg.version,
     description: pkg.description,
-    urlSchemes: ["gloomberb"],
+    urlSchemes: ["surge"],
   },
   build: {
     bun: {
@@ -44,7 +44,7 @@ const config: ElectrobunConfig = {
     win: {
       bundleCEF: true,
       defaultRenderer: "cef",
-      icon: "src/assets/gloomberb-logo-windows.ico",
+      icon: "src/assets/surge-logo-windows.ico",
     },
   },
   scripts: {

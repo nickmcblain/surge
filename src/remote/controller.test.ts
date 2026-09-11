@@ -9,7 +9,7 @@ import type { RemoteUiRegistry } from "./semantic-tree";
 
 function createRegistryHarness(options: { withFloatingPane?: boolean } = {}) {
   const config = {
-    ...createDefaultConfig("/tmp/gloom-remote-controller"),
+    ...createDefaultConfig("/tmp/surge-remote-controller"),
     onboardingComplete: true,
   };
   if (options.withFloatingPane) {
@@ -119,7 +119,7 @@ describe("createAppRemoteController", () => {
       expect(data.resources.some((resource) => resource.uri === "ui://tree")).toBe(true);
       expect(data.operations.some((operation) => operation.id === "ui.invoke")).toBe(true);
       expect(data.help).toMatchObject({
-        title: "Gloomberb remote control guide",
+        title: "Surge remote control guide",
       });
     }
 

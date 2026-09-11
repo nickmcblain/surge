@@ -72,7 +72,7 @@ export function TableViewFrame({
       maxHeight={nativeFlexibleFrame ? "100%" : undefined}
       backgroundColor={backgroundColor}
       overflow="hidden"
-      data-gloom-role="table-view-frame"
+      data-surge-role="table-view-frame"
     >
       {before}
       {children}

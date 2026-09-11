@@ -24,9 +24,9 @@ import type {
   CommandBarSearchProvider,
   CommandDef,
   CustomColumnDef,
-  GloomPlugin,
-  GloomPluginContext,
-  GloomSlots,
+  SurgePlugin,
+  SurgePluginContext,
+  SurgeSlots,
   KeyboardShortcut,
   PaneDef,
   PaneTemplateCreateOptions,
@@ -84,7 +84,7 @@ export {
 export class PluginRegistry implements PluginRuntimeAccess {
   private slots = new RegistrySlots();
   private readonly contributions: RegistryContributions;
-  private plugins = new Map<string, GloomPlugin>();
+  private plugins = new Map<string, SurgePlugin>();
   private readonly resumeStateListeners = new RegistryResumeStateListeners();
 
   readonly events: EventBus;
@@ -254,7 +254,7 @@ export class PluginRegistry implements PluginRuntimeAccess {
   get tickerResearchTabs(): ReadonlyMap<string, TickerResearchTabDef> { return this.contributions.tickerResearchTabsMap; }
   get shortcuts(): ReadonlyMap<string, KeyboardShortcut> { return this.contributions.shortcutsMap; }
   get tickerActions(): ReadonlyMap<string, TickerAction> { return this.contributions.tickerActionsMap; }
-  get allPlugins(): ReadonlyMap<string, GloomPlugin> { return this.plugins; }
+  get allPlugins(): ReadonlyMap<string, SurgePlugin> { return this.plugins; }
 
   getContextMenuItems(context: ContextMenuContext): ContextMenuItem[] {
     return resolveRegistryContextMenuItems({
@@ -297,7 +297,7 @@ export class PluginRegistry implements PluginRuntimeAccess {
 
   notify = (notification: AppNotificationRequest): AppNotificationDelivery | void => this.notifyFn(notification);
 
-  renderSlot<K extends keyof GloomSlots>(name: K, props: GloomSlots[K]): ReactNode {
+  renderSlot<K extends keyof SurgeSlots>(name: K, props: SurgeSlots[K]): ReactNode {
     return this.slots.render(name, props);
   }
 
@@ -433,7 +433,7 @@ export class PluginRegistry implements PluginRuntimeAccess {
     }
   }
 
-  private createContext(pluginId: string): GloomPluginContext {
+  private createContext(pluginId: string): SurgePluginContext {
     const contributions = this.contributions;
     const items = contributions.getOrCreatePluginItems(pluginId);
     return {
@@ -510,7 +510,7 @@ export class PluginRegistry implements PluginRuntimeAccess {
 
   private registryLog = debugLog.createLogger("registry");
 
-  async register(plugin: GloomPlugin): Promise<void> {
+  async register(plugin: SurgePlugin): Promise<void> {
     this.registryLog.info(`Registering plugin: ${plugin.id} v${plugin.version ?? "?"}`);
     if (isReservedBuiltinPluginId(plugin.id)) {
       throw new Error(`Plugin id is reserved by a built-in module: ${plugin.id}`);

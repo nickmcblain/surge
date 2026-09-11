@@ -375,7 +375,7 @@ export class ProviderRouterHistoryRoutes {
       sourceKeys,
       false,
     ).filter((record) => {
-      const unverifiedAllInterval = ["provider:yahoo", "provider:gloomberb-cloud"].includes(record.sourceKey)
+      const unverifiedAllInterval = ["provider:yahoo", "provider:surge-cloud"].includes(record.sourceKey)
         && /(?:^|;)range=ALL(?:;|$)/.test(record.variantKey)
         && !/(?:^|;)granularity=1(?:;|$)/.test(record.variantKey);
       if (unverifiedAllInterval) return false;

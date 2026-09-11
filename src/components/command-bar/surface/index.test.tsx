@@ -202,7 +202,7 @@ describe("CommandBar", () => {
           id: "account-management-pane",
           paneId: "account-management",
           label: "Account Management",
-          description: "Edit your Gloom Cloud profile, password, and public portfolio sharing settings",
+          description: "Edit your Surge Cloud profile, password, and public portfolio sharing settings",
           keywords: ["account", "profile", "cloud", "acm", "password", "settings"],
           shortcut: { prefix: "ACM" },
         });

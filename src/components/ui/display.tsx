@@ -18,7 +18,7 @@ export interface SectionHeadingProps {
 export function SectionHeading({ title, marginTop = 0, width, wrap = false }: SectionHeadingProps) {
   const colors = useThemeColors();
   return (
-    <Box height={wrap ? undefined : 1} marginTop={marginTop} width={width} overflow="hidden" data-gloom-ui="section-heading">
+    <Box height={wrap ? undefined : 1} marginTop={marginTop} width={width} overflow="hidden" data-surge-ui="section-heading">
       <Text fg={colors.textDim} attributes={TextAttributes.BOLD} wrapText={wrap}>
         {wrap || width === undefined ? t(title) : truncateToDisplayWidth(t(title), width)}
       </Text>
@@ -32,7 +32,7 @@ export interface SectionProps extends SectionHeadingProps {
 
 export function Section({ title, children, width, marginTop = 1, wrap }: SectionProps) {
   return (
-    <Box flexDirection="column" width={width} marginTop={marginTop} data-gloom-ui="section">
+    <Box flexDirection="column" width={width} marginTop={marginTop} data-surge-ui="section">
       <SectionHeading title={title} width={width} wrap={wrap} />
       {children}
     </Box>
@@ -61,7 +61,7 @@ export function KeyValueRow({ label, value, detail, color, width, labelWidth, em
     : availableWidth;
   const detailWidth = availableWidth === undefined ? undefined : availableWidth - valueWidth!;
   return (
-    <Box height={1} width={rowWidth} flexDirection="row" overflow="hidden" data-gloom-ui="key-value-row">
+    <Box height={1} width={rowWidth} flexDirection="row" overflow="hidden" data-surge-ui="key-value-row">
       <Box width={labelColumns} flexShrink={0} overflow="hidden">
         <Text fg={colors.textDim}>{t(label)}</Text>
       </Box>
@@ -93,7 +93,7 @@ export function Badge({ label, tone = "neutral", color, variant = "subtle" }: Ba
   const solid = variant === "solid";
   const neutral = solid && tone === "neutral" && !color;
   return (
-    <Box height={1} paddingX={1} backgroundColor={neutral ? colors.selected : solid ? accent : blendHex(colors.bg, accent, 0.28)} data-gloom-ui="badge">
+    <Box height={1} paddingX={1} backgroundColor={neutral ? colors.selected : solid ? accent : blendHex(colors.bg, accent, 0.28)} data-surge-ui="badge">
       <Text fg={neutral ? colors.selectedText : solid ? colors.bg : accent} attributes={TextAttributes.BOLD}>{t(label)}</Text>
     </Box>
   );
@@ -118,7 +118,7 @@ export function Divider({ width, height, orientation = "horizontal" }: DividerPr
       borderColor={colors.border}
       style={{ border: 0, [vertical ? "borderLeft" : "borderTop"]: `1px solid ${colors.border}` }}
       role="separator"
-      data-gloom-ui="divider"
+      data-surge-ui="divider"
     />
   );
 }

@@ -42,7 +42,7 @@ async function renderSettled() {
 
 describe("AppLanguageConfigObserver", () => {
   test("tracks language changes from config replacement and desktop hydration", async () => {
-    const config = { ...createDefaultConfig("/tmp/gloomberb-language-observer"), language: "en" as const };
+    const config = { ...createDefaultConfig("/tmp/surge-language-observer"), language: "en" as const };
     testSetup = await testRender(
       <AppProvider config={config}>
         <AppLanguageConfigObserver />

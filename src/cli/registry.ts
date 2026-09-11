@@ -3,7 +3,7 @@ import type {
   CliCommandContext,
   CliCommandDef,
   CliDispatchResult,
-  GloomPlugin,
+  SurgePlugin,
 } from "../types/plugin";
 import type { LoadedExternalPlugin } from "../plugins/loader";
 import { getPluginCatalog } from "../plugins/catalog";
@@ -32,7 +32,7 @@ export interface CliCommandRegistry {
   commands: RegisteredCliCommand[];
   lookup: ReadonlyMap<string, RegisteredCliCommand>;
   config: AppConfig | null;
-  plugins: GloomPlugin[];
+  plugins: SurgePlugin[];
   externalPlugins: LoadedExternalPlugin[];
 }
 
@@ -91,10 +91,10 @@ function renderHelpSections(registry: CliCommandRegistry): string[] {
 
 export function renderCliHelp(registry: CliCommandRegistry, version: string): string {
   const lines = [
-    `${cliStyles.bold(`gloomberb v${version}`)}\n${cliStyles.muted("Market research and portfolio tracker for the terminal")}`,
+    `${cliStyles.bold(`surge v${version}`)}\n${cliStyles.muted("Market research and portfolio tracker for the terminal")}`,
     "",
     renderSection("Usage"),
-    "gloomberb [command]",
+    "surge [command]",
     "",
     renderSection("Commands"),
     renderTable(
@@ -156,7 +156,7 @@ export function buildCliCommandRegistry({
     registerCommand(command, "core", "core");
   }
 
-  const loadablePlugins: GloomPlugin[] = [];
+  const loadablePlugins: SurgePlugin[] = [];
   for (const entry of catalog) {
     if (entry.error) {
       registryLog.warn(`Skipping external plugin "${entry.plugin.id}" for CLI registration.`, {
@@ -194,7 +194,7 @@ export function buildCliCommandRegistry({
 
 export function createCliCommandContext(
   ownerId: string,
-  registryOrPlugins: Pick<CliCommandRegistry, "plugins" | "externalPlugins"> | GloomPlugin[],
+  registryOrPlugins: Pick<CliCommandRegistry, "plugins" | "externalPlugins"> | SurgePlugin[],
   cliOptions: CliGlobalOptions = DEFAULT_CLI_OPTIONS,
 ): CliCommandContext {
   const registry = Array.isArray(registryOrPlugins)

@@ -24,7 +24,7 @@ function createTicker(symbol: string, exchange = "NASDAQ"): TickerRecord {
 
 describe("session persistence", () => {
   test("builds a working-set snapshot from runtime state", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const tickers = new Map<string, TickerRecord>([
       ["AAPL", createTicker("AAPL")],
       ["MSFT", createTicker("MSFT")],
@@ -78,7 +78,7 @@ describe("session persistence", () => {
   });
 
   test("reconciles pane state and broker references against the current config", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     config.brokerInstances.push({
       id: "ibkr-live",
       brokerType: "ibkr",

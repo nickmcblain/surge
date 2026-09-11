@@ -107,7 +107,7 @@ function buildInitializationPayload(
 }
 
 async function resolveDesktopDataDir(): Promise<string> {
-  const dataDir = await getDataDir() ?? join(process.env.HOME || homedir(), ".gloomberb");
+  const dataDir = await getDataDir() ?? join(process.env.HOME || homedir(), ".surge");
   if (!existsSync(dataDir)) {
     mkdirSync(dataDir, { recursive: true });
   }

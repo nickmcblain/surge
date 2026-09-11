@@ -72,7 +72,7 @@ export function WebTabs({
     const cleanup = () => {
       document.removeEventListener("mousemove", handleMove);
       document.removeEventListener("mouseup", handleUp);
-      document.body.classList.remove("gloom-dragging");
+      document.body.classList.remove("surge-dragging");
       dragCleanupRef.current = null;
       dragOffsetXRef.current = 0;
       dragSourceWidthRef.current = 0;
@@ -86,7 +86,7 @@ export function WebTabs({
       moveEvent.preventDefault();
       dragOffsetXRef.current = offsetX;
       sourceElement.style.transform = `translateX(${offsetX}px) scale(1.03)`;
-      document.body.classList.add("gloom-dragging");
+      document.body.classList.add("surge-dragging");
       setDragTargetValue(resolveTarget(sourceBounds.left + offsetX + sourceBounds.width / 2));
     };
     const handleUp = (upEvent: MouseEvent) => {
@@ -138,7 +138,7 @@ export function WebTabs({
   return (
     <div
       ref={tabListRef}
-      data-gloom-role="tab-list"
+      data-surge-role="tab-list"
       role="tablist"
       onWheel={handleWheel}
       style={{
@@ -217,7 +217,7 @@ export function WebTabs({
           <button
             key={tab.value}
             ref={active ? activeTabRef : undefined}
-            data-gloom-role="tab-button"
+            data-surge-role="tab-button"
             data-active={active ? "true" : undefined}
             data-reorderable={reorderable ? "true" : undefined}
             data-tab-value={tab.value}
@@ -251,7 +251,7 @@ export function WebTabs({
             } : undefined}
           >
             <span
-              data-gloom-role="tab-label"
+              data-surge-role="tab-label"
               style={{
                 display: "block",
                 overflow: "hidden",
@@ -262,7 +262,7 @@ export function WebTabs({
             </span>
             {closeVisible && (
               <span
-                data-gloom-role="tab-close"
+                data-surge-role="tab-close"
                 aria-label={`Close ${tab.label}`}
                 role="button"
                 style={{
@@ -288,7 +288,7 @@ export function WebTabs({
             )}
             {showUnderline && (
               <span
-                data-gloom-role="tab-underline"
+                data-surge-role="tab-underline"
                 aria-hidden="true"
                 style={{
                   position: "absolute",
@@ -307,7 +307,7 @@ export function WebTabs({
       })}
       {onAdd && (
         <button
-          data-gloom-role="tab-button"
+          data-surge-role="tab-button"
           type="button"
           style={{
             "--tab-fg": palette.addFg,
@@ -340,7 +340,7 @@ export function WebTabs({
           onClick={onAdd}
         >
           <span
-            data-gloom-role="tab-label"
+            data-surge-role="tab-label"
             style={{
               display: "block",
             }}

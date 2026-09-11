@@ -81,7 +81,7 @@ function SegmentView({ segment }: { segment: PaneFooterSegment }) {
       attributes={attributes}
       onMouseDown={interactive ? startSegmentPress : undefined}
       onMouseUp={interactive ? finishSegmentPress : undefined}
-      {...(interactive ? { "data-gloom-interactive": "true" } : {})}
+      {...(interactive ? { "data-surge-interactive": "true" } : {})}
     >
       {segment.parts.map((part, index) => (
         <Span
@@ -124,7 +124,7 @@ function HintView({ hint, prefixSpace }: { hint: PaneHint; prefixSpace: boolean 
       label={hint.label}
       prefix={prefixSpace ? " " : ""}
       disabled={hint.disabled}
-      dataGloomRole="pane-hint"
+      dataSurgeRole="pane-hint"
       onPress={hint.onPress}
     />
   );
@@ -237,7 +237,7 @@ export function PaneFooterBar({
         paddingLeft={1}
         paddingRight={rightPadding}
         alignItems="center"
-        data-gloom-role="pane-footer"
+        data-surge-role="pane-footer"
         data-focused={focused ? "true" : "false"}
         data-empty={empty ? "true" : "false"}
         style={{
@@ -260,7 +260,7 @@ export function PaneFooterBar({
   if (focused || showBorder) {
     const contentWidth = Math.max(0, Math.floor(width) - 1 - reservedRight - (reservedRight > 0 ? 0 : 1));
     return (
-      <Box height={1} width={width} flexDirection="row" data-gloom-role="pane-footer" data-focused={focused ? "true" : "false"} data-empty={empty ? "true" : "false"}>
+      <Box height={1} width={width} flexDirection="row" data-surge-role="pane-footer" data-focused={focused ? "true" : "false"} data-empty={empty ? "true" : "false"}>
         <Text fg={borderColor} selectable={false}>└</Text>
         <Box width={contentWidth} height={1} overflow="hidden">
           {empty
@@ -274,7 +274,7 @@ export function PaneFooterBar({
 
   const contentWidth = Math.max(0, Math.floor(width) - reservedRight);
   return (
-    <Box height={1} width={width} flexDirection="row" data-gloom-role="pane-footer" data-focused="false" data-empty={empty ? "true" : "false"}>
+    <Box height={1} width={width} flexDirection="row" data-surge-role="pane-footer" data-focused="false" data-empty={empty ? "true" : "false"}>
       <Box width={contentWidth} height={1} overflow="hidden">
         <FooterContent footer={resolvedFooter} focused={false} width={contentWidth} />
       </Box>

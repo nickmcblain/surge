@@ -1,7 +1,7 @@
 import { Children, isValidElement, type ReactElement } from "react";
 import { describe, expect, test } from "bun:test";
 import type { BrokerAdapter } from "../../types/broker";
-import type { GloomPluginContext } from "../../types/plugin";
+import type { SurgePluginContext } from "../../types/plugin";
 import {
   composeBuiltinPlugin,
   type PluginModule,
@@ -11,8 +11,8 @@ function broker(id: string): BrokerAdapter {
   return { id } as BrokerAdapter;
 }
 
-function context(registerBroker: (value: BrokerAdapter) => void = () => {}): GloomPluginContext {
-  return { registerBroker } as GloomPluginContext;
+function context(registerBroker: (value: BrokerAdapter) => void = () => {}): SurgePluginContext {
+  return { registerBroker } as SurgePluginContext;
 }
 
 describe("composeBuiltinPlugin", () => {

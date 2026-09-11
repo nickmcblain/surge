@@ -61,7 +61,7 @@ export function DesktopDialogSurface({
             event.preventDefault?.();
             dismiss();
           }}
-          data-gloom-interactive="true"
+          data-surge-interactive="true"
           style={{
             borderRadius: 6,
             cursor: "pointer",
@@ -97,7 +97,7 @@ function DesktopSwitch({
         event.preventDefault?.();
         onChange(!checked);
       }}
-      data-gloom-interactive="true"
+      data-surge-interactive="true"
       style={{
         border: `1px solid ${checked ? colors.borderFocused : colors.border}`,
         borderRadius: 999,
@@ -209,7 +209,7 @@ function DesktopSettingsRow({
         if (isToggle) onApply(field, currentValue !== true);
         else onEdit();
       }}
-      data-gloom-interactive={field.type === "select" || disabled ? undefined : "true"}
+      data-surge-interactive={field.type === "select" || disabled ? undefined : "true"}
       style={{
         borderRadius: 6,
         cursor: field.type === "select" || disabled ? "default" : "pointer",

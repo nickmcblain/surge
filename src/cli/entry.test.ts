@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 test("packaged UI launches restore once before loading the TUI catalog; headless commands do not restore", async () => {
   const root = join(import.meta.dir, "../..");
-  const directory = await mkdtemp(join(tmpdir(), "gloom-cli-entry-"));
+  const directory = await mkdtemp(join(tmpdir(), "surge-cli-entry-"));
   const preload = join(directory, "preload.ts");
   const modulePath = (path: string) => JSON.stringify(join(root, "src", path));
   try {
@@ -31,7 +31,7 @@ test("packaged UI launches restore once before loading the TUI catalog; headless
       process.on("beforeExit", () => console.log(JSON.stringify(calls)));
     `);
     for (const args of [[], ["ui"], ["launch-ui", "TV"], ["handoff"], ["help"]]) {
-      const child = Bun.spawn([process.execPath, "--preload", preload, join(root, "bin/gloomberb"), ...args], {
+      const child = Bun.spawn([process.execPath, "--preload", preload, join(root, "bin/surge"), ...args], {
         cwd: root, stdout: "pipe", stderr: "pipe",
       });
       const [stdout, stderr, status] = await Promise.all([

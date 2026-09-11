@@ -4,7 +4,7 @@ import { PLUGIN_HOST_GLOBAL, SHARED_SPECIFIERS } from "./host-contract";
  * Publishes the host's shared modules for compiled plugin bundles to read.
  *
  * Browser-context renderers load plugins as separate ES modules, so the bundler
- * rewrites their `react` and `gloomberb/*` imports to read from this registry
+ * rewrites their `react` and `surge/*` imports to read from this registry
  * (see `bundle.ts`). This must run before any plugin bundle is imported, and
  * the modules here must be the same instances the app itself uses — importing
  * them normally is what guarantees that.
@@ -49,17 +49,17 @@ export async function installPluginHostModules(): Promise<void> {
     "react": react,
     "react/jsx-runtime": jsxRuntime,
     "react/jsx-dev-runtime": jsxRuntime,
-    "gloomberb/types/plugin": typesPlugin,
-    "gloomberb/types/persistence": typesPersistence,
-    "gloomberb/ui": ui,
-    "gloomberb/components": components,
-    "gloomberb/theme": theme,
-    "gloomberb/capabilities": capabilities,
-    "gloomberb/utils": utils,
-    "gloomberb/react": pluginReact,
-    "gloomberb/dialog": dialog,
-    "gloomberb/market-data": marketData,
-    "gloomberb/time-series": timeSeries,
+    "surge/types/plugin": typesPlugin,
+    "surge/types/persistence": typesPersistence,
+    "surge/ui": ui,
+    "surge/components": components,
+    "surge/theme": theme,
+    "surge/capabilities": capabilities,
+    "surge/utils": utils,
+    "surge/react": pluginReact,
+    "surge/dialog": dialog,
+    "surge/market-data": marketData,
+    "surge/time-series": timeSeries,
   };
 
   for (const specifier of SHARED_SPECIFIERS) {

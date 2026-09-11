@@ -133,13 +133,13 @@ export function WebPopover({
 
   return (
     <>
-      <div ref={anchorRef} tabIndex={-1} className="gloom-popover-anchor">
+      <div ref={anchorRef} tabIndex={-1} className="surge-popover-anchor">
         {trigger}
       </div>
       {open && createPortal(
         <div
           ref={popoverRef}
-          className="gloom-popover"
+          className="surge-popover"
           role="dialog"
           aria-label={label}
           tabIndex={-1}

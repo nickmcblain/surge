@@ -286,7 +286,7 @@ export const REMOTE_OPERATIONS: RemoteOperationSchema[] = [
 ];
 
 export const REMOTE_AGENT_HELP = {
-  title: "Gloomberb remote control guide",
+  title: "Surge remote control guide",
   quickStart: [
     "Read app://snapshot once to orient; it includes schema, current layout, panes, command bar state, and semantic UI nodes.",
     "Prefer app-level operations such as app.search, layout.setGrid, layout.closeFloating, and ticker.pin before falling back to ui.invoke.",

@@ -34,7 +34,7 @@ describe("tickerLinkMenuItems", () => {
       instanceId: "ticker-detail:main",
       binding: { kind: "follow", sourceInstanceId: "futures:main" },
     });
-    const config = createDefaultConfig("/tmp/gloomberb-link-menu-test");
+    const config = createDefaultConfig("/tmp/surge-link-menu-test");
     config.layout = {
       dockRoot: {
         kind: "split",

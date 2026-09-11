@@ -14,7 +14,7 @@ type BrokerInstance = AppConfig["brokerInstances"][number];
 const tempPaths: string[] = [];
 
 export function createTempDbPath(name: string): string {
-  const path = join(tmpdir(), `gloomberb-provider-router-${name}-${Date.now()}-${Math.random().toString(36).slice(2)}.db`);
+  const path = join(tmpdir(), `surge-provider-router-${name}-${Date.now()}-${Math.random().toString(36).slice(2)}.db`);
   tempPaths.push(path);
   return path;
 }

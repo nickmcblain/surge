@@ -2,10 +2,10 @@ import type { AppConfig } from "./config";
 import type { DataProvider } from "./data-provider";
 import type { CapabilityInvoker } from "../capabilities/types";
 
-type GloomApiClientInstance = typeof import("../api-client").apiClient;
+type SurgeApiClientInstance = typeof import("../api-client").apiClient;
 
 /** Public methods of the shared cloud client, expressed structurally for alternate executors. */
-export type HeadlessPaneApiClient = Pick<GloomApiClientInstance, keyof GloomApiClientInstance>;
+export type HeadlessPaneApiClient = Pick<SurgeApiClientInstance, keyof SurgeApiClientInstance>;
 
 export type HeadlessPaneShape = "rows" | "bundle" | "series" | "snapshot";
 export type HeadlessPaneArgumentKind =

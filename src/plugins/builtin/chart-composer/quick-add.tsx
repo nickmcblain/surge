@@ -54,8 +54,8 @@ export function isChartQuickAddMouseTarget(target: unknown, quickAddId: string):
   };
   const element = typeof candidate.closest === "function" ? candidate : candidate.parentElement;
   if (!element || typeof element.closest !== "function") return false;
-  const root = element.closest("[data-gloom-chart-quick-add]");
-  return root?.getAttribute("data-gloom-chart-quick-add") === quickAddId;
+  const root = element.closest("[data-surge-chart-quick-add]");
+  return root?.getAttribute("data-surge-chart-quick-add") === quickAddId;
 }
 
 function clampSelection(index: number, length: number): number {
@@ -343,9 +343,9 @@ export function ChartSeriesQuickAdd({
       overflow="visible"
       backgroundColor={colors.panel}
       zIndex={30}
-      data-gloom-role="chart-series-quick-add"
-      data-gloom-chart-quick-add={quickAddId}
-      data-gloom-focus-scope="chart-series-quick-add"
+      data-surge-role="chart-series-quick-add"
+      data-surge-chart-quick-add={quickAddId}
+      data-surge-focus-scope="chart-series-quick-add"
     >
       <InlineQuickAddRow
         value={query}

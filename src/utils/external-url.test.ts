@@ -17,7 +17,7 @@ describe("safeExternalUrl", () => {
       "data:text/html,<script>alert(1)</script>",
       "vbscript:msgbox(1)",
       "smb://attacker/share",
-      "gloomberb://open",
+      "surge://open",
     ]) {
       expect(safeExternalUrl(hostile)).toBeNull();
     }

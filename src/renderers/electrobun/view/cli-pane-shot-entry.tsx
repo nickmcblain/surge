@@ -49,11 +49,11 @@ import { apiClient, setCloudApiFetchTransport } from "../../../api-client";
 
 declare global {
   interface Window {
-    __GLOOM_CLI_SHOT_PAYLOAD__?: DesktopPaneShotPayload;
-    __GLOOM_CLI_SHOT_READY__?: boolean;
-    __GLOOM_CLI_SHOT_PENDING__?: number;
-    __GLOOM_CLI_SHOT_ERROR__?: string;
-    __GLOOM_CLI_SHOT_SEMANTIC_UI__?: RemoteUiNodeSnapshot[];
+    __SURGE_CLI_SHOT_PAYLOAD__?: DesktopPaneShotPayload;
+    __SURGE_CLI_SHOT_READY__?: boolean;
+    __SURGE_CLI_SHOT_PENDING__?: number;
+    __SURGE_CLI_SHOT_ERROR__?: string;
+    __SURGE_CLI_SHOT_SEMANTIC_UI__?: RemoteUiNodeSnapshot[];
   }
 }
 
@@ -65,11 +65,11 @@ const SHOT_READY_STABLE_FRAMES = 10;
 // PaneStatusBody. Matching on body text instead made any pane whose real
 // content contains the word "loading" (a changelog release note, a news
 // headline) wait forever and time out.
-const SHOT_LOADING_SELECTOR = "[data-gloom-status=\"loading\"]";
-const SHOT_API_PROXY_PREFIX = "/__gloom_cli_api__";
+const SHOT_LOADING_SELECTOR = "[data-surge-status=\"loading\"]";
+const SHOT_API_PROXY_PREFIX = "/__surge_cli_api__";
 // Served by the Bun process that owns this page, see src/cli/desktop-pane-shot.ts.
-const SHOT_MARKET_BRIDGE_PATH = "/__gloom_cli_market__";
-const SHOT_HTTP_BRIDGE_PATH = "/__gloom_cli_http__";
+const SHOT_MARKET_BRIDGE_PATH = "/__surge_cli_market__";
+const SHOT_HTTP_BRIDGE_PATH = "/__surge_cli_http__";
 const TRACKED_RESPONSE_METHODS = new Set<PropertyKey>([
   "arrayBuffer",
   "blob",
@@ -96,7 +96,7 @@ function normalizeSymbol(value: string): string {
 
 function updatePendingShotWork(next: number): void {
   pendingShotWork = Math.max(0, next);
-  window.__GLOOM_CLI_SHOT_PENDING__ = pendingShotWork;
+  window.__SURGE_CLI_SHOT_PENDING__ = pendingShotWork;
 }
 
 function trackShotWork<T>(promise: Promise<T>): Promise<T> {
@@ -212,7 +212,7 @@ async function restoreShotCloudSession(): Promise<void> {
 
 /**
  * Runs an asset-data request in the Bun process so the page sees exactly what
- * `gloomberb fn` sees. The page can only reach the cloud API on its own, and
+ * `surge fn` sees. The page can only reach the cloud API on its own, and
  * the cloud is one source among several: analyst rating price targets and part
  * of the corporate action history come from providers the router merges in.
  */
@@ -260,7 +260,7 @@ function isShotLoadingTextVisible(): boolean {
 }
 
 function hasUnresolvedChartData(): boolean {
-  return (window.__GLOOM_CLI_SHOT_SEMANTIC_UI__ ?? []).some((node) => (
+  return (window.__SURGE_CLI_SHOT_SEMANTIC_UI__ ?? []).some((node) => (
     node.role === "chart-data"
     && (
       node.metadata?.kind === "stock-price"
@@ -293,7 +293,7 @@ function waitForShotReadiness(): () => void {
   });
 
   const check = () => {
-    if (cancelled || window.__GLOOM_CLI_SHOT_READY__) return;
+    if (cancelled || window.__SURGE_CLI_SHOT_READY__) return;
     const changedSinceLastFrame = mutationVersion !== lastSeenMutationVersion;
     lastSeenMutationVersion = mutationVersion;
     if (
@@ -309,7 +309,7 @@ function waitForShotReadiness(): () => void {
 
     if (stableFrames >= SHOT_READY_STABLE_FRAMES) {
       observer.disconnect();
-      window.__GLOOM_CLI_SHOT_READY__ = true;
+      window.__SURGE_CLI_SHOT_READY__ = true;
       return;
     }
     requestAnimationFrame(check);
@@ -433,7 +433,7 @@ function CaptureShotSemanticUi() {
   useEffect(() => {
     let frame = 0;
     const capture = () => {
-      window.__GLOOM_CLI_SHOT_SEMANTIC_UI__ = registry?.snapshot() ?? [];
+      window.__SURGE_CLI_SHOT_SEMANTIC_UI__ = registry?.snapshot() ?? [];
       frame = requestAnimationFrame(capture);
     };
     capture();
@@ -491,7 +491,7 @@ function ShotPane({ payload, registry }: { payload: DesktopPaneShotPayload; regi
 }
 
 async function render() {
-  const payload = decodeRpcValue<DesktopPaneShotPayload | undefined>(window.__GLOOM_CLI_SHOT_PAYLOAD__);
+  const payload = decodeRpcValue<DesktopPaneShotPayload | undefined>(window.__SURGE_CLI_SHOT_PAYLOAD__);
   if (!payload) throw new Error("Missing CLI pane screenshot payload.");
   const rootElement = document.getElementById("root");
   if (!rootElement) throw new Error("Missing root element.");
@@ -536,6 +536,6 @@ async function render() {
 }
 
 render().catch((error) => {
-  window.__GLOOM_CLI_SHOT_ERROR__ = error instanceof Error ? error.stack ?? error.message : String(error);
+  window.__SURGE_CLI_SHOT_ERROR__ = error instanceof Error ? error.stack ?? error.message : String(error);
   throw error;
 });

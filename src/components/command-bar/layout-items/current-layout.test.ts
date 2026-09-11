@@ -10,7 +10,7 @@ import { buildCurrentLayoutItems } from "./current-layout";
 type InlineConfirmOptions = Parameters<LayoutItemsContext["openInlineConfirm"]>[0];
 
 function createFloatingLayoutFixture(): { layout: LayoutConfig; state: AppState } {
-  const config = createResearchTestConfig("/tmp/gloomberb-layout-actions-test");
+  const config = createResearchTestConfig("/tmp/surge-layout-actions-test");
   const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
   const firstDetailPane = config.layout.instances.find((instance) => instance.instanceId === "ticker-detail:main");
   if (!mainPane || !firstDetailPane) throw new Error("missing default panes");

@@ -5,7 +5,7 @@ import { createDesktopWorkspace } from "./index";
 
 describe("desktop workspace", () => {
   test("popping out a pane persists it into the active layout", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-desktop");
+    const config = createResearchTestConfig("/tmp/surge-desktop");
     const workspace = createDesktopWorkspace(config, null);
 
     const snapshot = workspace.popOutPane("ticker-detail:main", {
@@ -25,7 +25,7 @@ describe("desktop workspace", () => {
   });
 
   test("docking a detached pane onto a frame edge clears detached placement", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-desktop");
+    const config = createResearchTestConfig("/tmp/surge-desktop");
     const workspace = createDesktopWorkspace(config, null);
     workspace.popOutPane("ticker-detail:main", {
       x: 100,
@@ -41,7 +41,7 @@ describe("desktop workspace", () => {
   });
 
   test("updating a detached frame rewrites the detached entry in-place", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-desktop");
+    const config = createResearchTestConfig("/tmp/surge-desktop");
     const workspace = createDesktopWorkspace(config, null);
     workspace.popOutPane("ticker-detail:main", {
       x: 100,
@@ -63,7 +63,7 @@ describe("desktop workspace", () => {
   });
 
   test("ignores main-window state that arrives behind a newer layout revision", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-desktop-layout-revision");
+    const config = createDefaultConfig("/tmp/surge-desktop-layout-revision");
     const workspace = createDesktopWorkspace(config, null);
     const initialSnapshot = workspace.getSnapshot();
     const monitorLayout = config.layouts[1]!;

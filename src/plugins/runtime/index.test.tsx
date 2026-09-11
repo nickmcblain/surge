@@ -57,7 +57,7 @@ describe("plugin runtime helpers", () => {
 
 describe("plugin runtime hooks", () => {
   test("debounces pane state commits", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-plugin-runtime-debounce");
+    const config = createDefaultConfig("/tmp/surge-plugin-runtime-debounce");
     const stateRef: { current: ReturnType<typeof createInitialState> | null } = { current: null };
     let setSelection: ((value: SetStateAction<string>) => void) | null = null;
 
@@ -111,7 +111,7 @@ describe("plugin runtime hooks", () => {
   });
 
   test("updates pane, global resume, and config state through the plugin hooks", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-plugin-runtime");
+    const config = createDefaultConfig("/tmp/surge-plugin-runtime");
     const stateRef: { current: ReturnType<typeof createInitialState> | null } = { current: null };
     const dispatchRef: { current: React.Dispatch<any> | null } = { current: null };
     const runtime = createConfigBackedTestPluginRuntime({

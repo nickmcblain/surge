@@ -56,8 +56,8 @@ export function useAppStartupRuntime({
   }, [appActive]);
 
   useEffect(() => {
-    if (state.initialized || (globalThis as any).__gloomInitStarted) return;
-    (globalThis as any).__gloomInitStarted = true;
+    if (state.initialized || (globalThis as any).__surgeInitStarted) return;
+    (globalThis as any).__surgeInitStarted = true;
     (async () => {
       try {
         await measurePerfAsync("startup.app.initialize-state", () => initializeAppState({

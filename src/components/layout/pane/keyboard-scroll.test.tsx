@@ -105,7 +105,7 @@ function Harness({
   component?: (props: PaneProps) => ReactNode;
   focused?: boolean;
 }) {
-  const initialState = createInitialState(createDefaultConfig("/tmp/gloomberb-pane-keyboard-scroll-test"));
+  const initialState = createInitialState(createDefaultConfig("/tmp/surge-pane-keyboard-scroll-test"));
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   return (

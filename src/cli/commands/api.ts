@@ -59,7 +59,7 @@ export const apiCliCommand: CliCommandDef = {
       }
 
       if (action === "get") {
-        const capabilityId = requireArg(args[0], "Usage: gloomberb api get <capability-id>", ctx);
+        const capabilityId = requireArg(args[0], "Usage: surge api get <capability-id>", ctx);
         const manifest = services.services.pluginRegistry.capabilities
           .manifests()
           .find((entry) => entry.id === capabilityId);
@@ -69,7 +69,7 @@ export const apiCliCommand: CliCommandDef = {
       }
 
       if (action === "invoke") {
-        const target = requireArg(args[0], "Usage: gloomberb api invoke <capability.operation> [json-payload]", ctx);
+        const target = requireArg(args[0], "Usage: surge api invoke <capability.operation> [json-payload]", ctx);
         const operationTarget = parseOperationTarget(target, ctx);
         const payload = parseJsonPayload(args[1], ctx);
         const data = await services.services.pluginRegistry.capabilities.invoke(
@@ -82,7 +82,7 @@ export const apiCliCommand: CliCommandDef = {
       }
 
       if (action === "subscribe") {
-        const target = requireArg(args[0], "Usage: gloomberb api subscribe <capability.operation> [json-payload] [--limit n]", ctx);
+        const target = requireArg(args[0], "Usage: surge api subscribe <capability.operation> [json-payload] [--limit n]", ctx);
         const operationTarget = parseOperationTarget(target, ctx);
         const limit = ctx.cliOptions.limit ?? 10;
         const payload = parseJsonPayload(args[1], ctx);
@@ -110,7 +110,7 @@ export const apiCliCommand: CliCommandDef = {
         return;
       }
 
-      ctx.fail("Usage: gloomberb api list|get|invoke|subscribe");
+      ctx.fail("Usage: surge api list|get|invoke|subscribe");
     });
   },
 };

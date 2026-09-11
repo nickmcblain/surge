@@ -117,23 +117,23 @@ type PendingCdpCall = {
 };
 
 const SHOT_MODE_CSS = [
-  "[data-gloom-role='composite-chart-toolbar']",
-  "[data-gloom-role='chart-series-quick-add']",
-  "[data-gloom-role='pane-close']",
+  "[data-surge-role='composite-chart-toolbar']",
+  "[data-surge-role='chart-series-quick-add']",
+  "[data-surge-role='pane-close']",
 ].join(", ") + " { display: none !important; }\n"
   // Sits where the hidden close button was: one cell high, right-aligned in the title bar.
-  + "[data-gloom-role='shot-watermark'] { position: fixed; top: 1px; right: 10px; height: var(--cell-h);"
-  + " line-height: var(--cell-h); font-size: 12px; letter-spacing: 0.02em; color: var(--gloom-text-dim, #888);"
+  + "[data-surge-role='shot-watermark'] { position: fixed; top: 1px; right: 10px; height: var(--cell-h);"
+  + " line-height: var(--cell-h); font-size: 12px; letter-spacing: 0.02em; color: var(--surge-text-dim, #888);"
   + " pointer-events: none; z-index: 1000; }";
 
 const CHROME_POLL_ATTEMPTS = 80;
 const SHOT_READY_TIMEOUT_MS = 45_000;
 const CDP_CALL_TIMEOUT_MS = 10_000;
 const DEFAULT_DEVICE_SCALE_FACTOR = 2;
-const SHOT_API_PROXY_PREFIX = "/__gloom_cli_api__";
-export const SHOT_MARKET_BRIDGE_PATH = "/__gloom_cli_market__";
-export const SHOT_HTTP_BRIDGE_PATH = "/__gloom_cli_http__";
-const SESSION_COOKIE_NAMES = ["__Secure-gloomberb.session_token", "gloomberb.session_token"] as const;
+const SHOT_API_PROXY_PREFIX = "/__surge_cli_api__";
+export const SHOT_MARKET_BRIDGE_PATH = "/__surge_cli_market__";
+export const SHOT_HTTP_BRIDGE_PATH = "/__surge_cli_http__";
+const SESSION_COOKIE_NAMES = ["__Secure-surge.session_token", "surge.session_token"] as const;
 
 export async function renderDesktopPaneScreenshot(
   payload: DesktopPaneShotPayload,
@@ -141,7 +141,7 @@ export async function renderDesktopPaneScreenshot(
   apiProxy: DesktopPaneShotApiProxy,
   options: { captureImage?: boolean; bridge?: DesktopPaneShotBridge } = {},
 ): Promise<DesktopPaneShotRenderResult> {
-  const tempDir = await mkdtemp(join(tmpdir(), "gloom-pane-shot-"));
+  const tempDir = await mkdtemp(join(tmpdir(), "surge-pane-shot-"));
   let server: ReturnType<typeof Bun.serve> | null = null;
   try {
     const outdir = join(tempDir, "assets");
@@ -176,10 +176,10 @@ async function buildShotPage(outdir: string, payload: DesktopPaneShotPayload): P
     ],
     failureMessage: "Failed to build desktop pane screenshot renderer.",
     missingEntryMessage: "Desktop pane screenshot build did not produce a JavaScript entrypoint.",
-    title: "Gloomberb Pane Shot",
+    title: "Surge Pane Shot",
     loadingText: "Rendering pane...",
     bootstrapScript: `
-      window.__GLOOM_CLI_SHOT_PAYLOAD__ = ${payloadJson};
+      window.__SURGE_CLI_SHOT_PAYLOAD__ = ${payloadJson};
       (() => {
         // A screenshot cannot be interacted with, so drawing tools, the
         // quick-add input and the close button only add noise to the image.
@@ -189,16 +189,16 @@ async function buildShotPage(outdir: string, payload: DesktopPaneShotPayload): P
         const watermark = ${JSON.stringify(payload.watermark ?? null)};
         if (watermark) {
           const mark = document.createElement("div");
-          mark.setAttribute("data-gloom-role", "shot-watermark");
+          mark.setAttribute("data-surge-role", "shot-watermark");
           mark.textContent = watermark;
           document.addEventListener("DOMContentLoaded", () => document.body.appendChild(mark));
         }
       })();
       window.addEventListener("error", (event) => {
-        window.__GLOOM_CLI_SHOT_ERROR__ = event.error && event.error.stack ? event.error.stack : String(event.error || event.message);
+        window.__SURGE_CLI_SHOT_ERROR__ = event.error && event.error.stack ? event.error.stack : String(event.error || event.message);
       });
       window.addEventListener("unhandledrejection", (event) => {
-        window.__GLOOM_CLI_SHOT_ERROR__ = event.reason && event.reason.stack ? event.reason.stack : String(event.reason);
+        window.__SURGE_CLI_SHOT_ERROR__ = event.reason && event.reason.stack ? event.reason.stack : String(event.reason);
       });
 `,
   });
@@ -462,7 +462,7 @@ const ERROR_STATE_PATTERNS = [
   /\bSign in to\b/gi,
   /\bVerify your email\b/gi,
   /\brequires signup and email verification\b/gi,
-  /\bpart of Gloom Cloud Pro\b/gi,
+  /\bpart of Surge Cloud Pro\b/gi,
   /\bCloud API request failed\b/gi,
 ];
 
@@ -492,7 +492,7 @@ async function readRenderedPaneState(session: CdpSession): Promise<DesktopPaneSh
   const result = await session.send("Runtime.evaluate", {
     expression: `(() => {
       const root = document.getElementById("root") || document.body;
-      const semanticUi = window.__GLOOM_CLI_SHOT_SEMANTIC_UI__ || [];
+      const semanticUi = window.__SURGE_CLI_SHOT_SEMANTIC_UI__ || [];
       const normalize = (value) => String(value || "").replace(/\\s+/g, " ").trim();
       const isVisible = (element) => {
         if (!(element instanceof HTMLElement)) return false;
@@ -509,34 +509,34 @@ async function readRenderedPaneState(session: CdpSession): Promise<DesktopPaneSh
       const markScrollTruncation = (element) => {
         if (!(element instanceof HTMLElement) || !isVisible(element)) return;
         if (
-          element.getAttribute("data-gloom-scrollbar-y") === "visible"
+          element.getAttribute("data-surge-scrollbar-y") === "visible"
           || element.scrollHeight > element.clientHeight + 1
         ) {
           truncationReasons.add("rows extend below the rendered viewport");
         }
         if (
-          element.getAttribute("data-gloom-scrollbar-x") === "visible"
+          element.getAttribute("data-surge-scrollbar-x") === "visible"
           || element.scrollWidth > element.clientWidth + 1
         ) {
           truncationReasons.add("columns extend beyond the rendered viewport");
         }
       };
       [...root.querySelectorAll(
-        '[data-gloom-scrollbar-x="visible"], [data-gloom-scrollbar-y="visible"], [data-gloom-role="data-table-body-scroll"]',
+        '[data-surge-scrollbar-x="visible"], [data-surge-scrollbar-y="visible"], [data-surge-role="data-table-body-scroll"]',
       )].forEach(markScrollTruncation);
-      [...root.querySelectorAll('[data-gloom-role="data-table"]')]
+      [...root.querySelectorAll('[data-surge-role="data-table"]')]
         .filter(isVisible)
         .forEach((table, tableIndex) => {
           const tableMetadata = semanticTables[tableIndex] && semanticTables[tableIndex].metadata || {};
           const semanticColumns = Array.isArray(tableMetadata.columns) ? tableMetadata.columns : [];
           const semanticRows = Array.isArray(tableMetadata.rows) ? tableMetadata.rows : [];
-          const headers = [...table.querySelectorAll('[data-gloom-role="data-table-header-cell"]')]
+          const headers = [...table.querySelectorAll('[data-surge-role="data-table-header-cell"]')]
             .map((cell) => normalize(cell.innerText || cell.textContent));
           const rowElements = [...table.querySelectorAll(
-            '[data-gloom-role="data-table-row"], [data-gloom-role="data-table-section-header"]',
+            '[data-surge-role="data-table-row"], [data-surge-role="data-table-section-header"]',
           )].filter(isVisible);
           rowElements.forEach((row, rowIndex) => {
-            const cellElements = [...row.querySelectorAll('[data-gloom-role="data-table-cell"]')];
+            const cellElements = [...row.querySelectorAll('[data-surge-role="data-table-cell"]')];
             const values = cellElements.length > 0 ? cellElements : [row];
             const semanticRow = semanticRows[rowIndex] || {};
             const cells = values.map((cell, cellIndex) => {
@@ -572,7 +572,7 @@ async function readRenderedPaneState(session: CdpSession): Promise<DesktopPaneSh
           });
         });
       if (rows.length === 0) {
-        [...root.querySelectorAll('[data-gloom-role="desktop-list-row"]')]
+        [...root.querySelectorAll('[data-surge-role="desktop-list-row"]')]
           .filter(isVisible)
           .forEach((row, rowIndex) => {
             const text = normalize(row.innerText || row.textContent);
@@ -587,10 +587,10 @@ async function readRenderedPaneState(session: CdpSession): Promise<DesktopPaneSh
       }
       return {
         visibleText: root.innerText || root.textContent || "",
-        error: window.__GLOOM_CLI_SHOT_ERROR__ || "",
-        loadingStateDetected: root.querySelector('[data-gloom-status="loading"]') !== null,
-        errorStateDetected: root.querySelector('[data-gloom-status="error"]') !== null,
-        emptyStateDetected: root.querySelector('[data-gloom-status="empty"]') !== null,
+        error: window.__SURGE_CLI_SHOT_ERROR__ || "",
+        loadingStateDetected: root.querySelector('[data-surge-status="loading"]') !== null,
+        errorStateDetected: root.querySelector('[data-surge-status="error"]') !== null,
+        emptyStateDetected: root.querySelector('[data-surge-status="empty"]') !== null,
         rows,
         truncated: truncationReasons.size > 0,
         truncationReasons: [...truncationReasons],
@@ -666,7 +666,7 @@ async function waitForShotReady(session: CdpSession): Promise<void> {
   const startedAt = Date.now();
   while (Date.now() - startedAt < SHOT_READY_TIMEOUT_MS) {
     const result = await session.send("Runtime.evaluate", {
-      expression: "({ ready: window.__GLOOM_CLI_SHOT_READY__ === true, error: window.__GLOOM_CLI_SHOT_ERROR__ || '' })",
+      expression: "({ ready: window.__SURGE_CLI_SHOT_READY__ === true, error: window.__SURGE_CLI_SHOT_ERROR__ || '' })",
       returnByValue: true,
     }) as { result?: { value?: { ready?: boolean; error?: string } } };
     const value = result.result?.value;

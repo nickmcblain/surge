@@ -1,4 +1,4 @@
-import type { GloomPlugin } from "../../../types/plugin";
+import type { SurgePlugin } from "../../../types/plugin";
 import type { NewsArticle, NewsQuery } from "../../../types/news-source";
 import type { NewsItem } from "../../../types/data-provider";
 import { YahooFinanceClient } from "../../../sources/yahoo-finance";
@@ -60,7 +60,7 @@ function createYahooNewsProvider(provider: YahooPluginProvider) {
 
 const yahooProvider = createYahooProvider();
 
-export const yahooPlugin: GloomPlugin = {
+export const yahooPlugin: SurgePlugin = {
   id: "yahoo",
   name: "Yahoo Fallback",
   version: "1.0.0",

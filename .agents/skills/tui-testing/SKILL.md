@@ -1,7 +1,7 @@
 ---
 name: tui-testing
 description: >-
-  Testing Gloomberb at every level: CLI commands for fast data/integration checks,
+  Testing Surge at every level: CLI commands for fast data/integration checks,
   OpenTUI's built-in test harness for component tests, and tmux for full end-to-end
   terminal TUI testing. Use this skill when you need to verify terminal TUI features,
   write OpenTUI regression tests, or smoke-test the terminal app. Do not use it for
@@ -9,7 +9,7 @@ description: >-
   coverage is explicitly needed.
 ---
 
-# Testing Gloomberb
+# Testing Surge
 
 Three testing approaches. **Start with the simplest level that covers your change** and escalate only when needed.
 
@@ -28,7 +28,7 @@ Cleanup is part of testing. If you start `tmux`, a dev server, a watcher, or any
 **Never run an unbounded or streaming log scan.** A `tail -c 4000000 <log> | strings | grep ... | head -20` health scan once pinned a core at 100% for over five hours. Scan a bounded slice of a file that is no longer being written, and never involve `strings`:
 
 ```bash
-head -c 200000 /tmp/gloomberb-test.log | grep -aE "<pattern>" | head -20
+head -c 200000 /tmp/surge-test.log | grep -aE "<pattern>" | head -20
 ```
 
 **Finish with a leak sweep.** Before you report a test as done, confirm nothing you started is still alive:
@@ -59,7 +59,7 @@ What are you testing?
 
 ## 1. CLI Commands (fastest feedback loop)
 
-Gloomberb doubles as a CLI tool. CLI commands are the **fastest way to verify data flow, config state, and business logic** — no renderer, no harness setup, just run and check output.
+Surge doubles as a CLI tool. CLI commands are the **fastest way to verify data flow, config state, and business logic** — no renderer, no harness setup, just run and check output.
 
 ### Available commands
 
@@ -241,13 +241,13 @@ sleep 3
 For warning/error scans, pipe the pane output to a log before interacting:
 
 ```bash
-tmux pipe-pane -o -t test 'cat > /tmp/gloomberb-test.log'
+tmux pipe-pane -o -t test 'cat > /tmp/surge-test.log'
 ```
 
 If you need to run the app without `tmux`, keep the process handle so you can shut it down:
 
 ```bash
-bun run dev > /tmp/gloomberb-test.log 2>&1 &
+bun run dev > /tmp/surge-test.log 2>&1 &
 app_pid=$!
 
 # ... test whatever you need ...
@@ -324,8 +324,8 @@ For real-app smokes, especially after touching React hooks, subscriptions, chart
 Suggested scan:
 
 ```bash
-LOG=/tmp/gloomberb-test.log
-CAP=/tmp/gloomberb-test.capture
+LOG=/tmp/surge-test.log
+CAP=/tmp/surge-test.capture
 tmux capture-pane -t test -p > "$CAP"
 
 rg -n \

@@ -222,7 +222,7 @@ describe("apiClient auth cookies", () => {
             { token: "ws-token", user: verifiedUser },
             {
               cookies: [
-                "__Secure-gloomberb.session_token=signed-token.value; Path=/; HttpOnly; Secure; SameSite=Lax",
+                "__Secure-surge.session_token=signed-token.value; Path=/; HttpOnly; Secure; SameSite=Lax",
               ],
             },
           );
@@ -239,7 +239,7 @@ describe("apiClient auth cookies", () => {
     expect(apiClient.getWebSocketToken()).toBe("ws-token");
     expect(seenCookies).toEqual([
       null,
-      "__Secure-gloomberb.session_token=signed-token.value",
+      "__Secure-surge.session_token=signed-token.value",
     ]);
   });
 
@@ -265,7 +265,7 @@ describe("apiClient auth cookies", () => {
         },
         {
           cookies: [
-            "__Secure-gloomberb.session_token=old-session.value; Path=/; HttpOnly; Secure; SameSite=None",
+            "__Secure-surge.session_token=old-session.value; Path=/; HttpOnly; Secure; SameSite=None",
           ],
         },
       );
@@ -292,7 +292,7 @@ describe("apiClient auth cookies", () => {
         { token: "ws-token", user: verifiedUser },
         {
           cookies: [
-            "gloomberb.session_token=signed-token.value; Path=/; HttpOnly; SameSite=Lax",
+            "surge.session_token=signed-token.value; Path=/; HttpOnly; SameSite=Lax",
           ],
         },
       );
@@ -333,7 +333,7 @@ describe("apiClient auth cookies", () => {
     await apiClient.getSession();
 
     expect(seenCookies).toEqual([
-      "__Secure-gloomberb.session_token=persisted-token.value; gloomberb.session_token=persisted-token.value",
+      "__Secure-surge.session_token=persisted-token.value; surge.session_token=persisted-token.value",
     ]);
   });
 
@@ -355,7 +355,7 @@ describe("apiClient auth cookies", () => {
 
     expect(new URL(requestedUrl).pathname).toBe("/cloud/auth/browser-handoff");
     expect(requestedCookie).toBe(
-      "__Secure-gloomberb.session_token=desktop-session-token; gloomberb.session_token=desktop-session-token",
+      "__Secure-surge.session_token=desktop-session-token; surge.session_token=desktop-session-token",
     );
     expect(handoff.url).toContain("token=opaque-one-time-token");
     expect(handoff.url).not.toContain("desktop-session-token");
@@ -536,7 +536,7 @@ describe("apiClient quote socket", () => {
       exchange: "OPTIONS",
       quote: {
         symbol: "AAPL260731C00110000",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 2.5,
         currency: "USD",
         change: 0,
@@ -575,7 +575,7 @@ describe("apiClient quote socket", () => {
       stale: true,
       quote: {
         symbol: "AAPL260731C00110000",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 2.5,
         currency: "USD",
         change: 0,
@@ -801,7 +801,7 @@ describe("apiClient quote socket", () => {
         change: 0,
         changePercent: 0,
         lastUpdated: 1,
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         dataSource: "live",
       },
     });
@@ -1190,7 +1190,7 @@ describe("apiClient account profile", () => {
             plan: "pro",
             username: "renamed",
             name: "Renamed User",
-            company: "Gloomberb",
+            company: "Surge",
             title: "Founder",
             bio: "Markets.",
             profilePublic: true,

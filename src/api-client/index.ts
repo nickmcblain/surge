@@ -11,7 +11,7 @@ import type {
 export { setCloudApiFetchTransport } from "./request";
 export type * from "./types";
 
-class GloomApiClient {
+class SurgeApiClient {
   private currentUser: AuthUser | null = null;
   private sessionChecked = false;
   /** Last few session transitions, content-free, for app://auth. */
@@ -339,4 +339,4 @@ class GloomApiClient {
   searchCloudTweets = this.data.searchCloudTweets.bind(this.data);
 }
 
-export const apiClient = new GloomApiClient();
+export const apiClient = new SurgeApiClient();

@@ -175,7 +175,7 @@ function DesktopTile<T>({ tile, chartWidth, chartHeight, selected, hovered, onSe
 
   return (
     <Box
-      data-gloom-role="metric-treemap-desktop-tile"
+      data-surge-role="metric-treemap-desktop-tile"
       style={style}
       onMouseDown={(event: PreventableMouseEvent) => {
         event.preventDefault();
@@ -234,7 +234,7 @@ function DesktopMetricTreemapSurface<T>({ items, width, height, selectedId, onSe
       }}
     >
       <Box
-        data-gloom-role="metric-treemap"
+        data-surge-role="metric-treemap"
         width={chartWidth}
         height={height}
         style={{

@@ -70,7 +70,7 @@ export async function installPlugin(ref: string, options: InstallPluginOptions =
   const targetDir = join(PLUGINS_DIR, name);
 
   if (existsSync(targetDir)) {
-    fail(`Plugin "${name}" already exists.`, `Use "gloomberb update ${name}" to refresh it.`);
+    fail(`Plugin "${name}" already exists.`, `Use "surge update ${name}" to refresh it.`);
   }
 
   say(cliStyles.accent(`Installing ${name}`));
@@ -87,7 +87,7 @@ export async function installPlugin(ref: string, options: InstallPluginOptions =
   if (existsSync(pkgPath)) {
     say(cliStyles.muted("Installing plugin dependencies..."));
     try {
-      // --production: plugin repos depend on `gloomberb` as a devDependency so
+      // --production: plugin repos depend on `surge` as a devDependency so
       // their own CI can typecheck against the real API. At runtime the host is
       // symlinked in instead, and pulling a second full copy here would both
       // waste a lot of disk and risk a duplicate React.
@@ -101,8 +101,8 @@ export async function installPlugin(ref: string, options: InstallPluginOptions =
   const link = linkHostPackages(targetDir);
   if (link.error) {
     if (!options.quiet) {
-      console.error(cliStyles.warning(`Warning: could not link the Gloomberb runtime (${link.error}).`));
-      console.error(cliStyles.muted("The plugin's \"gloomberb/*\" imports will not resolve."));
+      console.error(cliStyles.warning(`Warning: could not link the Surge runtime (${link.error}).`));
+      console.error(cliStyles.muted("The plugin's \"surge/*\" imports will not resolve."));
     }
   }
 
@@ -129,7 +129,7 @@ export async function installPlugin(ref: string, options: InstallPluginOptions =
         return;
       }
     }
-    say(cliStyles.warning("Installed files, but no valid GloomPlugin export was found."));
+    say(cliStyles.warning("Installed files, but no valid SurgePlugin export was found."));
   } catch (err) {
     say(cliStyles.warning(`Plugin validation failed: ${err}`));
   }
@@ -184,7 +184,7 @@ export function listPlugins() {
 
   if (entries.length === 0) {
     console.log(cliStyles.muted("No plugins installed."));
-    console.log(cliStyles.muted("Install one with: gloomberb install <github-user/repo>"));
+    console.log(cliStyles.muted("Install one with: surge install <github-user/repo>"));
     return;
   }
 

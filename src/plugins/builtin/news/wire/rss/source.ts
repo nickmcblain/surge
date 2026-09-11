@@ -24,7 +24,7 @@ const rssClient = createThrottledFetch({
   maxRetries: 1,
   timeoutMs: 10_000,
   defaultHeaders: {
-    "User-Agent": "Gloomberb/0.4.1",
+    "User-Agent": "Surge/0.4.1",
     Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml",
   },
 });

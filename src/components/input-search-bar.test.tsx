@@ -29,7 +29,7 @@ function Harness({
   onBlur?: () => void;
   onQueryChange?: (query: string) => void;
 }) {
-  const state = createInitialState(createDefaultConfig("/tmp/gloomberb-input-search-bar"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-input-search-bar"));
   const inputRef = useRef<InputRenderable | null>(null);
   const [active, setActive] = useState(true);
   setSearchActive = setActive;

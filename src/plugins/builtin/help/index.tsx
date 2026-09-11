@@ -20,7 +20,7 @@ const HELP_TABS = [
 ] as const;
 
 type HelpTabId = typeof HELP_TABS[number]["value"];
-const GLOOMBERB_ISSUES_URL = "https://github.com/gloom-sh/gloomberb/issues";
+const SURGE_ISSUES_URL = "https://github.com/nickmc-lumion/surge/issues";
 
 function HelpPane({ focused, width, height }: PaneProps) {
   const registry = getSharedRegistry();
@@ -294,7 +294,7 @@ function HelpPane({ focused, width, height }: PaneProps) {
             <Box flexDirection="row" gap={1}>
               <Button label="Open Debug Log" onPress={openDebugLog} />
               <ExternalLinkText
-                url={GLOOMBERB_ISSUES_URL}
+                url={SURGE_ISSUES_URL}
                 label={t("GitHub Issues")}
               />
             </Box>
@@ -311,9 +311,9 @@ function HelpPane({ focused, width, height }: PaneProps) {
         return (
           <>
             <Box flexDirection="column" gap={1}>
-              <Text fg={colors.textBright} attributes={TextAttributes.BOLD}>{t("How To Use Gloomberb")}</Text>
+              <Text fg={colors.textBright} attributes={TextAttributes.BOLD}>{t("How To Use Surge")}</Text>
               <Box flexDirection="column">
-                <Text fg={colors.textDim}>{t("Gloomberb is command-bar first.")}</Text>
+                <Text fg={colors.textDim}>{t("Surge is command-bar first.")}</Text>
                 <Text fg={colors.textDim}>{t("Use the keyboard for speed, and the mouse for windows.")}</Text>
               </Box>
             </Box>
@@ -328,16 +328,16 @@ function HelpPane({ focused, width, height }: PaneProps) {
                 description="Open command mode for actions, pane commands, and typed prefixes."
               />
               <ShortcutRow
-                badges={["`"]}
-                description="Open ticker search directly."
+                badges={["DA", "<zone>"]}
+                description="Open day-ahead prices for a bidding zone, e.g. DA FR."
               />
               <ShortcutRow
-                badges={["DES", "<ticker>"]}
-                description="Open security details for a specific ticker."
+                badges={["ZONE", "<zone>"]}
+                description="Open the zone overview: prices, load, renewables, stack."
               />
               <ShortcutRow
-                badges={["UPGRADE"]}
-                description="Go Pro for real-time data at gloom.sh/cloud, free for 7 days."
+                badges={["ENTSOE"]}
+                description="Store your ENTSO-E Transparency API token."
               />
               <ShortcutRow
                 badges={["Up/Down", "Ctrl+P/N"]}

@@ -17,7 +17,7 @@ afterEach(() => {
 
 test("confirmed fund classification prevents cached company accounts from returning after merge", () => {
   const now = Date.now();
-  const fund = makeFinancials({ quote: makeQuote({ symbol: "IWDA.L", providerId: "gloomberb-cloud", instrumentType: "ETF", currency: "USD", lastUpdated: now }) });
+  const fund = makeFinancials({ quote: makeQuote({ symbol: "IWDA.L", providerId: "surge-cloud", instrumentType: "ETF", currency: "USD", lastUpdated: now }) });
   const contaminated = makeFinancials({
     quote: makeQuote({ symbol: "IWDA.L", providerId: "yahoo", currency: "USD", lastUpdated: now - 1000 }),
     fundamentals: { trailingPE: 0.238, revenue: 0 }, profile: { industry: "Specialty Chemicals" },
@@ -35,7 +35,7 @@ test("confirmed fund classification prevents cached company accounts from return
 test("fund research keeps distribution yield and description through cache and merge boundaries", () => {
   const now = Date.now();
   const fund = makeFinancials({
-    quote: makeQuote({ symbol: "SGOV", providerId: "gloomberb-cloud", instrumentType: "ETF", lastUpdated: now }),
+    quote: makeQuote({ symbol: "SGOV", providerId: "surge-cloud", instrumentType: "ETF", lastUpdated: now }),
     fundamentals: { dividendYield: 0.036658540225881886, dividendYieldBasis: "forward", dividendYieldSource: "twelvedata", source: "twelvedata", fetchedAt: "2026-09-10T22:30:00Z", stale: true,
       enterpriseValue: 0, revenue: 0, netIncome: 0, freeCashFlow: 0 },
     profile: { description: "Short Treasury bond fund", sector: "Contaminated issuer sector" },
@@ -75,7 +75,7 @@ describe("AssetDataRouter cached financials", () => {
         kind: "financials",
         entityKey: "HY9H",
         variantKey: "exchange=FWB2",
-        sourceKey: "provider:gloomberb-cloud",
+        sourceKey: "provider:surge-cloud",
       },
       makeFinancials({
         quote: makeQuote({
@@ -88,7 +88,7 @@ describe("AssetDataRouter cached financials", () => {
           marketState: "REGULAR",
           exchangeName: "FWB2",
           listingExchangeName: "FWB2",
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           dataSource: "delayed",
         }),
         fundamentals: {
@@ -143,7 +143,7 @@ describe("AssetDataRouter cached financials", () => {
       },
     }, [{
       ...fallbackProvider,
-      id: "gloomberb-cloud",
+      id: "surge-cloud",
       name: "Cloud",
       priority: 100,
       async getTickerFinancials() {
@@ -175,7 +175,7 @@ describe("AssetDataRouter cached financials", () => {
         kind: "financials",
         entityKey: "AMD",
         variantKey: "exchange=NASDAQ",
-        sourceKey: "provider:gloomberb-cloud",
+        sourceKey: "provider:surge-cloud",
       },
       makeFinancials({
         quote: makeQuote({
@@ -187,7 +187,7 @@ describe("AssetDataRouter cached financials", () => {
           marketState: "PRE",
           exchangeName: "NASDAQ",
           listingExchangeName: "NASDAQ",
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           dataSource: "delayed",
         }),
       }),
@@ -238,7 +238,7 @@ describe("AssetDataRouter cached financials", () => {
       },
     }, [{
       ...fallbackProvider,
-      id: "gloomberb-cloud",
+      id: "surge-cloud",
       name: "Cloud",
       priority: 100,
       async getTickerFinancials() {
@@ -268,7 +268,7 @@ describe("AssetDataRouter cached financials", () => {
         kind: "financials",
         entityKey: "OLD",
         variantKey: "exchange=NASDAQ",
-        sourceKey: "provider:gloomberb-cloud",
+        sourceKey: "provider:surge-cloud",
       },
       makeFinancials({
         quote: makeQuote({
@@ -280,7 +280,7 @@ describe("AssetDataRouter cached financials", () => {
           marketState: "REGULAR",
           exchangeName: "NASDAQ",
           listingExchangeName: "NASDAQ",
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           dataSource: "delayed",
         }),
         fundamentals: {
@@ -296,7 +296,7 @@ describe("AssetDataRouter cached financials", () => {
 
     const router = new AssetDataRouter({
       ...fallbackProvider,
-      id: "gloomberb-cloud",
+      id: "surge-cloud",
       name: "Cloud",
       async getTickerFinancials() {
         throw new Error("should not fetch financials");
@@ -328,7 +328,7 @@ describe("AssetDataRouter cached financials", () => {
         kind: "financials",
         entityKey: "AMD",
         variantKey: "exchange=NASDAQ",
-        sourceKey: "provider:gloomberb-cloud",
+        sourceKey: "provider:surge-cloud",
       },
       makeFinancials({
         quote: makeQuote({
@@ -340,7 +340,7 @@ describe("AssetDataRouter cached financials", () => {
           marketState: "REGULAR",
           exchangeName: "NASDAQ",
           listingExchangeName: "NASDAQ",
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           dataSource: "delayed",
         }),
         fundamentals: {
@@ -356,7 +356,7 @@ describe("AssetDataRouter cached financials", () => {
 
     const router = new AssetDataRouter({
       ...fallbackProvider,
-      id: "gloomberb-cloud",
+      id: "surge-cloud",
       name: "Cloud",
       async getTickerFinancials() {
         throw new Error("should not fetch financials");
@@ -472,12 +472,12 @@ describe("AssetDataRouter cached financials", () => {
         kind: "financials",
         entityKey: "contract:275759",
         variantKey: "exchange=NASDAQ",
-        sourceKey: "provider:gloomberb-cloud",
+        sourceKey: "provider:surge-cloud",
       },
       makeFinancials({
         quote: makeQuote({
           symbol: "VICR",
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           price: 292.83,
           currency: "USD",
           previousClose: 380.07,
@@ -559,7 +559,7 @@ describe("AssetDataRouter cached financials", () => {
       },
     }, [{
       ...fallbackProvider,
-      id: "gloomberb-cloud",
+      id: "surge-cloud",
       name: "Cloud",
       priority: 100,
       async getTickerFinancials() {
@@ -578,7 +578,7 @@ describe("AssetDataRouter cached financials", () => {
       },
     });
 
-    expect(financials.quote?.providerId).toBe("gloomberb-cloud");
+    expect(financials.quote?.providerId).toBe("surge-cloud");
     expect(financials.quote?.price).toBe(292.83);
     expect(financials.quote?.previousClose).toBe(282.95);
     expect(financials.quote?.changePercent).toBeCloseTo(((292.83 - 282.95) / 282.95) * 100, 10);

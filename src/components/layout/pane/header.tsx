@@ -58,7 +58,7 @@ function DesktopPaneButton({
       alignItems="center"
       justifyContent="center"
       onMouseDown={onMouseDown}
-      data-gloom-interactive={onMouseDown ? "true" : undefined}
+      data-surge-interactive={onMouseDown ? "true" : undefined}
       aria-label={label}
       aria-pressed={pressed}
       title={label}
@@ -102,8 +102,8 @@ function TerminalPaneButton({
       height={1}
       width={displayWidth(text)}
       flexDirection="row"
-      data-gloom-role={role}
-      data-gloom-interactive={onMouseDown ? "true" : undefined}
+      data-surge-role={role}
+      data-surge-interactive={onMouseDown ? "true" : undefined}
       onMouseDown={onMouseDown}
     >
       <Text fg={fg} selectable={false}>{text}</Text>
@@ -148,7 +148,7 @@ export function PaneHeader({
         width={width}
         backgroundColor={backgroundColor}
         flexDirection="row"
-        data-gloom-role="pane-header"
+        data-surge-role="pane-header"
         data-floating={floating ? "true" : "false"}
         data-focused={focused ? "true" : "false"}
         data-window-mode-selected={windowModeSelected ? "true" : "false"}
@@ -165,14 +165,14 @@ export function PaneHeader({
             : `inset 0 -1px 0 ${blendHex(paneTitleBg(visuallyFocused), colors.textBright, 0.04)}`,
         }}
       >
-        <Text fg={visuallyFocused ? colors.borderFocused : colors.textMuted} selectable={false} data-gloom-role="pane-grip">
+        <Text fg={visuallyFocused ? colors.borderFocused : colors.textMuted} selectable={false} data-surge-role="pane-grip">
           {PANE_HEADER_GRIP}
         </Text>
         <Box minWidth={0} flexShrink={1} overflow="hidden">
           <Text
             fg={textColor}
             selectable={false}
-            data-gloom-role="pane-title"
+            data-surge-role="pane-title"
             style={{
               fontWeight: visuallyFocused ? 700 : 600,
               whiteSpace: "nowrap",
@@ -184,7 +184,7 @@ export function PaneHeader({
           </Text>
         </Box>
         {quickSettings.map((setting) => (
-          <Box key={setting.key} data-gloom-role="pane-quick-setting" data-setting-key={setting.key}>
+          <Box key={setting.key} data-surge-role="pane-quick-setting" data-setting-key={setting.key}>
             <DesktopPaneButton
               onMouseDown={setting.onMouseDown}
               color={setting.active ? colors.warning : colors.textDim}
@@ -202,7 +202,7 @@ export function PaneHeader({
           </Box>
         ))}
         <Box flexGrow={1} minWidth={0} />
-        <Box data-gloom-role="pane-action">
+        <Box data-surge-role="pane-action">
           {showActions ? (
             <DesktopPaneButton
               onMouseDown={onActionMouseDown}
@@ -217,7 +217,7 @@ export function PaneHeader({
           ) : <Box width={2} />}
         </Box>
         {floating && (
-          <Box data-gloom-role="pane-close" marginLeft={1}>
+          <Box data-surge-role="pane-close" marginLeft={1}>
             <DesktopPaneButton
               onMouseDown={onCloseMouseDown}
               icon={(

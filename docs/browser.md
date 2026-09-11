@@ -2,12 +2,12 @@
 
 [Back to README](../README.md) · [User guide](usage.md)
 
-Open [term.gloom.sh](https://term.gloom.sh) and sign in with a free Gloom Cloud account. The browser app uses the same DOM renderer and layout as the desktop app, with a reviewed browser plugin catalog.
+Open [term.gloom.sh](https://term.gloom.sh) and sign in with a free Surge Cloud account. The browser app uses the same DOM renderer and layout as the desktop app, with a reviewed browser plugin catalog.
 
 ## Accounts and data
 
-- A Gloom Cloud session is required to open the workspace.
-- Free accounts receive rate-limited, 15-minute-delayed Gloom Cloud market data. Pro accounts receive realtime data.
+- A Surge Cloud session is required to open the workspace.
+- Free accounts receive rate-limited, 15-minute-delayed Surge Cloud market data. Pro accounts receive realtime data.
 - Chat is read-only until the account's email is verified.
 - Configuration, tickers, layouts, session state, and plugin state are stored in the browser.
 - Public share pages require no account. Creating a share or deleting one you own requires sign-in.

@@ -18,7 +18,7 @@ function inferSessionConfidence(
 ): SessionConfidence {
   if (quote.sessionConfidence) return quote.sessionConfidence;
   if (providerId === "ibkr") return "unknown";
-  if (quote.marketState) return providerId === "gloomberb-cloud" ? "derived" : "derived";
+  if (quote.marketState) return providerId === "surge-cloud" ? "derived" : "derived";
   return "unknown";
 }
 

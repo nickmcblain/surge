@@ -81,15 +81,15 @@ export function remotePropLabel(props: Record<string, unknown>): string | undefi
 }
 
 export function remotePropRole(props: Record<string, unknown>, fallback: string): string {
-  const explicit = props["data-gloom-role"];
+  const explicit = props["data-surge-role"];
   return typeof explicit === "string" && explicit.trim() ? explicit.trim() : fallback;
 }
 
 export function remoteMetadataFromProps(props: Record<string, unknown>): Record<string, unknown> {
   const metadata: Record<string, unknown> = {};
-  const scope = props["data-gloom-remote-scope"];
-  const surface = props["data-gloom-remote-surface"];
-  const kind = props["data-gloom-remote-kind"];
+  const scope = props["data-surge-remote-scope"];
+  const surface = props["data-surge-remote-surface"];
+  const kind = props["data-surge-remote-kind"];
   if (typeof scope === "string" && scope.trim()) metadata.scope = scope.trim();
   if (typeof surface === "string" && surface.trim()) metadata.surface = surface.trim();
   if (typeof kind === "string" && kind.trim()) metadata.kind = kind.trim();

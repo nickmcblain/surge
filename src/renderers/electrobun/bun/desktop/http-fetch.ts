@@ -1,13 +1,13 @@
 import {
   connectionHealth,
-  GLOOM_CLOUD_FRED_CONNECTION_ID,
-  GLOOM_CLOUD_HTTP_CONNECTION_ID,
+  SURGE_CLOUD_FRED_CONNECTION_ID,
+  SURGE_CLOUD_HTTP_CONNECTION_ID,
 } from "../../../../core/connection-health";
 import type { DesktopBackendRequestPayload, DesktopHttpFetchResponse } from "../../shared/protocol";
 
-function isGloomCloudUrl(url: URL): boolean {
+function isSurgeCloudUrl(url: URL): boolean {
   try {
-    return url.origin === new URL(process.env.GLOOMBERB_API_URL ?? "https://api.gloom.sh").origin;
+    return url.origin === new URL(process.env.SURGE_API_URL ?? "https://api.gloom.sh").origin;
   } catch {
     return false;
   }
@@ -20,16 +20,16 @@ function reportCloudRequest(
   success: boolean,
   error?: unknown,
 ): void {
-  if (!isGloomCloudUrl(url)) return;
+  if (!isSurgeCloudUrl(url)) return;
   const report = {
     operation: `${method} ${url.pathname}`,
     success,
     latencyMs,
     ...(error === undefined ? {} : { error }),
   };
-  connectionHealth.reportRequest(GLOOM_CLOUD_HTTP_CONNECTION_ID, report);
+  connectionHealth.reportRequest(SURGE_CLOUD_HTTP_CONNECTION_ID, report);
   if (url.pathname.startsWith("/cloud/econ/series/")) {
-    connectionHealth.reportRequest(GLOOM_CLOUD_FRED_CONNECTION_ID, report);
+    connectionHealth.reportRequest(SURGE_CLOUD_FRED_CONNECTION_ID, report);
   }
 }
 

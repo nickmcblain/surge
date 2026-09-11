@@ -71,27 +71,27 @@ jobs:
           set -euo pipefail
           brew install zstd
           tmp_dir="$(mktemp -d)"
-          zstd -d -o "$tmp_dir/Gloomberb.app.tar" artifacts/stable-macos-arm64-Gloomberb.app.tar.zst
-          tar -xf "$tmp_dir/Gloomberb.app.tar" -C "$tmp_dir"
+          zstd -d -o "$tmp_dir/Surge.app.tar" artifacts/stable-macos-arm64-Surge.app.tar.zst
+          tar -xf "$tmp_dir/Surge.app.tar" -C "$tmp_dir"
 
-          test -x "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb"
-          test -f "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb-tui/tui-entry.js"
-          test -f "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb-tui/node_modules/@opentui/core-darwin-arm64/index.js"
-          test -f "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb-tui/node_modules/@opentui/core-darwin-arm64/libopentui.dylib"
-          "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb" help
+          test -x "$tmp_dir/Surge.app/Contents/Resources/surge"
+          test -f "$tmp_dir/Surge.app/Contents/Resources/surge-tui/tui-entry.js"
+          test -f "$tmp_dir/Surge.app/Contents/Resources/surge-tui/node_modules/@opentui/core-darwin-arm64/index.js"
+          test -f "$tmp_dir/Surge.app/Contents/Resources/surge-tui/node_modules/@opentui/core-darwin-arm64/libopentui.dylib"
+          "$tmp_dir/Surge.app/Contents/Resources/surge" help
 
-          codesign --verify --verbose=4 "$tmp_dir/Gloomberb.app"
-          ditto -c -k --keepParent "$tmp_dir/Gloomberb.app" artifacts/stable-macos-arm64-Gloomberb.app.zip
+          codesign --verify --verbose=4 "$tmp_dir/Surge.app"
+          ditto -c -k --keepParent "$tmp_dir/Surge.app" artifacts/stable-macos-arm64-Surge.app.zip
 
       - name: Verify desktop artifacts
         run: |
           set -euo pipefail
-          test -f artifacts/stable-macos-arm64-Gloomberb.dmg
-          test -f artifacts/stable-macos-arm64-Gloomberb.app.tar.zst
-          test -f artifacts/stable-macos-arm64-Gloomberb.app.zip
+          test -f artifacts/stable-macos-arm64-Surge.dmg
+          test -f artifacts/stable-macos-arm64-Surge.app.tar.zst
+          test -f artifacts/stable-macos-arm64-Surge.app.zip
           test -f artifacts/stable-macos-arm64-update.json
-          codesign --verify --verbose=4 artifacts/stable-macos-arm64-Gloomberb.dmg
-          xcrun stapler validate -v artifacts/stable-macos-arm64-Gloomberb.dmg
+          codesign --verify --verbose=4 artifacts/stable-macos-arm64-Surge.dmg
+          xcrun stapler validate -v artifacts/stable-macos-arm64-Surge.dmg
 
       - name: Verify cask generation and tap access
         env:
@@ -100,21 +100,21 @@ jobs:
           set -euo pipefail
           : "${GH_TOKEN:?missing HOMEBREW_TAP_TOKEN secret}"
 
-          sha256="$(shasum -a 256 artifacts/stable-macos-arm64-Gloomberb.app.zip | awk '{print $1}')"
+          sha256="$(shasum -a 256 artifacts/stable-macos-arm64-Surge.app.zip | awk '{print $1}')"
           tap_dir="$RUNNER_TEMP/homebrew-tap"
           gh repo clone vincelwt/homebrew-tap "$tap_dir"
           git -C "$tap_dir" remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/vincelwt/homebrew-tap.git"
           bun run scripts/write-homebrew-cask.ts \
             --version "0.0.0" \
             --sha256 "$sha256" \
-            --output "$tap_dir/Casks/gloomberb.rb"
+            --output "$tap_dir/Casks/surge.rb"
 
-          ruby -c "$tap_dir/Casks/gloomberb.rb"
-          grep -q 'stable-macos-arm64-Gloomberb.app.zip' "$tap_dir/Casks/gloomberb.rb"
-          grep -q 'depends_on arch: :arm64' "$tap_dir/Casks/gloomberb.rb"
-          grep -q 'binary "#{appdir}/Gloomberb.app/Contents/Resources/gloomberb", target: "gloomberb"' "$tap_dir/Casks/gloomberb.rb"
+          ruby -c "$tap_dir/Casks/surge.rb"
+          grep -q 'stable-macos-arm64-Surge.app.zip' "$tap_dir/Casks/surge.rb"
+          grep -q 'depends_on arch: :arm64' "$tap_dir/Casks/surge.rb"
+          grep -q 'binary "#{appdir}/Surge.app/Contents/Resources/surge", target: "surge"' "$tap_dir/Casks/surge.rb"
 
           cd "$tap_dir"
-          git add Casks/gloomberb.rb
+          git add Casks/surge.rb
           git commit -m "Verify cask update" --allow-empty
           git push --dry-run origin HEAD:homebrew-verify-${GITHUB_RUN_ID}

@@ -1,5 +1,5 @@
 /**
- * Chart range and resolution vocabulary (`gloomberb/time-series`).
+ * Chart range and resolution vocabulary (`surge/time-series`).
  *
  * Shared so a plugin producing history speaks the same range and resolution
  * language as the charts that render it, instead of inventing a parallel one.

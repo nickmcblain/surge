@@ -94,7 +94,7 @@ class DebugLog {
     if (LOG_LEVEL_RANK[entry.level] < LOG_LEVEL_RANK[mirror.minLevel]) return;
 
     const ts = new Date(entry.timestamp).toISOString().slice(11, 23);
-    const prefix = `[gloom:${entry.source}] ${ts} ${entry.message}`;
+    const prefix = `[surge:${entry.source}] ${ts} ${entry.message}`;
     const method =
       entry.level === "error" ? mirror.methods.error
       : entry.level === "warn" ? mirror.methods.warn
@@ -146,7 +146,7 @@ class DebugLog {
   exportAsText(filter?: { level?: LogLevel; source?: string }): string {
     const entries = this.getEntries(filter);
     const lines: string[] = [
-      `Gloomberb Debug Log — exported ${new Date().toISOString()}`,
+      `Surge Debug Log — exported ${new Date().toISOString()}`,
       `Total entries: ${entries.length}`,
       "=".repeat(80),
       "",

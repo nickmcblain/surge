@@ -99,8 +99,8 @@ export function StaticXAxisLabels({
       flexDirection="row"
       position="relative"
       overflow="hidden"
-      data-gloom-role="chart-time-axis"
-      data-gloom-label={(visiblePositionedLabels.length > 0
+      data-surge-role="chart-time-axis"
+      data-surge-label={(visiblePositionedLabels.length > 0
         ? visiblePositionedLabels.map((entry) => entry.label)
         : visibleLabels).join(" ")}
     >

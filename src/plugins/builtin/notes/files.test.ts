@@ -5,7 +5,7 @@ import { join } from "path";
 import { NotesFiles } from "./files";
 
 test("NotesFiles.delete ignores only missing files", async () => {
-  const dataDir = mkdtempSync(join(tmpdir(), "gloomberb-notes-"));
+  const dataDir = mkdtempSync(join(tmpdir(), "surge-notes-"));
   const notes = new NotesFiles(dataDir);
   mkdirSync(join(dataDir, "blocked.md"));
 

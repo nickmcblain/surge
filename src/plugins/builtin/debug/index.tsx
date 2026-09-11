@@ -2,7 +2,7 @@ import { Box, Text } from "../../../ui";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useShortcut } from "../../../react/input";
 import { TextAttributes } from "../../../ui";
-import type { GloomPlugin, PaneProps } from "../../../types/plugin";
+import type { SurgePlugin, PaneProps } from "../../../types/plugin";
 import { ListView, usePaneFooter } from "../../../components";
 import { usePluginAppActions } from "../../runtime";
 import { colors } from "../../../theme/colors";
@@ -23,7 +23,7 @@ function exportDebugLogFile(options: {
       : undefined,
   );
   const downloadsDir = join(homedir(), "Downloads");
-  const filename = `gloomberb-debug-${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.log`;
+  const filename = `surge-debug-${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.log`;
   const filepath = join(downloadsDir, filename);
 
   try {
@@ -317,7 +317,7 @@ function DebugPane({ focused, width, height }: PaneProps) {
   );
 }
 
-export const debugPlugin: GloomPlugin = {
+export const debugPlugin: SurgePlugin = {
   id: "debug",
   name: "Debug",
   version: "1.0.0",

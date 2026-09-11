@@ -30,7 +30,7 @@ done
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$SOURCE")" && pwd)"
 CONTENTS_DIR="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
 cd "$CONTENTS_DIR/MacOS"
-exec "./bun" "$CONTENTS_DIR/Resources/gloomberb-tui/tui-entry.js" "$@"
+exec "./bun" "$CONTENTS_DIR/Resources/surge-tui/tui-entry.js" "$@"
 `;
 
 const LINUX_SHIM = `#!/bin/sh
@@ -49,7 +49,7 @@ done
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$SOURCE")" && pwd)"
 APP_DIR="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
 cd "$APP_DIR/bin"
-exec "./bun" "$APP_DIR/Resources/gloomberb-tui/tui-entry.js" "$@"
+exec "./bun" "$APP_DIR/Resources/surge-tui/tui-entry.js" "$@"
 `;
 
 const WINDOWS_CMD_SHIM = `@echo off
@@ -57,10 +57,10 @@ setlocal
 set "SCRIPT_DIR=%~dp0"
 set "APP_DIR=%SCRIPT_DIR%.."
 pushd "%APP_DIR%\\bin" >nul
-"%APP_DIR%\\bin\\bun.exe" "%APP_DIR%\\Resources\\gloomberb-tui\\tui-entry.js" %*
-set "GLOOMBERB_EXIT_CODE=%ERRORLEVEL%"
+"%APP_DIR%\\bin\\bun.exe" "%APP_DIR%\\Resources\\surge-tui\\tui-entry.js" %*
+set "SURGE_EXIT_CODE=%ERRORLEVEL%"
 popd >nul
-exit /b %GLOOMBERB_EXIT_CODE%
+exit /b %SURGE_EXIT_CODE%
 `;
 
 function appBundlesIn(dir: string): string[] {
@@ -154,15 +154,15 @@ function bundleCandidates(os: TargetOs): string[] {
 
 function installShim(runtimePath: string, resourcesPath: string, os: TargetOs): void {
   if (os === "win") {
-    const shimPath = join(runtimePath, "gloomberb.cmd");
+    const shimPath = join(runtimePath, "surge.cmd");
     writeFileSync(shimPath, WINDOWS_CMD_SHIM);
     console.log(`Installed TUI shim: ${shimPath}`);
     return;
   }
 
   const shimPath = os === "darwin"
-    ? join(resourcesPath, "gloomberb")
-    : join(runtimePath, "gloomberb");
+    ? join(resourcesPath, "surge")
+    : join(runtimePath, "surge");
   writeFileSync(shimPath, os === "darwin" ? MACOS_SHIM : LINUX_SHIM);
   chmodSync(shimPath, 0o755);
   console.log(`Installed TUI shim: ${shimPath}`);
@@ -185,10 +185,10 @@ function assertWindowsIconFile(path: string): void {
 }
 
 function createWindowsIcon(resourcesPath: string): string {
-  const sourceIcoPath = join(process.cwd(), "src", "assets", "gloomberb-logo-windows.ico");
+  const sourceIcoPath = join(process.cwd(), "src", "assets", "surge-logo-windows.ico");
   const pngToIcoCli = join(process.cwd(), "node_modules", "png-to-ico", "bin", "cli.js");
-  const sourcePngPath = join(process.cwd(), "src", "assets", "gloomberb-logo-windows.png");
-  const iconPath = join(resourcesPath, "gloomberb-logo.ico");
+  const sourcePngPath = join(process.cwd(), "src", "assets", "surge-logo-windows.png");
+  const iconPath = join(resourcesPath, "surge-logo.ico");
   const appIconPath = join(resourcesPath, "app.ico");
   if (existsSync(sourceIcoPath)) {
     assertWindowsIconFile(sourceIcoPath);
@@ -252,7 +252,7 @@ for (const bundlePath of bundleCandidates(os)) {
   if (!existsSync(resourcesPath)) continue;
 
   const runtimePath = runtimePathForBundle(bundlePath, os);
-  const tuiBundleDir = join(resourcesPath, "gloomberb-tui");
+  const tuiBundleDir = join(resourcesPath, "surge-tui");
   rmSync(tuiBundleDir, { recursive: true, force: true });
   mkdirSync(tuiBundleDir, { recursive: true });
 

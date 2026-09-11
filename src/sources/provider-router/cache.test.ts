@@ -8,7 +8,7 @@ afterEach(cleanupProviderRouterTestFiles);
 test("legacy SEC EPS caches refresh for cloud and native without discarding unrelated resources", () => {
   const persistence = new AppPersistence(createTempDbPath("eps-share-basis"));
   const cachePolicy = { staleMs: 60_000, expireMs: 120_000 };
-  for (const sourceKey of ["provider:gloomberb-cloud", "provider:yahoo"]) {
+  for (const sourceKey of ["provider:surge-cloud", "provider:yahoo"]) {
     const key = { namespace: "market", kind: "financials", entityKey: "AAPL", variantKey: "exchange=NASDAQ", sourceKey };
     const old = makeFinancials({ annualStatements: [{ date: "2017-09-30", dateSource: "sec", eps: 9.21 }] });
     persistence.resources.set(key, old, { cachePolicy, schemaVersion: 6 });
@@ -25,7 +25,7 @@ test("legacy SEC EPS caches refresh for cloud and native without discarding unre
 
 test("legacy cloud yields refresh without discarding quotes, accounts or native provider values", () => {
   const persistence = new AppPersistence(createTempDbPath("dividend-yield-provenance"));
-  const key = { namespace: "market", kind: "financials", entityKey: "NESN", variantKey: "exchange=SWX", sourceKey: "provider:gloomberb-cloud" };
+  const key = { namespace: "market", kind: "financials", entityKey: "NESN", variantKey: "exchange=SWX", sourceKey: "provider:surge-cloud" };
   const cachePolicy = { staleMs: 60_000, expireMs: 120_000 };
   const old = makeFinancials({ quote: makeQuote({ symbol: "NESN", currency: "CHF" }),
     fundamentals: { dividendYield: 0.16, revenue: 88775000064 }, profile: { description: "Nestle" },
@@ -56,9 +56,9 @@ test("legacy cloud yields refresh without discarding quotes, accounts or native 
 
 test("legacy cloud financial caches retain statements but refresh quotes whose freshness was lost", () => {
   const persistence = new AppPersistence(createTempDbPath("nested-quote-freshness"));
-  const key = { namespace: "market", kind: "financials", entityKey: "7203", variantKey: "exchange=TYO", sourceKey: "provider:gloomberb-cloud" };
+  const key = { namespace: "market", kind: "financials", entityKey: "7203", variantKey: "exchange=TYO", sourceKey: "provider:surge-cloud" };
   const cachePolicy = { staleMs: 60_000, expireMs: 120_000 };
-  const old = makeFinancials({ quote: makeQuote({ symbol: "7203", currency: "JPY", price: 2980.5, providerId: "gloomberb-cloud" }),
+  const old = makeFinancials({ quote: makeQuote({ symbol: "7203", currency: "JPY", price: 2980.5, providerId: "surge-cloud" }),
     annualStatements: [{ date: "2026-03-31", totalRevenue: 100, fieldAvailability: { totalRevenue: "2026-05-08" } }],
   });
   persistence.resources.set(key, old, { cachePolicy, schemaVersion: 3 });
@@ -79,10 +79,10 @@ test("refreshes legacy SEC annual caches without discarding unrelated data and a
   const cachePolicy = { staleMs: 60_000, expireMs: 120_000 };
   const legacy = makeFinancials({ annualStatements: [{ date: "2017-09-03", netIncome: 919_000_000, fieldAvailability: { netIncome: "2017-10-18" } }] });
   persistence.resources.set(key, legacy, { cachePolicy });
-  persistence.resources.set({ ...key, sourceKey: "provider:gloomberb-cloud" }, makeFinancials({ annualStatements: [{ date: "2025-08-31", netIncome: 8_099_000_000 }] }), { cachePolicy });
+  persistence.resources.set({ ...key, sourceKey: "provider:surge-cloud" }, makeFinancials({ annualStatements: [{ date: "2025-08-31", netIncome: 8_099_000_000 }] }), { cachePolicy });
   persistence.resources.set({ ...key, kind: "quote" }, makeQuote({ symbol: "COST" }), { cachePolicy });
-  const read = (kind: string) => listCachedResources(persistence.resources, kind, "COST", ["exchange=NASDAQ"], ["provider:yahoo", "provider:gloomberb-cloud"], true);
-  expect(read("financials").map((row) => row.sourceKey)).toEqual(["provider:gloomberb-cloud"]);
+  const read = (kind: string) => listCachedResources(persistence.resources, kind, "COST", ["exchange=NASDAQ"], ["provider:yahoo", "provider:surge-cloud"], true);
+  expect(read("financials").map((row) => row.sourceKey)).toEqual(["provider:surge-cloud"]);
   expect(read("quote")).toHaveLength(1);
 
   const repaired = makeFinancials({ annualStatements: [{ date: "2017-09-03", netIncome: 2_679_000_000, fieldAvailability: { netIncome: "2017-10-18" } }] });
@@ -98,10 +98,10 @@ test("refreshes schema-two quarterly availability while retaining undated statem
   const unsafe = makeFinancials({ annualStatements: [], quarterlyStatements: [{ date: "2025-12-31", totalRevenue: 100, grossProfit: 40,
     availableAt: "2026-04-01", fieldAvailability: { totalRevenue: "2026-04-01", grossProfit: "2026-02-01" } }] });
   persistence.resources.set(key, unsafe, { cachePolicy, schemaVersion: 2 });
-  persistence.resources.set({ ...key, sourceKey: "provider:gloomberb-cloud" }, makeFinancials({ annualStatements: [], quarterlyStatements: [{ date: "2025-12-31", totalRevenue: 100 }] }), { cachePolicy, schemaVersion: 2 });
+  persistence.resources.set({ ...key, sourceKey: "provider:surge-cloud" }, makeFinancials({ annualStatements: [], quarterlyStatements: [{ date: "2025-12-31", totalRevenue: 100 }] }), { cachePolicy, schemaVersion: 2 });
   persistence.resources.set({ ...key, kind: "quote" }, makeQuote({ symbol: "MSFT" }), { cachePolicy, schemaVersion: 2 });
-  const read = (kind: string) => listCachedResources(persistence.resources, kind, "MSFT", [key.variantKey], [key.sourceKey, "provider:gloomberb-cloud"], true);
-  expect(read("financials").map((row) => row.sourceKey)).toEqual(["provider:gloomberb-cloud"]);
+  const read = (kind: string) => listCachedResources(persistence.resources, kind, "MSFT", [key.variantKey], [key.sourceKey, "provider:surge-cloud"], true);
+  expect(read("financials").map((row) => row.sourceKey)).toEqual(["provider:surge-cloud"]);
   expect(read("quote")).toHaveLength(1);
   const repaired = makeFinancials({ annualStatements: [], quarterlyStatements: [{ date: "2025-12-31", totalRevenue: 100, grossProfit: 40,
     fieldAvailability: { grossProfit: "2026-02-01" } }] });

@@ -9,20 +9,20 @@ import { PLUGIN_HOST_GLOBAL } from "./host-contract";
 /**
  * This is the seam that lets a plugin on disk run inside the desktop and
  * browser renderers, and the failure it prevents is nasty: if `react` or a
- * `gloomberb/*` module gets bundled into the plugin instead of shared with the
+ * `surge/*` module gets bundled into the plugin instead of shared with the
  * host, the plugin loads fine and then throws on its first hook, or silently
  * renders against a second copy of the theme. That is worth pinning down.
  */
 
 function scratchPlugin(source: string): string {
-  const dir = mkdtempSync(join(tmpdir(), "gloom-bundle-"));
+  const dir = mkdtempSync(join(tmpdir(), "surge-bundle-"));
   writeFileSync(join(dir, "package.json"), JSON.stringify({ name: "scratch", main: "index.tsx" }));
   writeFileSync(join(dir, "index.tsx"), source);
   return dir;
 }
 
 const fakeExports = async (specifier: string) => (
-  specifier === "gloomberb/ui"
+  specifier === "surge/ui"
     ? ["Box", "Text"]
     : specifier === "react"
       ? ["useState"]
@@ -31,7 +31,7 @@ const fakeExports = async (specifier: string) => (
 
 describe("buildSharedModuleSource", () => {
   test("re-exports each name from the host registry", () => {
-    const source = buildSharedModuleSource("gloomberb/ui", ["Box", "Text"]);
+    const source = buildSharedModuleSource("surge/ui", ["Box", "Text"]);
 
     expect(source).toContain(PLUGIN_HOST_GLOBAL);
     expect(source).toContain('export const Box = mod["Box"];');
@@ -41,7 +41,7 @@ describe("buildSharedModuleSource", () => {
   test("throws a directed error when the host registry is missing", () => {
     // A plugin bundle loaded before the host installs its modules should say so,
     // not fail later with an undefined property read deep in a render.
-    const source = buildSharedModuleSource("gloomberb/ui", []);
+    const source = buildSharedModuleSource("surge/ui", []);
     expect(source).toContain("was not installed before this plugin loaded");
   });
 
@@ -52,10 +52,10 @@ describe("buildSharedModuleSource", () => {
 });
 
 describe("bundleExternalPlugin", () => {
-  test("shares react and gloomberb modules instead of bundling them", async () => {
+  test("shares react and surge modules instead of bundling them", async () => {
     const dir = scratchPlugin(`
       import { useState } from "react";
-      import { Box } from "gloomberb/ui";
+      import { Box } from "surge/ui";
       export default { id: "scratch", name: "Scratch", version: "1.0.0", useState, Box };
     `);
     const out = join(dir, "out");
@@ -63,7 +63,7 @@ describe("bundleExternalPlugin", () => {
       const result = await bundleExternalPlugin(dir, out, { exportNamesFor: fakeExports });
       const code = await Bun.file(result.outputPath).text();
 
-      expect(result.shared).toEqual(["gloomberb/ui", "react"]);
+      expect(result.shared).toEqual(["react", "surge/ui"]);
       expect(code).toContain(PLUGIN_HOST_GLOBAL);
       // The giveaway that React got inlined rather than shared.
       expect(code).not.toContain("react-dom/client");
@@ -105,7 +105,7 @@ describe("bundleExternalPlugin", () => {
     // Bun's browser target rejects `node:*` imports even behind a dynamic
     // import, so without this a broker that opens a socket or resolves DNS
     // could not ship to the desktop view at all.
-    const dir = mkdtempSync(join(tmpdir(), "gloom-bundle-browser-"));
+    const dir = mkdtempSync(join(tmpdir(), "surge-bundle-browser-"));
     writeFileSync(
       join(dir, "package.json"),
       JSON.stringify({ name: "scratch", main: "index.ts", browser: "index.browser.ts" }),
@@ -133,7 +133,7 @@ describe("bundleExternalPlugin", () => {
   });
 
   test("rejects a directory with no entry file", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "gloom-bundle-empty-"));
+    const dir = mkdtempSync(join(tmpdir(), "surge-bundle-empty-"));
     mkdirSync(join(dir, "src"), { recursive: true });
     try {
       await expect(bundleExternalPlugin(dir, join(dir, "out"))).rejects.toThrow("No plugin entry file");

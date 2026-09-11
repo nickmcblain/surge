@@ -1,5 +1,5 @@
 import { findPaneInstance, type LayoutConfig } from "../../../types/config";
-import type { AppNotificationRequest, GloomPluginContext } from "../../../types/plugin";
+import type { AppNotificationRequest, SurgePluginContext } from "../../../types/plugin";
 import type { PluginModule } from "../plugin-module";
 import type { AppAction } from "../../../state/app/context";
 import { notifyGridlockComplete } from "../../gridlock-notification";
@@ -30,7 +30,7 @@ function clearLayoutManagerDispatch() {
   getStateRef = null;
 }
 
-function persistLayout(_ctx: Pick<GloomPluginContext, "getConfig">, layout: LayoutConfig) {
+function persistLayout(_ctx: Pick<SurgePluginContext, "getConfig">, layout: LayoutConfig) {
   if (!dispatchRef) return;
   dispatchRef({ type: "PUSH_LAYOUT_HISTORY" });
   dispatchRef({ type: "UPDATE_LAYOUT", layout });

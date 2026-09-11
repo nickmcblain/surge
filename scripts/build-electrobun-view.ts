@@ -16,23 +16,23 @@ await writeElectrobunViewPage({
   pluginName: "electrobun-renderer-native-bridges",
   failureMessage: "Failed to build Electrobun view assets",
   missingEntryMessage: "Electrobun view build did not produce a JavaScript entrypoint",
-  title: "Gloomberb",
-  loadingText: "Loading Gloomberb...",
+  title: "Surge",
+  loadingText: "Loading Surge...",
   bootstrapScript: `
       const bootstrapFatalHtml = [
-        '<div class="gloom-fatal">',
-        '<h1>Gloomberb failed to start</h1>',
-        '<div class="gloom-fatal-actions">',
+        '<div class="surge-fatal">',
+        '<h1>Surge failed to start</h1>',
+        '<div class="surge-fatal-actions">',
         '<button type="button" data-variant="primary" data-action="reload">Reload window</button>',
         '<button type="button" data-action="copy">Copy error</button>',
         '</div>',
-        '<div class="gloom-fatal-status" aria-live="polite"></div>',
+        '<div class="surge-fatal-status" aria-live="polite"></div>',
         '<pre></pre>',
         '</div>',
       ].join("");
       const renderBootstrapError = (error, details = "", source = "bootstrap-error") => {
-        if (typeof window.__gloomRenderFatalError === "function") {
-          window.__gloomRenderFatalError(error, details, source);
+        if (typeof window.__surgeRenderFatalError === "function") {
+          window.__surgeRenderFatalError(error, details, source);
           return;
         }
         const root = document.getElementById("root");
@@ -44,7 +44,7 @@ await writeElectrobunViewPage({
         root.querySelector("pre").textContent = errorText;
         root.querySelector('[data-action="reload"]')?.addEventListener("click", () => window.location.reload());
         root.querySelector('[data-action="copy"]')?.addEventListener("click", async () => {
-          const status = root.querySelector(".gloom-fatal-status");
+          const status = root.querySelector(".surge-fatal-status");
           try {
             await navigator.clipboard.writeText(errorText);
             status.textContent = "Error copied.";
@@ -59,6 +59,6 @@ await writeElectrobunViewPage({
         "error",
       ));
       window.addEventListener("unhandledrejection", (event) => renderBootstrapError(event.reason, "", "unhandledrejection"));
-      document.getElementById("root").innerHTML = '<div class="gloom-loading">Booting Gloomberb renderer...</div>';
+      document.getElementById("root").innerHTML = '<div class="surge-loading">Booting Surge renderer...</div>';
 `,
 });

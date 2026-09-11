@@ -4,10 +4,10 @@ import { dirname, join } from "path";
 import { OPEN_TUI_RUNTIME_SMOKE_COMMAND } from "../src/cli/native-smoke";
 
 const rootDir = join(import.meta.dir, "..");
-const smokeDir = mkdtempSync(join(tmpdir(), "gloomberb-global-upgrade-"));
+const smokeDir = mkdtempSync(join(tmpdir(), "surge-global-upgrade-"));
 const installDir = join(smokeDir, "bun-install");
 const packageDir = join(smokeDir, "package");
-const archiveName = "gloomberb-current.tgz";
+const archiveName = "surge-current.tgz";
 const archivePath = join(smokeDir, archiveName);
 const smokeEnvironment = { ...process.env, BUN_INSTALL: installDir };
 
@@ -51,7 +51,7 @@ try {
     "--ignore-scripts",
     "--quiet",
   ], packageDir);
-  await run(["bun", "install", "--global", "gloomberb@0.5.0"]);
+  await run(["bun", "install", "--global", "surge@0.5.0"]);
 
   const globalNodeModules = join(installDir, "install", "global", "node_modules");
   const staleBackupDir = join(smokeDir, "stale-opentui");
@@ -75,7 +75,7 @@ try {
   const globalPackageJson = JSON.parse(readFileSync(globalPackageJsonPath, "utf8")) as {
     dependencies?: Record<string, string>;
   };
-  delete globalPackageJson.dependencies?.gloomberb;
+  delete globalPackageJson.dependencies?.surge;
   writeFileSync(globalPackageJsonPath, `${JSON.stringify(globalPackageJson, null, 2)}\n`);
 
   await run(["bun", "install", "--global", archivePath]);
@@ -92,7 +92,7 @@ try {
   }
 
   const installedPackage = JSON.parse(readFileSync(
-    join(installDir, "install", "global", "node_modules", "gloomberb", "package.json"),
+    join(installDir, "install", "global", "node_modules", "surge", "package.json"),
     "utf8",
   )) as { dependencies?: Record<string, string> };
   const incompatiblePackages = ["@opentui-ui/dialog", "@opentui-ui/toast", "opentui-spinner"];
@@ -101,9 +101,9 @@ try {
     throw new Error(`Current package still depends on incompatible OpenTUI add-ons: ${retained.join(", ")}`);
   }
 
-  const executable = join(installDir, "bin", process.platform === "win32" ? "gloomberb.exe" : "gloomberb");
+  const executable = join(installDir, "bin", process.platform === "win32" ? "surge.exe" : "surge");
   await run([executable, OPEN_TUI_RUNTIME_SMOKE_COMMAND], smokeDir);
-  console.log("Global upgrade smoke passed: gloomberb 0.5.0 to the current package loaded the OpenTUI runtime graph.");
+  console.log("Global upgrade smoke passed: surge 0.5.0 to the current package loaded the OpenTUI runtime graph.");
 } finally {
   rmSync(smokeDir, { recursive: true, force: true });
 }

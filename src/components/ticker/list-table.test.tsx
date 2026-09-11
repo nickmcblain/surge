@@ -38,7 +38,7 @@ function resolveCell(_column: ColumnConfig, ticker: TickerRecord, _financials: T
 }
 
 function TickerTableTestProviders({ children }: { children: ReactNode }) {
-  const state = createInitialState(createDefaultConfig("/tmp/gloomberb-ticker-table-test"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-ticker-table-test"));
   return (
     <AppContext value={{ state, dispatch: () => {} }}>
       <PaneInstanceProvider paneId="ticker-table-test">

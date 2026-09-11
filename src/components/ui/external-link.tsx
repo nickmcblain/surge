@@ -73,7 +73,7 @@ export function ExternalLinkText(
       onKeyDown={(event: any) => {
         if (event.key === "Enter" || event.name === "return") handleOpen(url, resolvedOpen, event);
       }}
-      data-gloom-context-menu-surface="true"
+      data-surge-context-menu-surface="true"
       onMouseDown={(event: any) => {
         if (event.button === 2) {
           if (nativeContextMenu !== true) {

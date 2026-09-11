@@ -12,7 +12,7 @@ export const NATIVE_COMMAND_SURFACE = {
   paddingXPx: 14,
   paddingYPx: 14,
   radiusPx: 8,
-  shadow: "0 10px 18px color-mix(in srgb, var(--gloom-bg) 34%, transparent)",
+  shadow: "0 10px 18px color-mix(in srgb, var(--surge-bg) 34%, transparent)",
 } as const;
 
 /**

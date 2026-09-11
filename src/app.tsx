@@ -24,7 +24,7 @@ import type { AppServicesFactory, AppTickerRepositoryPort } from "./core/app-ser
 import { useThemeColors } from "./theme/theme-context";
 import type { AppConfig } from "./types/config";
 import type { DesktopDeepLinkBridge } from "./types/desktop-deeplink";
-import type { CliLaunchRequest, GloomPlugin } from "./types/plugin";
+import type { CliLaunchRequest, SurgePlugin } from "./types/plugin";
 import type { DataProvider } from "./types/data-provider";
 import type { DesktopDockPreviewState, DesktopSharedStateSnapshot, DesktopThemePreviewState, DesktopWindowBridge } from "./types/desktop-window";
 import type { DesktopApplicationMenuBridge } from "./types/desktop-menu";
@@ -394,7 +394,7 @@ interface AppProps {
   config: AppConfig;
   servicesFactory: AppServicesFactory;
   externalPlugins?: LoadedExternalPlugin[];
-  plugins: readonly GloomPlugin[];
+  plugins: readonly SurgePlugin[];
   cliLaunchRequest?: CliLaunchRequest | null;
   desktopWindowBridge?: DesktopWindowBridge;
   desktopApplicationMenuBridge?: DesktopApplicationMenuBridge;

@@ -4,7 +4,7 @@ import { backendRequest, requestElectrobunRestart } from "./backend-rpc";
 
 declare global {
   interface Window {
-    __gloomRenderFatalError?: (error: unknown, details?: string, source?: string) => void;
+    __surgeRenderFatalError?: (error: unknown, details?: string, source?: string) => void;
   }
 }
 
@@ -27,7 +27,7 @@ function formatFatalError(error: unknown, details?: string): string {
 }
 
 export function DesktopFatalScreen({
-  title = "Gloomberb crashed",
+  title = "Surge crashed",
   error,
   details,
   source,
@@ -68,14 +68,14 @@ export function DesktopFatalScreen({
   };
 
   return (
-    <div className="gloom-fatal">
+    <div className="surge-fatal">
       <h1>{title}</h1>
-      <div className="gloom-fatal-actions">
+      <div className="surge-fatal-actions">
         <button type="button" data-variant="primary" onClick={restartApp}>Restart app</button>
         <button type="button" onClick={reloadWindow}>Reload window</button>
         <button type="button" onClick={copyError}>Copy error</button>
       </div>
-      {status && <div className="gloom-fatal-status" aria-live="polite">{status}</div>}
+      {status && <div className="surge-fatal-status" aria-live="polite">{status}</div>}
       <pre>{errorText}</pre>
     </div>
   );
@@ -104,7 +104,7 @@ export class ElectrobunErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <DesktopFatalScreen
-          title="Gloomberb crashed"
+          title="Surge crashed"
           error={this.state.error}
           details={this.state.details}
           source="react-error-boundary"

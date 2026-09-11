@@ -2,13 +2,13 @@ $ErrorActionPreference = "Stop"
 
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 $PackageJson = Get-Content (Join-Path $Root "package.json") -Raw | ConvertFrom-Json
-$BundleDir = Join-Path $Root "build\stable-win-x64\Gloomberb-inno-source\Gloomberb"
-$CoreDir = Join-Path $BundleDir "Resources\gloomberb-tui\node_modules\@opentui\core-win32-x64"
-$InstallerPath = Join-Path $Root "artifacts\stable-win-x64-GloomberbSetup.exe"
+$BundleDir = Join-Path $Root "build\stable-win-x64\Surge-inno-source\Surge"
+$CoreDir = Join-Path $BundleDir "Resources\surge-tui\node_modules\@opentui\core-win32-x64"
+$InstallerPath = Join-Path $Root "artifacts\stable-win-x64-SurgeSetup.exe"
 $UpdateManifestPath = Join-Path $Root "artifacts\stable-win-x64-update.json"
 $GuiArtifactDir = Join-Path $Root "artifacts\windows-gui-verification"
 $BundleAppIconPath = Join-Path $BundleDir "Resources\app.ico"
-$BundleLogoIconPath = Join-Path $BundleDir "Resources\gloomberb-logo.ico"
+$BundleLogoIconPath = Join-Path $BundleDir "Resources\surge-logo.ico"
 
 New-Item -ItemType Directory -Force -Path $GuiArtifactDir | Out-Null
 
@@ -19,7 +19,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-public static class GloomberbWin32 {
+public static class SurgeWin32 {
   public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
   [DllImport("user32.dll")]
@@ -56,13 +56,13 @@ public static class GloomberbWin32 {
   public static extern bool SetForegroundWindow(IntPtr hWnd);
 
   [DllImport("user32.dll")]
-  public static extern bool GetWindowRect(IntPtr hWnd, out GloomberbWindowRect rect);
+  public static extern bool GetWindowRect(IntPtr hWnd, out SurgeWindowRect rect);
 
   [DllImport("user32.dll")]
-  public static extern bool GetClientRect(IntPtr hWnd, out GloomberbWindowRect rect);
+  public static extern bool GetClientRect(IntPtr hWnd, out SurgeWindowRect rect);
 
   [DllImport("user32.dll")]
-  public static extern bool ClientToScreen(IntPtr hWnd, ref GloomberbPoint point);
+  public static extern bool ClientToScreen(IntPtr hWnd, ref SurgePoint point);
 
   [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
   public static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
@@ -79,7 +79,7 @@ public static class GloomberbWin32 {
   }
 
   [DllImport("dwmapi.dll")]
-  public static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out GloomberbWindowRect pvAttribute, int cbAttribute);
+  public static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out SurgeWindowRect pvAttribute, int cbAttribute);
 
   [DllImport("user32.dll")]
   public static extern bool SetCursorPos(int x, int y);
@@ -112,7 +112,7 @@ public static class GloomberbWin32 {
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct GloomberbWindowRect {
+public struct SurgeWindowRect {
   public int Left;
   public int Top;
   public int Right;
@@ -120,7 +120,7 @@ public struct GloomberbWindowRect {
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct GloomberbPoint {
+public struct SurgePoint {
   public int X;
   public int Y;
 }
@@ -128,27 +128,27 @@ public struct GloomberbPoint {
 
 function Get-VisibleWindows {
   $Windows = New-Object System.Collections.Generic.List[object]
-  $Callback = [GloomberbWin32+EnumWindowsProc]{
+  $Callback = [SurgeWin32+EnumWindowsProc]{
     param([IntPtr]$Handle, [IntPtr]$Param)
 
-    if (-not [GloomberbWin32]::IsWindowVisible($Handle)) {
+    if (-not [SurgeWin32]::IsWindowVisible($Handle)) {
       return $true
     }
 
-    $TextLength = [GloomberbWin32]::GetWindowTextLength($Handle)
+    $TextLength = [SurgeWin32]::GetWindowTextLength($Handle)
     if ($TextLength -le 0) {
       return $true
     }
 
     $TitleBuilder = New-Object System.Text.StringBuilder ($TextLength + 1)
-    [void][GloomberbWin32]::GetWindowText($Handle, $TitleBuilder, $TitleBuilder.Capacity)
+    [void][SurgeWin32]::GetWindowText($Handle, $TitleBuilder, $TitleBuilder.Capacity)
     $Title = $TitleBuilder.ToString()
     if ([string]::IsNullOrWhiteSpace($Title)) {
       return $true
     }
 
     $ProcessIdValue = [uint32]0
-    [void][GloomberbWin32]::GetWindowThreadProcessId($Handle, [ref]$ProcessIdValue)
+    [void][SurgeWin32]::GetWindowThreadProcessId($Handle, [ref]$ProcessIdValue)
     $Process = Get-Process -Id ([int]$ProcessIdValue) -ErrorAction SilentlyContinue
     $Windows.Add([pscustomobject]@{
       Id = [int]$ProcessIdValue
@@ -159,7 +159,7 @@ function Get-VisibleWindows {
     return $true
   }
 
-  [void][GloomberbWin32]::EnumWindows($Callback, [IntPtr]::Zero)
+  [void][SurgeWin32]::EnumWindows($Callback, [IntPtr]::Zero)
   $Windows | Sort-Object Id, Handle
 }
 
@@ -207,12 +207,12 @@ function Focus-Window {
   param([object]$Window)
 
   $Handle = [IntPtr]::new([long]$Window.Handle)
-  [GloomberbWin32]::ShowWindow($Handle, 9) | Out-Null
-  [GloomberbWin32]::SetForegroundWindow($Handle) | Out-Null
+  [SurgeWin32]::ShowWindow($Handle, 9) | Out-Null
+  [SurgeWin32]::SetForegroundWindow($Handle) | Out-Null
   $Bounds = Get-WindowBounds $Window
   $CenterX = [int]($Bounds.Left + ($Bounds.Width / 2))
   $CenterY = [int]($Bounds.Top + ($Bounds.Height / 2))
-  [GloomberbWin32]::SetCursorPos($CenterX, $CenterY) | Out-Null
+  [SurgeWin32]::SetCursorPos($CenterX, $CenterY) | Out-Null
   Start-Sleep -Milliseconds 750
 }
 
@@ -230,8 +230,8 @@ function Click-WindowControl {
   )
 
   $Handle = Get-WindowHandle $Window
-  [GloomberbWin32]::ShowWindow($Handle, 9) | Out-Null
-  [GloomberbWin32]::SetForegroundWindow($Handle) | Out-Null
+  [SurgeWin32]::ShowWindow($Handle, 9) | Out-Null
+  [SurgeWin32]::SetForegroundWindow($Handle) | Out-Null
   Start-Sleep -Milliseconds 300
 
   $Bounds = Get-WindowBounds $Window
@@ -242,11 +242,11 @@ function Click-WindowControl {
   }
   $X = [int]($Bounds.Left + $Bounds.Width - $OffsetFromRight)
   $Y = [int]($Bounds.Top + 14)
-  [GloomberbWin32]::SetCursorPos($X, $Y) | Out-Null
+  [SurgeWin32]::SetCursorPos($X, $Y) | Out-Null
   Start-Sleep -Milliseconds 80
-  [GloomberbWin32]::mouse_event(0x0002, 0, 0, 0, [UIntPtr]::Zero)
+  [SurgeWin32]::mouse_event(0x0002, 0, 0, 0, [UIntPtr]::Zero)
   Start-Sleep -Milliseconds 80
-  [GloomberbWin32]::mouse_event(0x0004, 0, 0, 0, [UIntPtr]::Zero)
+  [SurgeWin32]::mouse_event(0x0004, 0, 0, 0, [UIntPtr]::Zero)
   Start-Sleep -Milliseconds 700
 }
 
@@ -263,14 +263,14 @@ function Assert-CustomWindowControls {
   Click-WindowControl -Window $Window -Action "maximize"
   $Window = Resolve-VisibleWindowByTitle -Title $Window.MainWindowTitle -Label $Label
   $Handle = Get-WindowHandle $Window
-  if (-not [GloomberbWin32]::IsZoomed($Handle)) {
+  if (-not [SurgeWin32]::IsZoomed($Handle)) {
     throw "$Label custom maximize control did not maximize the window."
   }
 
   Click-WindowControl -Window $Window -Action "maximize"
   $Window = Resolve-VisibleWindowByTitle -Title $Window.MainWindowTitle -Label $Label
   $Handle = Get-WindowHandle $Window
-  if ([GloomberbWin32]::IsZoomed($Handle)) {
+  if ([SurgeWin32]::IsZoomed($Handle)) {
     throw "$Label custom maximize control did not restore the window."
   }
   $RestoredBounds = Get-WindowBounds $Window
@@ -281,15 +281,15 @@ function Assert-CustomWindowControls {
   Click-WindowControl -Window $Window -Action "minimize"
   $Window = Resolve-VisibleWindowByTitle -Title $Window.MainWindowTitle -Label $Label
   $Handle = Get-WindowHandle $Window
-  if (-not [GloomberbWin32]::IsIconic($Handle)) {
+  if (-not [SurgeWin32]::IsIconic($Handle)) {
     throw "$Label custom minimize control did not minimize the window."
   }
-  [GloomberbWin32]::ShowWindow($Handle, 9) | Out-Null
-  [GloomberbWin32]::SetForegroundWindow($Handle) | Out-Null
+  [SurgeWin32]::ShowWindow($Handle, 9) | Out-Null
+  [SurgeWin32]::SetForegroundWindow($Handle) | Out-Null
   Start-Sleep -Milliseconds 700
   $Window = Resolve-VisibleWindowByTitle -Title $Window.MainWindowTitle -Label $Label
   $Handle = Get-WindowHandle $Window
-  if ([GloomberbWin32]::IsIconic($Handle)) {
+  if ([SurgeWin32]::IsIconic($Handle)) {
     throw "$Label custom minimize control did not restore through ShowWindow."
   }
 }
@@ -313,8 +313,8 @@ function Get-WindowBounds {
   param([object]$Window)
 
   $Handle = [IntPtr]::new([long]$Window.Handle)
-  $Rect = New-Object GloomberbWindowRect
-  if (-not [GloomberbWin32]::GetWindowRect($Handle, [ref]$Rect)) {
+  $Rect = New-Object SurgeWindowRect
+  if (-not [SurgeWin32]::GetWindowRect($Handle, [ref]$Rect)) {
     throw "Could not read window bounds for $($Window.ProcessName) $($Window.Handle)."
   }
 
@@ -333,7 +333,7 @@ function Get-WindowBounds {
 }
 
 function Convert-WindowRect {
-  param([GloomberbWindowRect]$Rect)
+  param([SurgeWindowRect]$Rect)
 
   [pscustomobject]@{
     Left = $Rect.Left
@@ -349,13 +349,13 @@ function Get-WindowClientBounds {
   param([object]$Window)
 
   $Handle = [IntPtr]::new([long]$Window.Handle)
-  $ClientRect = New-Object GloomberbWindowRect
-  if (-not [GloomberbWin32]::GetClientRect($Handle, [ref]$ClientRect)) {
+  $ClientRect = New-Object SurgeWindowRect
+  if (-not [SurgeWin32]::GetClientRect($Handle, [ref]$ClientRect)) {
     throw "Could not read client bounds for $($Window.ProcessName) $($Window.Handle)."
   }
 
-  $ClientOrigin = New-Object GloomberbPoint
-  if (-not [GloomberbWin32]::ClientToScreen($Handle, [ref]$ClientOrigin)) {
+  $ClientOrigin = New-Object SurgePoint
+  if (-not [SurgeWin32]::ClientToScreen($Handle, [ref]$ClientOrigin)) {
     throw "Could not map client bounds for $($Window.ProcessName) $($Window.Handle)."
   }
 
@@ -380,18 +380,18 @@ function Get-WindowGeometry {
   )
 
   $Handle = [IntPtr]::new([long]$Window.Handle)
-  $WindowRect = New-Object GloomberbWindowRect
-  if (-not [GloomberbWin32]::GetWindowRect($Handle, [ref]$WindowRect)) {
+  $WindowRect = New-Object SurgeWindowRect
+  if (-not [SurgeWin32]::GetWindowRect($Handle, [ref]$WindowRect)) {
     throw "Could not read window geometry for $($Window.ProcessName) $($Window.Handle)."
   }
 
-  $ClientRect = New-Object GloomberbWindowRect
-  if (-not [GloomberbWin32]::GetClientRect($Handle, [ref]$ClientRect)) {
+  $ClientRect = New-Object SurgeWindowRect
+  if (-not [SurgeWin32]::GetClientRect($Handle, [ref]$ClientRect)) {
     throw "Could not read client geometry for $($Window.ProcessName) $($Window.Handle)."
   }
 
-  $ClientOrigin = New-Object GloomberbPoint
-  if (-not [GloomberbWin32]::ClientToScreen($Handle, [ref]$ClientOrigin)) {
+  $ClientOrigin = New-Object SurgePoint
+  if (-not [SurgeWin32]::ClientToScreen($Handle, [ref]$ClientOrigin)) {
     throw "Could not map client geometry for $($Window.ProcessName) $($Window.Handle)."
   }
 
@@ -408,13 +408,13 @@ function Get-WindowGeometry {
   }
 
   $DwmBounds = $null
-  $DwmRect = New-Object GloomberbWindowRect
+  $DwmRect = New-Object SurgeWindowRect
   try {
-    $DwmResult = [GloomberbWin32]::DwmGetWindowAttribute(
+    $DwmResult = [SurgeWin32]::DwmGetWindowAttribute(
       $Handle,
       9,
       [ref]$DwmRect,
-      [System.Runtime.InteropServices.Marshal]::SizeOf([type][GloomberbWindowRect])
+      [System.Runtime.InteropServices.Marshal]::SizeOf([type][SurgeWindowRect])
     )
     if ($DwmResult -eq 0) {
       $DwmBounds = Convert-WindowRect $DwmRect
@@ -423,7 +423,7 @@ function Get-WindowGeometry {
     $DwmBounds = $null
   }
 
-  $StylePtr = [GloomberbWin32]::GetWindowLongPtrCompat($Handle, -16)
+  $StylePtr = [SurgeWin32]::GetWindowLongPtrCompat($Handle, -16)
   $Style = [uint32]($StylePtr.ToInt64() -band [int64]0xffffffff)
 
   [pscustomobject]@{
@@ -469,13 +469,13 @@ function Save-WindowGeometry {
 function Get-WindowTitleText {
   param([IntPtr]$Handle)
 
-  $TextLength = [GloomberbWin32]::GetWindowTextLength($Handle)
+  $TextLength = [SurgeWin32]::GetWindowTextLength($Handle)
   if ($TextLength -le 0) {
     return ""
   }
 
   $TitleBuilder = New-Object System.Text.StringBuilder ($TextLength + 1)
-  [void][GloomberbWin32]::GetWindowText($Handle, $TitleBuilder, $TitleBuilder.Capacity)
+  [void][SurgeWin32]::GetWindowText($Handle, $TitleBuilder, $TitleBuilder.Capacity)
   $TitleBuilder.ToString()
 }
 
@@ -483,7 +483,7 @@ function Get-WindowClassName {
   param([IntPtr]$Handle)
 
   $ClassBuilder = New-Object System.Text.StringBuilder 256
-  [void][GloomberbWin32]::GetClassName($Handle, $ClassBuilder, $ClassBuilder.Capacity)
+  [void][SurgeWin32]::GetClassName($Handle, $ClassBuilder, $ClassBuilder.Capacity)
   $ClassBuilder.ToString()
 }
 
@@ -492,21 +492,21 @@ function Get-ChildWindowDiagnostics {
 
   $ParentHandle = Get-WindowHandle $Window
   $Children = New-Object System.Collections.Generic.List[object]
-  $Callback = [GloomberbWin32+EnumWindowsProc]{
+  $Callback = [SurgeWin32+EnumWindowsProc]{
     param([IntPtr]$Handle, [IntPtr]$Param)
 
-    $Rect = New-Object GloomberbWindowRect
+    $Rect = New-Object SurgeWindowRect
     $Bounds = $null
-    if ([GloomberbWin32]::GetWindowRect($Handle, [ref]$Rect)) {
+    if ([SurgeWin32]::GetWindowRect($Handle, [ref]$Rect)) {
       $Bounds = Convert-WindowRect $Rect
     }
 
     $ProcessIdValue = [uint32]0
-    [void][GloomberbWin32]::GetWindowThreadProcessId($Handle, [ref]$ProcessIdValue)
+    [void][SurgeWin32]::GetWindowThreadProcessId($Handle, [ref]$ProcessIdValue)
     $Children.Add([pscustomobject]@{
       Handle = $Handle.ToInt64()
       ProcessId = [int]$ProcessIdValue
-      Visible = [GloomberbWin32]::IsWindowVisible($Handle)
+      Visible = [SurgeWin32]::IsWindowVisible($Handle)
       ClassName = Get-WindowClassName $Handle
       Text = Get-WindowTitleText $Handle
       Bounds = $Bounds
@@ -514,7 +514,7 @@ function Get-ChildWindowDiagnostics {
     return $true
   }
 
-  [void][GloomberbWin32]::EnumChildWindows($ParentHandle, $Callback, [IntPtr]::Zero)
+  [void][SurgeWin32]::EnumChildWindows($ParentHandle, $Callback, [IntPtr]::Zero)
   $Children
 }
 
@@ -915,7 +915,7 @@ function Assert-IcoFile {
   }
 }
 
-function Assert-GloomberbIconImage {
+function Assert-SurgeIconImage {
   param(
     [string]$Path,
     [string]$Label
@@ -951,7 +951,7 @@ function Assert-GloomberbIconImage {
     $BaseAccentMinimum = if ($Bitmap.Width -le 16 -or $Bitmap.Height -le 16) { 2 } else { 4 }
     $MinimumAccentPixels = [Math]::Max($BaseAccentMinimum, [int][Math]::Floor($OpaquePixels * 0.01))
     if ($RedPixels -lt $MinimumAccentPixels -or $GreenPixels -lt $MinimumAccentPixels -or $LightPixels -lt $MinimumAccentPixels) {
-      throw "$Label does not look like the Gloomberb icon: $(@{ width = $Bitmap.Width; height = $Bitmap.Height; opaque = $OpaquePixels; red = $RedPixels; green = $GreenPixels; light = $LightPixels; minimum = $MinimumAccentPixels } | ConvertTo-Json -Compress)"
+      throw "$Label does not look like the Surge icon: $(@{ width = $Bitmap.Width; height = $Bitmap.Height; opaque = $OpaquePixels; red = $RedPixels; green = $GreenPixels; light = $LightPixels; minimum = $MinimumAccentPixels } | ConvertTo-Json -Compress)"
     }
   } finally {
     $Bitmap.Dispose()
@@ -1005,7 +1005,7 @@ function Export-AssociatedIcon {
   }
 
   Assert-ScreenshotHasContent $OutputPath "$Label associated icon"
-  Assert-GloomberbIconImage $OutputPath "$Label associated icon"
+  Assert-SurgeIconImage $OutputPath "$Label associated icon"
   Assert-IconHasTransparentCorners $OutputPath "$Label associated icon"
 }
 
@@ -1037,14 +1037,14 @@ function Get-WindowIconHandle {
   $Handle = [IntPtr]::new([long]$Window.Handle)
   $WmGetIcon = [uint32]0x007F
   foreach ($IconType in @(2, 0, 1)) {
-    $IconHandle = [GloomberbWin32]::SendMessage($Handle, $WmGetIcon, [IntPtr]::new([int]$IconType), [IntPtr]::Zero)
+    $IconHandle = [SurgeWin32]::SendMessage($Handle, $WmGetIcon, [IntPtr]::new([int]$IconType), [IntPtr]::Zero)
     if ($IconHandle -ne [IntPtr]::Zero) {
       return $IconHandle
     }
   }
 
   foreach ($ClassIndex in @(-34, -14)) {
-    $IconHandle = [GloomberbWin32]::GetClassLongPtrCompat($Handle, $ClassIndex)
+    $IconHandle = [SurgeWin32]::GetClassLongPtrCompat($Handle, $ClassIndex)
     if ($IconHandle -ne [IntPtr]::Zero) {
       return $IconHandle
     }
@@ -1065,7 +1065,7 @@ function Export-WindowIcon {
     throw "Could not read window icon handle for ${Label}."
   }
 
-  $IconCopy = [GloomberbWin32]::CopyIcon($IconHandle)
+  $IconCopy = [SurgeWin32]::CopyIcon($IconHandle)
   if ($IconCopy -eq [IntPtr]::Zero) {
     throw "Could not copy window icon handle for ${Label}."
   }
@@ -1083,11 +1083,11 @@ function Export-WindowIcon {
       $Icon.Dispose()
     }
   } finally {
-    [void][GloomberbWin32]::DestroyIcon($IconCopy)
+    [void][SurgeWin32]::DestroyIcon($IconCopy)
   }
 
   Assert-ScreenshotHasContent $OutputPath "$Label window icon"
-  Assert-GloomberbIconImage $OutputPath "$Label window icon"
+  Assert-SurgeIconImage $OutputPath "$Label window icon"
   Assert-IconHasTransparentCorners $OutputPath "$Label window icon"
 }
 
@@ -1103,7 +1103,7 @@ function Resolve-HomeDir {
 
 function Get-GlobalConfigPath {
   $HomeDir = Resolve-HomeDir
-  Join-Path (Join-Path $HomeDir ".gloomberb") "config.json"
+  Join-Path (Join-Path $HomeDir ".surge") "config.json"
 }
 
 function Stop-ProcessIds {
@@ -1147,10 +1147,10 @@ function Seed-DesktopConfig {
   $GlobalConfigPath = Get-GlobalConfigPath
   $GlobalConfigDir = Split-Path -Parent $GlobalConfigPath
   if (Test-Path $GlobalConfigPath) {
-    throw "Refusing to overwrite existing Gloomberb config during Windows verification: $GlobalConfigPath"
+    throw "Refusing to overwrite existing Surge config during Windows verification: $GlobalConfigPath"
   }
 
-  $DataDir = Join-Path $env:TEMP "GloomberbDesktopData-$PID"
+  $DataDir = Join-Path $env:TEMP "SurgeDesktopData-$PID"
   $DataConfigPath = Join-Path $DataDir "config.json"
   $Layout = @{
     dockRoot = @{
@@ -1230,7 +1230,7 @@ function Capture-OnboardingScreenshot {
     [string]$OutputPath
   )
 
-  $OnboardingHome = Join-Path $env:TEMP "GloomberbOnboardingHome-$PID"
+  $OnboardingHome = Join-Path $env:TEMP "SurgeOnboardingHome-$PID"
   $OnboardingProcess = $null
   $OnboardingWindowProcessIds = @()
   $PreviousHome = $env:HOME
@@ -1258,13 +1258,13 @@ function Capture-OnboardingScreenshot {
     $OnboardingWindows = @(Wait-ForNewWindows `
       -KnownHandles $InitialWindowHandles `
       -MinimumCount 1 `
-      -Label "Gloomberb onboarding window")
+      -Label "Surge onboarding window")
     $OnboardingWindowProcessIds += $OnboardingProcess.Id
     $OnboardingWindowProcessIds += @($OnboardingWindows | Select-Object -ExpandProperty Id | Where-Object { $_ })
 
     Save-WindowInventory (Join-Path $GuiArtifactDir "windows-onboarding-after-launch.txt")
     $null = Capture-WindowScreenshotByTitle `
-      -Title "Gloomberb" `
+      -Title "Surge" `
       -Path $OutputPath `
       -Label "Onboarding window" `
       -InitialDelaySeconds 8
@@ -1285,7 +1285,7 @@ function Capture-OnboardingScreenshot {
 function Assert-TuiStarts {
   param([string]$CliPath)
 
-  & $CliPath __gloomberb-smoke-opentui-native
+  & $CliPath __surge-smoke-opentui-native
   if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
   }
@@ -1299,13 +1299,13 @@ function Assert-TuiStarts {
 $RequiredPaths = @(
   (Join-Path $BundleDir "bin\launcher.exe"),
   (Join-Path $BundleDir "bin\bun.exe"),
-  (Join-Path $BundleDir "bin\gloomberb.cmd"),
+  (Join-Path $BundleDir "bin\surge.cmd"),
   $BundleAppIconPath,
   $BundleLogoIconPath,
-  (Join-Path $BundleDir "Resources\gloomberb-tui\tui-entry.js"),
+  (Join-Path $BundleDir "Resources\surge-tui\tui-entry.js"),
   (Join-Path $CoreDir "index.js"),
-  (Join-Path $Root "artifacts\stable-win-x64-Gloomberb-Setup.zip"),
-  (Join-Path $Root "artifacts\stable-win-x64-Gloomberb.tar.zst"),
+  (Join-Path $Root "artifacts\stable-win-x64-Surge-Setup.zip"),
+  (Join-Path $Root "artifacts\stable-win-x64-Surge.tar.zst"),
   $UpdateManifestPath,
   $InstallerPath
 )
@@ -1337,11 +1337,11 @@ if (-not $NativeLibraries) {
   throw "Missing OpenTUI Windows native DLL in $CoreDir"
 }
 
-Assert-TuiStarts (Join-Path $BundleDir "bin\gloomberb.cmd")
+Assert-TuiStarts (Join-Path $BundleDir "bin\surge.cmd")
 
-$InstallDir = Join-Path $env:TEMP "GloomberbInstall-$PID"
-$InstallLog = Join-Path $env:TEMP "gloomberb-install-$PID.log"
-$UninstallLog = Join-Path $env:TEMP "gloomberb-uninstall-$PID.log"
+$InstallDir = Join-Path $env:TEMP "SurgeInstall-$PID"
+$InstallLog = Join-Path $env:TEMP "surge-install-$PID.log"
+$UninstallLog = Join-Path $env:TEMP "surge-uninstall-$PID.log"
 $GuiProcess = $null
 $LaunchedWindowProcessIds = @()
 $SeededDesktopConfig = $null
@@ -1368,7 +1368,7 @@ try {
     exit $InstallProcess.ExitCode
   }
 
-  $InstalledCli = Join-Path $InstallDir "bin\gloomberb.cmd"
+  $InstalledCli = Join-Path $InstallDir "bin\surge.cmd"
   if (-not (Test-Path $InstalledCli)) {
     Get-Content $InstallLog -ErrorAction SilentlyContinue
     Get-ChildItem -Path $InstallDir -Recurse -Depth 3 -ErrorAction SilentlyContinue |
@@ -1398,14 +1398,14 @@ try {
   $LaunchedWindows = @(Wait-ForNewWindows `
     -KnownHandles $InitialWindowHandles `
     -MinimumCount 2 `
-    -Label "Gloomberb main and detached windows")
+    -Label "Surge main and detached windows")
   $LaunchedWindowProcessIds += $GuiProcess.Id
   $LaunchedWindowProcessIds += @($LaunchedWindows | Select-Object -ExpandProperty Id)
 
-  $MainWindow = $LaunchedWindows | Where-Object { $_.MainWindowTitle -eq "Gloomberb" } | Select-Object -First 1
+  $MainWindow = $LaunchedWindows | Where-Object { $_.MainWindowTitle -eq "Surge" } | Select-Object -First 1
   $DetachedWindow = $LaunchedWindows | Where-Object { $_.MainWindowTitle -eq "Detached Watchlist" } | Select-Object -First 1
   if (-not $MainWindow) {
-    throw "Could not find the Gloomberb main window in the Windows GUI smoke test."
+    throw "Could not find the Surge main window in the Windows GUI smoke test."
   }
   if (-not $DetachedWindow) {
     throw "Could not find the detached watchlist window in the Windows GUI smoke test."
@@ -1422,7 +1422,7 @@ try {
 
   $MainScreenshot = Join-Path $GuiArtifactDir "windows-gui-main.png"
   $MainWindow = Capture-WindowScreenshotByTitle `
-    -Title "Gloomberb" `
+    -Title "Surge" `
     -Path $MainScreenshot `
     -Label "Main window" `
     -InitialDelaySeconds 8
@@ -1490,7 +1490,7 @@ try {
   Capture-DesktopScreenshot $DesktopScreenshot
   Assert-ScreenshotHasContent $DesktopScreenshot "Windows desktop"
 
-  Resolve-VisibleWindowByTitle -Title "Gloomberb" -Label "Main window liveness" | Out-Null
+  Resolve-VisibleWindowByTitle -Title "Surge" -Label "Main window liveness" | Out-Null
   Resolve-VisibleWindowByTitle -Title "Detached Watchlist" -Label "Detached pop-out liveness" | Out-Null
 
   $GuiProcess.Refresh()

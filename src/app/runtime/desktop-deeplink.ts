@@ -17,7 +17,7 @@ export type DesktopDeepLinkAction =
   | { type: "open-news"; kind: NewsDeepLinkKind; symbol: string | null; message: string }
   | { type: "unsupported"; message: string };
 
-interface ParsedGloomUrl {
+interface ParsedSurgeUrl {
   url: URL;
   host: string;
   segments: string[];
@@ -44,14 +44,14 @@ function splitPathSegments(pathname: string): string[] {
     .filter(Boolean);
 }
 
-function parseGloomUrl(rawUrl: string): ParsedGloomUrl | null {
+function parseSurgeUrl(rawUrl: string): ParsedSurgeUrl | null {
   let url: URL;
   try {
     url = new URL(rawUrl);
   } catch {
     return null;
   }
-  if (url.protocol !== "gloomberb:") return null;
+  if (url.protocol !== "surge:") return null;
 
   const host = url.hostname.trim().toLowerCase();
   if (host) {
@@ -109,16 +109,16 @@ function tickerMessage(symbol: string, tabId: string | null): string {
   return tabId ? `Opened ${symbol} ${tabId} tab.` : `Opened ${symbol}.`;
 }
 
-function parseTickerDeepLink(parsed: ParsedGloomUrl): DesktopDeepLinkAction {
+function parseTickerDeepLink(parsed: ParsedSurgeUrl): DesktopDeepLinkAction {
   const symbol = normalizeSymbol(parsed.segments[0] ?? param(parsed.url, "symbol", "ticker"));
   if (!symbol) return { type: "unsupported", message: "Ticker links need a symbol." };
   const tabId = param(parsed.url, "tab");
   return { type: "open-ticker", symbol, tabId, message: tickerMessage(symbol, tabId) };
 }
 
-function parseAlertDeepLink(parsed: ParsedGloomUrl): DesktopDeepLinkAction {
+function parseAlertDeepLink(parsed: ParsedSurgeUrl): DesktopDeepLinkAction {
   if ((parsed.segments[0] ?? "new") !== "new") {
-    return { type: "unsupported", message: "Unsupported Gloomberb alert link." };
+    return { type: "unsupported", message: "Unsupported Surge alert link." };
   }
   const symbol = normalizeSymbol(param(parsed.url, "symbol", "ticker"));
   const condition = normalizeAlertCondition(param(parsed.url, "condition", "side", "trigger"));
@@ -133,7 +133,7 @@ function parseAlertDeepLink(parsed: ParsedGloomUrl): DesktopDeepLinkAction {
   };
 }
 
-function parseNewsDeepLink(parsed: ParsedGloomUrl): DesktopDeepLinkAction {
+function parseNewsDeepLink(parsed: ParsedSurgeUrl): DesktopDeepLinkAction {
   const ticker = normalizeSymbol(param(parsed.url, "ticker", "symbol") ?? (parsed.segments[0] === "ticker" ? parsed.segments[1] : null));
   if (ticker) return { type: "open-news", kind: "ticker", symbol: ticker, message: `Opened ${ticker} news.` };
 
@@ -147,12 +147,12 @@ function parseNewsDeepLink(parsed: ParsedGloomUrl): DesktopDeepLinkAction {
   if (route === "top") {
     return { type: "open-news", kind: "top", symbol: null, message: "Opened top news." };
   }
-  return { type: "unsupported", message: "Unsupported Gloomberb news link." };
+  return { type: "unsupported", message: "Unsupported Surge news link." };
 }
 
 export function resolveDesktopDeepLinkAction(rawUrl: string): DesktopDeepLinkAction {
-  const parsed = parseGloomUrl(rawUrl);
-  if (!parsed) return { type: "unsupported", message: "Unsupported Gloomberb link." };
+  const parsed = parseSurgeUrl(rawUrl);
+  if (!parsed) return { type: "unsupported", message: "Unsupported Surge link." };
 
   switch (parsed.host) {
     case "ticker":
@@ -162,7 +162,7 @@ export function resolveDesktopDeepLinkAction(rawUrl: string): DesktopDeepLinkAct
     case "news":
       return parseNewsDeepLink(parsed);
     default:
-      return { type: "unsupported", message: "Unsupported Gloomberb link." };
+      return { type: "unsupported", message: "Unsupported Surge link." };
   }
 }
 

@@ -545,7 +545,7 @@ function ChartComposerSurface({
           height={1}
           overflow="hidden"
           style={isDesktopWeb ? { width: "auto", flexShrink: 0 } : undefined}
-          data-gloom-role="chart-resolution-control"
+          data-surge-role="chart-resolution-control"
         >
           <Tabs
             tabs={resolutionTabs}

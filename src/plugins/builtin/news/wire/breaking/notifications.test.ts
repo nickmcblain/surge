@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { AppNotificationRequest, GloomPluginContext } from "../../../../../types/plugin";
+import type { AppNotificationRequest, SurgePluginContext } from "../../../../../types/plugin";
 import type { MarketNewsItem, NewsQueryState } from "../../../../../types/news-source";
 import {
   BREAKING_NEWS_MUTED_SECTORS_KEY,
@@ -47,7 +47,7 @@ function ready(articles: MarketNewsItem[]): NewsQueryState {
 }
 
 interface Harness {
-  ctx: GloomPluginContext;
+  ctx: SurgePluginContext;
   notifications: AppNotificationRequest[];
   shownPanes: string[];
   state: Map<string, unknown>;
@@ -91,7 +91,7 @@ function harness(options: {
     notify: (notification: AppNotificationRequest) => void notifications.push(notification),
     showPane: (paneId: string) => void shownPanes.push(paneId),
     log: { warn: () => {} },
-  } as unknown as GloomPluginContext;
+  } as unknown as SurgePluginContext;
 
   return {
     ctx,

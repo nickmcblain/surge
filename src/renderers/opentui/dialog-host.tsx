@@ -236,7 +236,7 @@ export function OpenTuiDialogHostProvider({
       }
       let settled = false;
       const record: DialogRecord = {
-        id: `gloom-dialog-${nextDialogId++}`,
+        id: `surge-dialog-${nextDialogId++}`,
         kind,
         content: options.content,
         size: options.size as DialogSize | undefined,

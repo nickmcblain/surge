@@ -76,7 +76,7 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
       try {
         await withCliServices(ctx, async (services) => {
           checks.push({ check: "config", status: "ok", detail: services.dataDir });
-          checks.push({ check: "database", status: "ok", detail: join(services.dataDir, ".gloomberb-cache.db") });
+          checks.push({ check: "database", status: "ok", detail: join(services.dataDir, ".surge-cache.db") });
           checks.push({ check: "plugins", status: "ok", detail: String(services.services.pluginRegistry.allPlugins.size) });
           checks.push({ check: "capabilities", status: "ok", detail: String(services.services.pluginRegistry.capabilities.manifests().length) });
         });
@@ -117,7 +117,7 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
           return;
         }
         if (action === "get") {
-          const key = requireArg(args[1], "Usage: gloomberb config get <key>", ctx);
+          const key = requireArg(args[1], "Usage: surge config get <key>", ctx);
           ctx.printResult({
             data: {
               key,
@@ -127,8 +127,8 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
           return;
         }
         if (action === "set") {
-          const key = requireArg(args[1], "Usage: gloomberb config set <key> <value>", ctx);
-          const value = requireArg(args[2], "Usage: gloomberb config set <key> <value>", ctx);
+          const key = requireArg(args[1], "Usage: surge config set <key> <value>", ctx);
+          const value = requireArg(args[2], "Usage: surge config set <key> <value>", ctx);
           const editable = new Set(["baseCurrency", "refreshIntervalMinutes", "theme", "valueFlashingEnabled"]);
           if (!editable.has(key)) ctx.fail(`Config key "${key}" is not editable from the CLI.`);
           const parsedValue = key === "refreshIntervalMinutes"
@@ -141,7 +141,7 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
           ctx.printResult({ data: { changed: !ctx.cliOptions.dryRun, dryRun: ctx.cliOptions.dryRun, key, value: parsedValue } });
           return;
         }
-        ctx.fail("Usage: gloomberb config list|get|set");
+        ctx.fail("Usage: surge config list|get|set");
       });
     },
   };
@@ -165,7 +165,7 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
           ctx.printResult({ data: [{ changed: !ctx.cliOptions.dryRun, dryRun: ctx.cliOptions.dryRun, namespace: namespace ?? "all", before: before.entries, after: after.entries }] });
           return;
         }
-        ctx.fail("Usage: gloomberb cache status|clear");
+        ctx.fail("Usage: surge cache status|clear");
       });
     },
   };
@@ -221,14 +221,14 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
           return;
         }
         if (action === "info") {
-          const id = requireArg(args[1], "Usage: gloomberb plugin info <id>", ctx);
+          const id = requireArg(args[1], "Usage: surge plugin info <id>", ctx);
           const row = pluginRows().find((plugin) => plugin.id === id);
           if (!row) ctx.fail(`Plugin "${id}" is not available.`);
           ctx.printResult({ data: row });
           return;
         }
         if (action === "enable" || action === "disable") {
-          const id = requireArg(args[1], `Usage: gloomberb plugin ${action} <id>`, ctx);
+          const id = requireArg(args[1], `Usage: surge plugin ${action} <id>`, ctx);
           const plugin = services.services.pluginRegistry.allPlugins.get(id);
           if (!plugin) ctx.fail(`Plugin "${id}" is not available.`);
           if (plugin?.toggleable !== true) ctx.fail(`Plugin "${id}" is part of the application and cannot be disabled.`);
@@ -241,7 +241,7 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
           ctx.printResult({ data: { changed: before !== disabled.has(id) && !ctx.cliOptions.dryRun, dryRun: ctx.cliOptions.dryRun, id, enabled: !disabled.has(id) } });
           return;
         }
-        ctx.fail("Usage: gloomberb plugin list|info|enable|disable|doctor");
+        ctx.fail("Usage: surge plugin list|info|enable|disable|doctor");
       });
     },
   };
@@ -306,30 +306,30 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
         const action = args[0] ?? "list";
         if (action === "quick") {
           const subaction = args[1] ?? "list";
-          if (subaction !== "list") ctx.fail("Usage: gloomberb notes quick list");
+          if (subaction !== "list") ctx.fail("Usage: surge notes quick list");
           const entries = await notes.loadQuickNotesIndex();
           ctx.printResult({ data: entries });
           return;
         }
         if (action === "show") {
-          const symbol = requireArg(args[1]?.toUpperCase(), "Usage: gloomberb notes show <symbol>", ctx);
+          const symbol = requireArg(args[1]?.toUpperCase(), "Usage: surge notes show <symbol>", ctx);
           ctx.printResult({ data: { symbol, text: await notes.load(symbol) } });
           return;
         }
         if (action === "set") {
-          const symbol = requireArg(args[1]?.toUpperCase(), "Usage: gloomberb notes set <symbol> TEXT", ctx);
+          const symbol = requireArg(args[1]?.toUpperCase(), "Usage: surge notes set <symbol> TEXT", ctx);
           const text = args.slice(2).join(" ");
           if (!ctx.cliOptions.dryRun) await notes.save(symbol, text);
           ctx.printResult({ data: { changed: !ctx.cliOptions.dryRun, dryRun: ctx.cliOptions.dryRun, symbol, bytes: text.length } });
           return;
         }
         if (action === "delete" || action === "rm") {
-          const symbol = requireArg(args[1]?.toUpperCase(), "Usage: gloomberb notes delete <symbol>", ctx);
+          const symbol = requireArg(args[1]?.toUpperCase(), "Usage: surge notes delete <symbol>", ctx);
           if (!ctx.cliOptions.dryRun) await notes.delete(symbol);
           ctx.printResult({ data: { changed: !ctx.cliOptions.dryRun, dryRun: ctx.cliOptions.dryRun, symbol } });
           return;
         }
-        ctx.fail("Usage: gloomberb notes show|set|delete|quick");
+        ctx.fail("Usage: surge notes show|set|delete|quick");
       });
     },
   };
@@ -363,10 +363,10 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
           return;
         }
         if (action === "add") {
-          const symbol = requireArg(args[1]?.toUpperCase(), "Usage: gloomberb alerts add <symbol> <above|below|crosses> <price>", ctx);
-          const condition = requireArg(args[2], "Usage: gloomberb alerts add <symbol> <above|below|crosses> <price>", ctx) as AlertCondition;
+          const symbol = requireArg(args[1]?.toUpperCase(), "Usage: surge alerts add <symbol> <above|below|crosses> <price>", ctx);
+          const condition = requireArg(args[2], "Usage: surge alerts add <symbol> <above|below|crosses> <price>", ctx) as AlertCondition;
           if (!["above", "below", "crosses"].includes(condition)) ctx.fail("Condition must be above, below, or crosses.");
-          const price = Number(requireArg(args[3], "Usage: gloomberb alerts add <symbol> <above|below|crosses> <price>", ctx));
+          const price = Number(requireArg(args[3], "Usage: surge alerts add <symbol> <above|below|crosses> <price>", ctx));
           if (!Number.isFinite(price)) ctx.fail("Alert price must be a finite number.");
           const alert = createAlert(symbol, condition, price);
           await saveAlerts([...alerts, alert]);
@@ -374,20 +374,20 @@ export function createSystemCliCommands(allCommands: () => CliCommandDef[]): Cli
           return;
         }
         if (action === "delete" || action === "rm") {
-          const id = requireArg(args[1], "Usage: gloomberb alerts delete <id>", ctx);
+          const id = requireArg(args[1], "Usage: surge alerts delete <id>", ctx);
           const next = alerts.filter((alert) => alert.id !== id);
           await saveAlerts(next);
           ctx.printResult({ data: { changed: !ctx.cliOptions.dryRun && next.length !== alerts.length, dryRun: ctx.cliOptions.dryRun, id } });
           return;
         }
         if (action === "rearm") {
-          const id = requireArg(args[1], "Usage: gloomberb alerts rearm <id>", ctx);
+          const id = requireArg(args[1], "Usage: surge alerts rearm <id>", ctx);
           const next = alerts.map((alert) => alert.id === id ? { ...alert, status: "active" as const, triggeredAt: undefined } : alert);
           await saveAlerts(next);
           ctx.printResult({ data: { changed: !ctx.cliOptions.dryRun, dryRun: ctx.cliOptions.dryRun, id } });
           return;
         }
-        ctx.fail("Usage: gloomberb alerts list|add|delete|rearm");
+        ctx.fail("Usage: surge alerts list|add|delete|rearm");
       });
     },
   };

@@ -52,9 +52,9 @@ interface ConnectionHealthOptions {
   requestStatusTtlMs?: number;
 }
 
-export const GLOOM_CLOUD_HTTP_CONNECTION_ID = "gloom-cloud-http";
-export const GLOOM_CLOUD_SOCKET_CONNECTION_ID = "gloom-cloud-socket";
-export const GLOOM_CLOUD_FRED_CONNECTION_ID = "gloom-cloud-fred";
+export const SURGE_CLOUD_HTTP_CONNECTION_ID = "surge-cloud-http";
+export const SURGE_CLOUD_SOCKET_CONNECTION_ID = "surge-cloud-socket";
+export const SURGE_CLOUD_FRED_CONNECTION_ID = "surge-cloud-fred";
 
 const MAX_RECENT_REQUESTS = 20;
 const DEFAULT_REQUEST_STATUS_TTL_MS = 60_000;
@@ -260,27 +260,27 @@ export class ConnectionHealthRegistry {
   }
 }
 
-export function registerGloomCloudConnectionSources(health: ConnectionHealthRegistry): () => void {
+export function registerSurgeCloudConnectionSources(health: ConnectionHealthRegistry): () => void {
   const disposers = [
     health.registerSource({
-      id: GLOOM_CLOUD_HTTP_CONNECTION_ID,
-      name: "Gloom Cloud HTTP",
+      id: SURGE_CLOUD_HTTP_CONNECTION_ID,
+      name: "Surge Cloud HTTP",
       kind: "api",
-      ownerId: "gloomberb-cloud",
+      ownerId: "surge-cloud",
       priority: 0,
       detail: "api.gloom.sh",
     }),
     health.registerSource({
-      id: GLOOM_CLOUD_SOCKET_CONNECTION_ID,
-      name: "Gloom Cloud Stream",
+      id: SURGE_CLOUD_SOCKET_CONNECTION_ID,
+      name: "Surge Cloud Stream",
       kind: "websocket",
-      ownerId: "gloomberb-cloud",
+      ownerId: "surge-cloud",
       priority: 1,
       detail: "api.gloom.sh/cloud/ws",
     }),
     health.registerSource({
-      id: GLOOM_CLOUD_FRED_CONNECTION_ID,
-      name: "Gloom / FRED",
+      id: SURGE_CLOUD_FRED_CONNECTION_ID,
+      name: "Surge / FRED",
       kind: "api",
       ownerId: "macro",
       priority: 2,

@@ -5,8 +5,8 @@
 Requires [Bun](https://bun.sh).
 
 ```bash
-git clone https://github.com/gloom-sh/gloomberb.git
-cd gloomberb
+git clone https://github.com/nickmc-lumion/surge.git
+cd surge
 bun install
 bun dev
 ```
@@ -22,9 +22,9 @@ bun run web:build
 bunx wrangler dev
 ```
 
-Validate the public artifacts with `bun run web:audit` and `bun run cloudflare:dry-run`. `wrangler.jsonc` is the local configuration. After verification passes on `main`, GitHub Actions deploys `term.gloom.sh` with `wrangler.production.jsonc`. The private Gloom Cloud API is deployed separately.
+Validate the public artifacts with `bun run web:audit` and `bun run cloudflare:dry-run`. `wrangler.jsonc` is the local configuration. After verification passes on `main`, GitHub Actions deploys `term.gloom.sh` with `wrangler.production.jsonc`. The private Surge Cloud API is deployed separately.
 
-Cloud REST and WebSocket traffic uses the same-origin `/api` path, which the Worker forwards only to `https://api.gloom.sh`; it is not an arbitrary network proxy. Public shares open under `/s/:id` in a separate slim bundle. Share creation and owner deletion use the signed-in Gloom Cloud session through the same API path; public reads require no account.
+Cloud REST and WebSocket traffic uses the same-origin `/api` path, which the Worker forwards only to `https://api.gloom.sh`; it is not an arbitrary network proxy. Public shares open under `/s/:id` in a separate slim bundle. Share creation and owner deletion use the signed-in Surge Cloud session through the same API path; public reads require no account.
 
 See the [browser guide](docs/browser.md) for account requirements and supported features.
 

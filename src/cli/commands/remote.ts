@@ -28,20 +28,20 @@ export const remoteCliCommand: CliCommandDef = {
     const parsed = parseRemoteArgs(rawArgs);
     const action = parsed.args[0];
     if (!action) {
-      ctx.fail("Usage: gloomberb remote <schema|help|get|call|patch|batch|watch>");
+      ctx.fail("Usage: surge remote <schema|help|get|call|patch|batch|watch>");
       return;
     }
 
     const dataDir = await getDataDir();
     if (!dataDir) {
-      ctx.fail("No data directory configured.", "Run gloomberb once before using remote control.");
+      ctx.fail("No data directory configured.", "Run surge once before using remote control.");
       return;
     }
 
     if (action === "watch") {
       const resource = parsed.args[1];
       if (!resource) {
-        ctx.fail("Usage: gloomberb remote watch <resource>");
+        ctx.fail("Usage: surge remote watch <resource>");
         return;
       }
       const limit = ctx.cliOptions.limit ?? Number.POSITIVE_INFINITY;
@@ -115,12 +115,12 @@ function buildRemoteRequest(action: string, parsed: RemoteArgs, dryRun: boolean)
       return { type: "help" };
     case "get": {
       const resource = parsed.args[1];
-      if (!resource) throw new Error("Usage: gloomberb remote get <resource>");
+      if (!resource) throw new Error("Usage: surge remote get <resource>");
       return { type: "get", resource };
     }
     case "call": {
       const operation = parsed.args[1];
-      if (!operation) throw new Error("Usage: gloomberb remote call <operation> [json]");
+      if (!operation) throw new Error("Usage: surge remote call <operation> [json]");
       return {
         type: "call",
         operation,
@@ -131,7 +131,7 @@ function buildRemoteRequest(action: string, parsed: RemoteArgs, dryRun: boolean)
     case "patch": {
       const resource = parsed.args[1];
       const patchRaw = parsed.args[2];
-      if (!resource || !patchRaw) throw new Error("Usage: gloomberb remote patch <resource> <json-patch>");
+      if (!resource || !patchRaw) throw new Error("Usage: surge remote patch <resource> <json-patch>");
       const patch = parseJsonValue(patchRaw, []);
       if (!Array.isArray(patch)) throw new Error("Remote patch payload must be a JSON array.");
       return {
@@ -144,7 +144,7 @@ function buildRemoteRequest(action: string, parsed: RemoteArgs, dryRun: boolean)
     }
     case "batch": {
       const payload = parseJsonValue(parsed.args[1], null);
-      if (!payload) throw new Error("Usage: gloomberb remote batch <json>");
+      if (!payload) throw new Error("Usage: surge remote batch <json>");
       if (Array.isArray(payload)) return { type: "batch", requests: payload as RemoteControlRequest[], dryRun };
       return withCliDryRun(payload as RemoteControlRequest, dryRun);
     }

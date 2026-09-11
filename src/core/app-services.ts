@@ -1,5 +1,5 @@
 import { join } from "path";
-import { connectionHealth, registerGloomCloudConnectionSources } from "./connection-health";
+import { connectionHealth, registerSurgeCloudConnectionSources } from "./connection-health";
 import { AppPersistence } from "../data/app-persistence";
 import { TickerRepository } from "../data/ticker-repository";
 import { AssetDataRouter } from "../sources/provider-router";
@@ -10,7 +10,7 @@ import { createAppRuntime } from "./app-runtime";
 export type AppServices = ReturnType<typeof createAppServices>;
 
 export function createAppServices({ config, plugins }: AppServicesFactoryOptions) {
-  const persistence = new AppPersistence(join(config.dataDir, ".gloomberb-cache.db"));
+  const persistence = new AppPersistence(join(config.dataDir, ".surge-cache.db"));
   const tickerRepository = new TickerRepository(persistence.tickers);
   const providerRouter = new AssetDataRouter(null, [], persistence.resources, connectionHealth);
   const runtime = createAppRuntime({
@@ -31,7 +31,7 @@ export function createAppServices({ config, plugins }: AppServicesFactoryOptions
         // The router must not rediscover its own aggregate facade as a source.
         sourceId: providerRouter.id,
       });
-      return registerGloomCloudConnectionSources(connectionHealth);
+      return registerSurgeCloudConnectionSources(connectionHealth);
     },
   });
   return { ...runtime, persistence, tickerRepository, providerRouter };

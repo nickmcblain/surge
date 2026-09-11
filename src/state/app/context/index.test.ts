@@ -8,7 +8,7 @@ import { buildBrokerPortfolioId } from "../../../utils/broker-instances";
 
 describe("resolveTickerForPane", () => {
   test("uses a portfolio pane cursor for inspector follow panes", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const state = createInitialState(config);
 
     state.paneState["portfolio-list:main"] = {
@@ -21,7 +21,7 @@ describe("resolveTickerForPane", () => {
   });
 
   test("follows cursor symbols from any ticker source pane", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const source = createPaneInstance("ai-screener", {
       instanceId: "ai-screener:main",
       binding: { kind: "none" },
@@ -44,7 +44,7 @@ describe("resolveTickerForPane", () => {
   });
 
   test("pins a follower to its last ticker when its source closes", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const state = createInitialState(config);
     state.paneState["portfolio-list:main"] = { collectionId: "main", cursorSymbol: "AAPL" };
 
@@ -60,7 +60,7 @@ describe("resolveTickerForPane", () => {
   });
 
   test("uses fixed ticker bindings for pinned panes", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const instance = createPaneInstance("ticker-detail", {
       instanceId: "ticker-detail:msft",
       binding: { kind: "fixed", symbol: "MSFT" },
@@ -79,7 +79,7 @@ describe("resolveTickerForPane", () => {
   });
 
   test("hydrates remembered pane-local tab and sort state from the previous session", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const sessionSnapshot: AppSessionSnapshot = {
       paneState: {
         "portfolio-list:main": {
@@ -117,7 +117,7 @@ describe("resolveTickerForPane", () => {
   });
 
   test("raises the session-focused floating pane above stale saved z-order", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     config.layout = {
       ...config.layout,
       dockRoot: null,
@@ -152,7 +152,7 @@ describe("resolveTickerForPane", () => {
   });
 
   test("preserves broker portfolio selection until broker portfolios are restored", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const brokerPortfolioId = buildBrokerPortfolioId("ibkr-live", "DU12345");
     const sessionSnapshot: AppSessionSnapshot = {
       paneState: {
@@ -204,7 +204,7 @@ describe("resolveTickerForPane", () => {
   });
 
   test("falls back for unknown non-broker collection ids", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const sessionSnapshot: AppSessionSnapshot = {
       paneState: {
         "portfolio-list:main": {
@@ -232,7 +232,7 @@ describe("resolveTickerForPane", () => {
 
 describe("broker account cache", () => {
   test("stores broker accounts by instance id", () => {
-    const state = createInitialState(createResearchTestConfig("/tmp/gloomberb-test"));
+    const state = createInitialState(createResearchTestConfig("/tmp/surge-test"));
     const next = appReducer(state, {
       type: "SET_BROKER_ACCOUNTS",
       instanceId: "ibkr-flex",
@@ -245,7 +245,7 @@ describe("broker account cache", () => {
   });
 
   test("preserves cached broker accounts across unrelated config updates", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     config.brokerInstances.push({
       id: "ibkr-flex",
       brokerType: "ibkr",
@@ -266,7 +266,7 @@ describe("broker account cache", () => {
   });
 
   test("clears cached broker accounts when the broker instance is removed", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     config.brokerInstances.push({
       id: "ibkr-flex",
       brokerType: "ibkr",
@@ -292,7 +292,7 @@ describe("broker account cache", () => {
 
 describe("pane state updates", () => {
   test("returns the existing state object when a pane patch is a no-op", () => {
-    const initial = createInitialState(createResearchTestConfig("/tmp/gloomberb-test"));
+    const initial = createInitialState(createResearchTestConfig("/tmp/surge-test"));
     initial.paneState["portfolio-list:main"] = {
       collectionId: "main",
       cursorSymbol: "AAPL",
@@ -308,7 +308,7 @@ describe("pane state updates", () => {
   });
 
   test("keeps pane runtime state scoped to each saved layout", () => {
-    let state = createInitialState(createResearchTestConfig("/tmp/gloomberb-test"));
+    let state = createInitialState(createResearchTestConfig("/tmp/surge-test"));
     const originalLayoutIndex = state.config.activeLayoutIndex;
 
     state = appReducer(state, {
@@ -336,7 +336,7 @@ describe("pane state updates", () => {
   });
 
   test("hydrates saved layout pane state before legacy session pane state", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     config.layouts[config.activeLayoutIndex] = {
       ...config.layouts[config.activeLayoutIndex]!,
       paneState: {
@@ -368,7 +368,7 @@ describe("pane state updates", () => {
 
 describe("quote merging", () => {
   test("does not overwrite live broker quotes with cloud updates", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const initial = createInitialState(config);
     initial.financials.set("AAPL", {
       annualStatements: [],
@@ -391,7 +391,7 @@ describe("quote merging", () => {
       symbol: "AAPL",
       quote: {
         symbol: "AAPL",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 199,
         currency: "USD",
         change: -1,
@@ -406,7 +406,7 @@ describe("quote merging", () => {
   });
 
   test("merges cloud quotes into existing fundamentals without wiping them", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const initial = createInitialState(config);
     initial.financials.set("AAPL", {
       annualStatements: [],
@@ -421,7 +421,7 @@ describe("quote merging", () => {
       symbol: "AAPL",
       quote: {
         symbol: "AAPL",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 200,
         currency: "USD",
         change: 2,
@@ -437,7 +437,7 @@ describe("quote merging", () => {
   });
 
   test("preserves existing bid ask when a streaming quote only updates last price", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const initial = createInitialState(config);
     initial.financials.set("AAPL", {
       annualStatements: [],
@@ -445,7 +445,7 @@ describe("quote merging", () => {
       priceHistory: [],
       quote: {
         symbol: "AAPL",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 200,
         currency: "USD",
         change: 2,
@@ -464,7 +464,7 @@ describe("quote merging", () => {
       symbol: "AAPL",
       quote: {
         symbol: "AAPL",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 201,
         currency: "USD",
         change: 3,
@@ -482,7 +482,7 @@ describe("quote merging", () => {
   });
 
   test("ignores same-currency quotes that differ by a likely 100x unit mismatch", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const initial = createInitialState(config);
     initial.financials.set("IQE", {
       annualStatements: [],
@@ -505,7 +505,7 @@ describe("quote merging", () => {
       symbol: "IQE",
       quote: {
         symbol: "IQE",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         price: 24.5,
         currency: "GBP",
         change: -2.1,
@@ -523,7 +523,7 @@ describe("quote merging", () => {
 
 describe("layout focus fallback", () => {
   test("switching to an old layout without focused metadata uses that layout's top floating pane", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const targetLayout = {
       ...cloneLayout(config.layout),
       dockRoot: null,
@@ -549,7 +549,7 @@ describe("layout focus fallback", () => {
   });
 
   test("starts with the top floating pane focused when no session pane is active", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const layout = {
       ...cloneLayout(config.layout),
       dockRoot: { kind: "pane" as const, instanceId: "portfolio-list:main" },
@@ -569,7 +569,7 @@ describe("layout focus fallback", () => {
   });
 
   test("focuses the highest remaining floating pane when the focused floating pane closes", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const backgroundPane = createPaneInstance("chat", {
       instanceId: "chat:background",
       binding: { kind: "none" },

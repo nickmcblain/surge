@@ -29,7 +29,7 @@ export interface TerminalMediaReaper {
 }
 
 export function terminalMediaStateFile(): string {
-  return join(process.env.HOME || homedir(), ".gloomberb", "terminal-media.pid");
+  return join(process.env.HOME || homedir(), ".surge", "terminal-media.pid");
 }
 
 function defaultIsPlayerProcess(pid: number): boolean {

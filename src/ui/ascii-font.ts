@@ -62,16 +62,16 @@ const TINY_FONT: Record<string, TinyFontChar> = {
   " ": [" ", " "],
 };
 
-const GLOOMBERB_WORDMARK = [
-  "▞▀▖▜           ▌        ▌  ",
-  "▌▄▖▐ ▞▀▖▞▀▖▛▚▀▖▛▀▖▞▀▖▙▀▖▛▀▖",
-  "▌ ▌▐ ▌ ▌▌ ▌▌▐ ▌▌ ▌▛▀ ▌  ▌ ▌",
-  "▝▀  ▘▝▀ ▝▀ ▘▝ ▘▀▀ ▝▀▘▘  ▀▀ ",
+const SURGE_WORDMARK = [
+  "▞▀▖            ",
+  "▚▄ ▌ ▌▙▀▖▞▀▌▞▀▖",
+  "▖ ▌▌ ▌▌  ▌ ▌▛▀ ",
+  "▝▀ ▝▀▘▘  ▝▀▌▝▀▘",
 ];
 
 export function renderAsciiText(text: string, font: AsciiFontName = "tiny"): string[] {
   if (font === "wordmark") {
-    return text.trim().toLowerCase() === "gloomberb" ? GLOOMBERB_WORDMARK : [text];
+    return text.trim().toLowerCase() === "surge" ? SURGE_WORDMARK : [text];
   }
 
   const lines = ["", ""];

@@ -11,8 +11,8 @@
  * field underneath it re-renders whatever hosts the dialog, which costs the
  * dialog the focus it just took.
  */
-const FOCUS_SCOPE_ATTRIBUTE = "data-gloom-focus-scope";
-const DIALOG_CLASS_SELECTOR = ".gloom-dialog";
+const FOCUS_SCOPE_ATTRIBUTE = "data-surge-focus-scope";
+const DIALOG_CLASS_SELECTOR = ".surge-dialog";
 
 interface FocusableLike {
   tagName?: string;

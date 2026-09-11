@@ -106,7 +106,7 @@ export function ShellWindowModeOverlays({
           borderStyle="single"
           borderColor={colors.borderFocused}
           backgroundColor={colors.panel}
-          data-gloom-role="window-mode-drop-preview"
+          data-surge-role="window-mode-drop-preview"
           data-target-id={windowModeDockMovePreview.targetId}
           data-position={windowModeDockMovePreview.position}
         />
@@ -189,7 +189,7 @@ export function ShellWindowModeOverlays({
             height={cornerRect.height}
             zIndex={(highlightedFloatingPane.pane.floating?.zIndex ?? 50) + 3}
             backgroundColor={colors.borderFocused}
-            data-gloom-role="window-mode-corner"
+            data-surge-role="window-mode-corner"
             data-corner={windowMode.focus.corner}
           />
         );

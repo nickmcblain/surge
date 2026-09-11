@@ -204,7 +204,7 @@ export type AccountProfileUpdate = Partial<{
 }>;
 
 export interface CloudQuotePayload extends Quote {
-  providerId: "gloomberb-cloud";
+  providerId: "surge-cloud";
   dataSource: "live" | "delayed";
 }
 
@@ -225,7 +225,7 @@ export interface CloudWorldVenuePayload {
 }
 
 export interface CloudWorldVenueMapPayload {
-  providerId: "gloomberb-cloud";
+  providerId: "surge-cloud";
   checkedAt: number;
   refreshAt: number;
   stale?: boolean;
@@ -233,7 +233,7 @@ export interface CloudWorldVenueMapPayload {
 }
 
 export interface CloudOptionsChainPayload extends OptionsChain {
-  providerId: "gloomberb-cloud";
+  providerId: "surge-cloud";
 }
 
 export interface CloudCompanyProfile extends CompanyProfile {}
@@ -241,21 +241,21 @@ export interface CloudCompanyProfile extends CompanyProfile {}
 export interface CloudFundamentals extends Fundamentals {}
 
 interface CloudHolderPayload extends HolderRecord {
-  providerId: "gloomberb-cloud";
+  providerId: "surge-cloud";
   ownerType: "institution";
 }
 
 export interface CloudHoldersPayload extends HolderData {
-  providerId: "gloomberb-cloud";
+  providerId: "surge-cloud";
   holders: CloudHolderPayload[];
 }
 
 export interface CloudAnalystResearchPayload extends AnalystResearchData {
-  providerId: "gloomberb-cloud";
+  providerId: "surge-cloud";
 }
 
 export interface CloudCorporateActionsPayload extends CorporateActionsData {
-  providerId: "gloomberb-cloud";
+  providerId: "surge-cloud";
 }
 
 export interface CloudPricePointPayload {
@@ -1076,7 +1076,7 @@ export interface CloudMarketScreenerItem {
 }
 
 export interface CloudMarketScreenerPayload {
-  providerId: "gloomberb-cloud";
+  providerId: "surge-cloud";
   category: CloudMarketScreenerCategory;
   asOf: string;
   stale?: boolean;

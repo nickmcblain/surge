@@ -107,10 +107,10 @@ afterEach(async () => {
 describe("chart series inline quick add", () => {
   test("distinguishes its own drawer from outside desktop clicks", () => {
     const ownRoot = {
-      getAttribute: (name: string) => name === "data-gloom-chart-quick-add" ? "chart-a" : null,
+      getAttribute: (name: string) => name === "data-surge-chart-quick-add" ? "chart-a" : null,
     };
     const otherRoot = {
-      getAttribute: (name: string) => name === "data-gloom-chart-quick-add" ? "chart-b" : null,
+      getAttribute: (name: string) => name === "data-surge-chart-quick-add" ? "chart-b" : null,
     };
 
     expect(isChartQuickAddMouseTarget({ closest: () => ownRoot }, "chart-a")).toBe(true);
@@ -119,7 +119,7 @@ describe("chart series inline quick add", () => {
   });
 
   test("stays visible and adds a smart ticker-metric suggestion", async () => {
-    const initial = createInitialState(createDefaultConfig("/tmp/gloomberb-chart-quick-add"));
+    const initial = createInitialState(createDefaultConfig("/tmp/surge-chart-quick-add"));
     const startingSpec = buildPriceChartPreset("AAPL");
     let updatedSpec: ChartSpec | undefined;
     let renderedWidth = 0;
@@ -188,7 +188,7 @@ describe("chart series inline quick add", () => {
   });
 
   test("releases focus capture when the input blurs", async () => {
-    const initial = createInitialState(createDefaultConfig("/tmp/gloomberb-chart-quick-add-blur"));
+    const initial = createInitialState(createDefaultConfig("/tmp/surge-chart-quick-add-blur"));
     const startingSpec = buildPriceChartPreset("AAPL");
     const activeStates: boolean[] = [];
     let seriesShortcutCount = 0;

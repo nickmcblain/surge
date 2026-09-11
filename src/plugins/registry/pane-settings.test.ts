@@ -6,7 +6,7 @@ import { resolveRegistryPaneSettings } from "./pane-settings";
 
 test("adds a working CSV action to exportable table panes", async () => {
   const pane = { instanceId: "prices:main", paneId: "prices", title: "Market Prices" };
-  const config = createDefaultConfig("/tmp/gloomberb-pane-export-test");
+  const config = createDefaultConfig("/tmp/surge-pane-export-test");
   config.layout.instances = [pane];
   const filenames: string[] = [];
   const unregister = registerPaneTableExporter(pane.instanceId, async (filename) => {

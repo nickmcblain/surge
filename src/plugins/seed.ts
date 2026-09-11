@@ -9,7 +9,7 @@ import { pluginDirectoryNames } from "./plugin-names";
 const log = debugLog.createLogger("plugin-seed");
 
 /**
- * Plugins that used to ship inside Gloomberb and now live in their own
+ * Plugins that used to ship inside Surge and now live in their own
  * repositories.
  *
  * Extracting one must not take a working feature away from someone who upgrades.
@@ -17,13 +17,13 @@ const log = debugLog.createLogger("plugin-seed");
  * so it is never reinstalled — including when the user removes it deliberately.
  */
 export const EXTRACTED_PLUGINS = [
-  { id: "tv", repo: "gloom-sh/gloom-tv", directory: "gloom-tv", previousOwnerIds: ["macro", "macro-tv"] },
-  { id: "substack", repo: "gloom-sh/gloom-substack", directory: "gloom-substack" },
-  { id: "ibkr", repo: "gloom-sh/gloomberb-ibkr", directory: "gloomberb-ibkr" },
-  { id: "ibkr-gateway", repo: "gloom-sh/gloomberb-ibkr-gateway", directory: "gloomberb-ibkr-gateway" },
-  { id: "public", repo: "gloom-sh/gloom-public", directory: "gloom-public" },
-  { id: "robinhood", repo: "gloom-sh/gloom-robinhood", directory: "gloom-robinhood" },
-  { id: "simplefin", repo: "gloom-sh/gloom-simplefin", directory: "gloom-simplefin" },
+  { id: "tv", repo: "surge-sh/surge-tv", directory: "surge-tv", previousOwnerIds: ["macro", "macro-tv"] },
+  { id: "substack", repo: "surge-sh/surge-substack", directory: "surge-substack" },
+  { id: "ibkr", repo: "nickmc-lumion/surge-ibkr", directory: "surge-ibkr" },
+  { id: "ibkr-gateway", repo: "nickmc-lumion/surge-ibkr-gateway", directory: "surge-ibkr-gateway" },
+  { id: "public", repo: "surge-sh/surge-public", directory: "surge-public" },
+  { id: "robinhood", repo: "surge-sh/surge-robinhood", directory: "surge-robinhood" },
+  { id: "simplefin", repo: "surge-sh/surge-simplefin", directory: "surge-simplefin" },
 ] as const;
 
 export interface SeedResult {

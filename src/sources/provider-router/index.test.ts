@@ -36,7 +36,7 @@ describe("AssetDataRouter", () => {
     });
     const cloudProvider: DataProvider = {
       ...fallbackProvider,
-      id: "gloomberb-cloud",
+      id: "surge-cloud",
       name: "Cloud",
       priority: 100,
       async getQuote() {
@@ -884,13 +884,13 @@ describe("AssetDataRouter", () => {
       };
       const cloudProvider: DataProvider = {
         ...fallbackProvider,
-        id: "gloomberb-cloud",
+        id: "surge-cloud",
         name: "Cloud",
         priority: 100,
         async getQuote(symbol) {
           return {
             symbol,
-            providerId: "gloomberb-cloud",
+            providerId: "surge-cloud",
             price: 150,
             currency: "TWD",
             change: 0,
@@ -906,7 +906,7 @@ describe("AssetDataRouter", () => {
             target,
             quote: {
               symbol: target.symbol,
-              providerId: "gloomberb-cloud",
+              providerId: "surge-cloud",
               price: 150,
               currency: "TWD",
               change: 0,
@@ -1142,7 +1142,7 @@ describe("AssetDataRouter", () => {
           bid: 250.25,
           ask: 254.5,
           mark: 252.375,
-          providerId: "gloomberb-cloud",
+          providerId: "surge-cloud",
           dataSource: "delayed",
         });
       },
@@ -1892,7 +1892,7 @@ describe("AssetDataRouter", () => {
         kind: "financials",
         entityKey: "contract:14075064",
         variantKey: "exchange=LSE",
-        sourceKey: "provider:gloomberb-cloud",
+        sourceKey: "provider:surge-cloud",
       },
       makeFinancials({
         quote: makeQuote({
@@ -1955,7 +1955,7 @@ describe("AssetDataRouter", () => {
     };
     const cloudProvider: DataProvider = {
       ...fallbackProvider,
-      id: "gloomberb-cloud",
+      id: "surge-cloud",
       name: "Cloud",
       priority: 100,
       async getTickerFinancials() {

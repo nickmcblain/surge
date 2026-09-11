@@ -153,7 +153,7 @@ export function CommandBarPanel({
         onMouseDown={(event: any) => {
           event.stopPropagation?.();
         }}
-        data-gloom-role="command-bar-panel"
+        data-surge-role="command-bar-panel"
         style={nativePaneChrome ? {
           // The lower half of the control the header input opens: rounded and
           // bordered along its three free edges, open where the input sits.
@@ -193,7 +193,7 @@ export function CommandBarPanel({
                         event.preventDefault?.();
                         onBack();
                       }}
-                      data-gloom-interactive="true"
+                      data-surge-interactive="true"
                     >
                       {`\u2190 ${t("Back")}`}
                     </Text>

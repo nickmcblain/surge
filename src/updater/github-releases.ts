@@ -1,5 +1,5 @@
-const GLOOMBERB_REPO = "gloom-sh/gloomberb";
-const GITHUB_RELEASES_API_URL = `https://api.github.com/repos/${GLOOMBERB_REPO}/releases`;
+const SURGE_REPO = "nickmc-lumion/surge";
+const GITHUB_RELEASES_API_URL = `https://api.github.com/repos/${SURGE_REPO}/releases`;
 export const GITHUB_LATEST_RELEASE_API_URL = `${GITHUB_RELEASES_API_URL}/latest`;
 
 export interface ChangelogRelease {
@@ -44,7 +44,7 @@ export function normalizeChangelogRelease(release: GitHubReleasePayload): Change
     title,
     body,
     publishedAt: release.published_at ?? "",
-    url: release.html_url?.trim() || `https://github.com/${GLOOMBERB_REPO}/releases/tag/${encodeURIComponent(tagName)}`,
+    url: release.html_url?.trim() || `https://github.com/${SURGE_REPO}/releases/tag/${encodeURIComponent(tagName)}`,
   };
 }
 

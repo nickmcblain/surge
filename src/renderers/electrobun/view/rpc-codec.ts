@@ -1,5 +1,5 @@
-const DATE_MARKER = "__gloomDate";
-const MAP_MARKER = "__gloomMap";
+const DATE_MARKER = "__surgeDate";
+const MAP_MARKER = "__surgeMap";
 
 export function encodeRpcValue(value: unknown): unknown {
   if (value instanceof Date) {

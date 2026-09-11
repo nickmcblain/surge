@@ -3,7 +3,7 @@ import { NewsService, type NewsServiceOptions } from "../news/aggregator";
 import { getSharedNewsService, setSharedNewsService } from "../news/hooks";
 import { PluginRegistry } from "../plugins/registry";
 import { releaseSharedRegistry } from "../plugins/registry/shared";
-import type { GloomPlugin } from "../types/plugin";
+import type { SurgePlugin } from "../types/plugin";
 import { measurePerfAsync } from "../utils/perf-marks";
 import type { AppRuntimeServices, AppServicesFactoryOptions } from "./app-service-ports";
 
@@ -16,7 +16,7 @@ interface AppRuntimeOptions extends AppServicesFactoryOptions, Pick<Runtime, "pe
   newsOptions?: NewsServiceOptions;
   configure?: (modules: RuntimeModules) => void | Dispose;
   onReady?: (modules: RuntimeModules) => void | Dispose;
-  onPluginError?: (error: unknown, plugin: GloomPlugin) => void;
+  onPluginError?: (error: unknown, plugin: SurgePlugin) => void;
 }
 
 /** Hosts supply adapters; registration, shared-service ownership and disposal have one lifecycle. */

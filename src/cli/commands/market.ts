@@ -201,7 +201,7 @@ async function runQuote(rawArgs: string[], ctx: Parameters<CliCommandDef["execut
   const args = [...rawArgs];
   const exchange = takeOption(args, "--exchange") ?? "";
   const symbols = normalizeSymbols(args);
-  if (symbols.length === 0) ctx.fail("Usage: gloomberb quote <symbol...>");
+  if (symbols.length === 0) ctx.fail("Usage: surge quote <symbol...>");
 
   await withMarketData(ctx, async (market) => {
     const results = await market.dataProvider.getQuotesBatch(
@@ -221,7 +221,7 @@ async function runHistory(rawArgs: string[], ctx: Parameters<CliCommandDef["exec
   const args = [...rawArgs];
   const range = parseRange(takeOption(args, "--range"));
   const requestedExchange = takeOption(args, "--exchange") ?? "";
-  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: gloomberb history <symbol> [--range 1Y]", ctx);
+  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: surge history <symbol> [--range 1Y]", ctx);
   await withMarketData(ctx, async (market) => {
     const localTicker = requestedExchange ? null : await market.store.loadTicker(symbol);
     const exchange = requestedExchange || localTicker?.metadata.exchange || "";
@@ -243,7 +243,7 @@ async function runHistory(rawArgs: string[], ctx: Parameters<CliCommandDef["exec
 async function runFinancials(rawArgs: string[], ctx: Parameters<CliCommandDef["execute"]>[1], fundamentalsOnly = false) {
   const args = [...rawArgs];
   const exchange = takeOption(args, "--exchange") ?? "";
-  const symbol = requireArg(args[0]?.toUpperCase(), fundamentalsOnly ? "Usage: gloomberb fundamentals <symbol>" : "Usage: gloomberb financials <symbol>", ctx);
+  const symbol = requireArg(args[0]?.toUpperCase(), fundamentalsOnly ? "Usage: surge fundamentals <symbol>" : "Usage: surge financials <symbol>", ctx);
   await withMarketData(ctx, async (market) => {
     const financials = await market.dataProvider.getTickerFinancials(symbol, exchange, {
       cacheMode: ctx.cliOptions.refresh ? "refresh" : "default",
@@ -311,7 +311,7 @@ async function runFilings(rawArgs: string[], ctx: Parameters<CliCommandDef["exec
   const args = [...rawArgs];
   const count = parsePositiveInt(takeOption(args, "--count"), ctx.cliOptions.limit ?? 15, "Count", ctx);
   const exchange = takeOption(args, "--exchange") ?? "";
-  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: gloomberb filings <symbol>", ctx);
+  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: surge filings <symbol>", ctx);
   await withMarketData(ctx, async (market) => {
     const filings = await market.dataProvider.getSecFilings(symbol, count, exchange);
     ctx.printResult({ data: filings, metadata: { symbol } }, {
@@ -329,7 +329,7 @@ async function runFilings(rawArgs: string[], ctx: Parameters<CliCommandDef["exec
 async function runHolders(rawArgs: string[], ctx: Parameters<CliCommandDef["execute"]>[1], ownerTypes?: Set<string>) {
   const args = [...rawArgs];
   const exchange = takeOption(args, "--exchange") ?? "";
-  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: gloomberb holders <symbol>", ctx);
+  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: surge holders <symbol>", ctx);
   await withMarketData(ctx, async (market) => {
     const data = await market.dataProvider.getHolders(symbol, exchange);
     ctx.printResult({ data, metadata: { symbol, summary: data.summary } }, {
@@ -349,7 +349,7 @@ async function runHolders(rawArgs: string[], ctx: Parameters<CliCommandDef["exec
 async function runAnalyst(rawArgs: string[], ctx: Parameters<CliCommandDef["execute"]>[1]) {
   const args = [...rawArgs];
   const exchange = takeOption(args, "--exchange") ?? "";
-  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: gloomberb analyst <symbol>", ctx);
+  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: surge analyst <symbol>", ctx);
   await withMarketData(ctx, async (market) => {
     const data = await market.dataProvider.getAnalystResearch(symbol, exchange);
     ctx.printResult({
@@ -376,7 +376,7 @@ async function runAnalyst(rawArgs: string[], ctx: Parameters<CliCommandDef["exec
 async function runEvents(rawArgs: string[], ctx: Parameters<CliCommandDef["execute"]>[1]) {
   const args = [...rawArgs];
   const exchange = takeOption(args, "--exchange") ?? "";
-  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: gloomberb events <symbol>", ctx);
+  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: surge events <symbol>", ctx);
   await withMarketData(ctx, async (market) => {
     const data = await market.dataProvider.getCorporateActions(symbol, exchange);
     ctx.printResult({ data, metadata: { symbol } }, {
@@ -394,7 +394,7 @@ async function runOptions(rawArgs: string[], ctx: Parameters<CliCommandDef["exec
   const args = [...rawArgs];
   const expiration = takeOption(args, "--expiration");
   const exchange = takeOption(args, "--exchange") ?? "";
-  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: gloomberb options <symbol>", ctx);
+  const symbol = requireArg(args[0]?.toUpperCase(), "Usage: surge options <symbol>", ctx);
   await withMarketData(ctx, async (market) => {
     const chain = await market.dataProvider.getOptionsChain(
       symbol,
@@ -419,7 +419,7 @@ async function runOptions(rawArgs: string[], ctx: Parameters<CliCommandDef["exec
 }
 
 async function runFx(rawArgs: string[], ctx: Parameters<CliCommandDef["execute"]>[1]) {
-  const currency = requireArg(rawArgs[0]?.toUpperCase(), "Usage: gloomberb fx <currency>", ctx);
+  const currency = requireArg(rawArgs[0]?.toUpperCase(), "Usage: surge fx <currency>", ctx);
   await withMarketData(ctx, async (market) => {
     const rate = await market.dataProvider.getExchangeRate(currency);
     ctx.printResult({ data: [{ currency, baseCurrency: market.config.baseCurrency, rate }] }, {
@@ -434,7 +434,7 @@ async function runFx(rawArgs: string[], ctx: Parameters<CliCommandDef["execute"]
 
 async function runEarnings(rawArgs: string[], ctx: Parameters<CliCommandDef["execute"]>[1]) {
   const symbols = normalizeSymbols([...rawArgs]);
-  if (symbols.length === 0) ctx.fail("Usage: gloomberb earnings <symbol...>");
+  if (symbols.length === 0) ctx.fail("Usage: surge earnings <symbol...>");
   await withCliServices(ctx, async (services) => {
     const events = await services.dataProvider.getEarningsCalendar(symbols);
     ctx.printResult({ data: events }, {
@@ -455,7 +455,7 @@ export const marketDataCliCommands: CliCommandDef[] = [
   { name: "quote", description: "Fetch one or more quotes", help: { usage: ["quote <symbol...>"] }, execute: runQuote },
   { name: "provider-search", description: "Search provider instruments", help: { usage: ["provider-search <query>"] }, execute: async (args, ctx) => {
     const query = args.join(" ");
-    if (!query) ctx.fail("Usage: gloomberb provider-search <query>");
+    if (!query) ctx.fail("Usage: surge provider-search <query>");
     await withMarketData(ctx, async (market) => {
       const results = await market.dataProvider.search(query);
       ctx.printResult({ data: results.slice(0, ctx.cliOptions.limit ?? results.length) });

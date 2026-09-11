@@ -98,7 +98,7 @@ function statsForFrame(renderer: CliRenderer): CliRendererStats {
  */
 export function installInteractionPerformanceRecorder(
   renderer: CliRenderer,
-  outputPath = process.env.GLOOMBERB_INTERACTION_PERF,
+  outputPath = process.env.SURGE_INTERACTION_PERF,
 ): InteractionPerformanceRecorder {
   if (!outputPath) {
     const stop = (() => {}) as InteractionPerformanceRecorder;

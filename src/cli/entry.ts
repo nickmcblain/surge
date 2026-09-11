@@ -59,7 +59,7 @@ export async function runCliEntrypoint(rawArgs = process.argv.slice(2)): Promise
     return;
   }
 
-  fail(`Unknown command "${command}".`, "Run gloomberb help to list available commands.");
+  fail(`Unknown command "${command}".`, "Run surge help to list available commands.");
 }
 
 runCliEntrypoint().catch((error) => {

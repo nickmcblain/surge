@@ -27,7 +27,7 @@ interface InstallRun {
 let workDir = "";
 
 beforeEach(() => {
-  workDir = mkdtempSync(join(tmpdir(), "gloomberb-install-"));
+  workDir = mkdtempSync(join(tmpdir(), "surge-install-"));
 });
 
 afterEach(() => {
@@ -90,8 +90,8 @@ async function runInstall(machine: FakeMachine): Promise<InstallRun> {
     env: {
       ...process.env,
       PATH: `${binDir}:${process.env.PATH ?? ""}`,
-      GLOOMBERB_INSTALL_DIR: installDir,
-      GLOOMBERB_APP_DIR: appDir,
+      SURGE_INSTALL_DIR: installDir,
+      SURGE_APP_DIR: appDir,
       FAKE_UNAME_SYSTEM: machine.unameSystem,
       FAKE_UNAME_MACHINE: machine.unameMachine,
       FAKE_PROC_TRANSLATED: machine.procTranslated ?? "",
@@ -117,7 +117,7 @@ async function runInstall(machine: FakeMachine): Promise<InstallRun> {
 }
 
 describe("install.sh architecture detection", () => {
-  // https://github.com/gloom-sh/gloomberb/issues/539: an Intel Mac used to get
+  // https://github.com/nickmc-lumion/surge/issues/539: an Intel Mac used to get
   // the arm64 app and only found out at launch, with "Bad CPU type in
   // executable". It now gets the x64 terminal build, never the app bundle.
   test("installs the x64 terminal build on a genuine Intel Mac", async () => {
@@ -126,7 +126,7 @@ describe("install.sh architecture detection", () => {
       unameMachine: "x86_64",
     });
 
-    expect(run.downloadLog).toContain("gloomberb-darwin-x64.gz");
+    expect(run.downloadLog).toContain("surge-darwin-x64.gz");
     expect(run.downloadLog).not.toContain("stable-macos-arm64");
   });
 
@@ -137,7 +137,7 @@ describe("install.sh architecture detection", () => {
     });
 
     expect(run.exitCode).not.toBe(0);
-    expect(run.stderr).toContain("gloomberb-darwin-x64.gz is not available");
+    expect(run.stderr).toContain("surge-darwin-x64.gz is not available");
     expect(run.stderr).toContain("https://term.gloom.sh");
   });
 
@@ -148,7 +148,7 @@ describe("install.sh architecture detection", () => {
       procTranslated: "1",
     });
 
-    expect(run.downloadLog).toContain("stable-macos-arm64-Gloomberb.app.zip");
+    expect(run.downloadLog).toContain("stable-macos-arm64-Surge.app.zip");
     expect(run.stderr).not.toContain("does not support Intel Macs");
   });
 
@@ -159,7 +159,7 @@ describe("install.sh architecture detection", () => {
       hardwareArm64: "1",
     });
 
-    expect(run.downloadLog).toContain("stable-macos-arm64-Gloomberb.app.zip");
+    expect(run.downloadLog).toContain("stable-macos-arm64-Surge.app.zip");
   });
 
   test("installs the x64 binary on Linux", async () => {
@@ -168,7 +168,7 @@ describe("install.sh architecture detection", () => {
       unameMachine: "x86_64",
     });
 
-    expect(run.downloadLog).toContain("gloomberb-linux-x64.gz");
+    expect(run.downloadLog).toContain("surge-linux-x64.gz");
   });
 
   test("installs the arm64 binary on Linux", async () => {
@@ -177,7 +177,7 @@ describe("install.sh architecture detection", () => {
       unameMachine: "aarch64",
     });
 
-    expect(run.downloadLog).toContain("gloomberb-linux-arm64.gz");
+    expect(run.downloadLog).toContain("surge-linux-arm64.gz");
   });
 
   test("rejects an unsupported operating system", async () => {

@@ -170,7 +170,7 @@ export function WebListView({
             onSelect?.(index);
             onActivate?.(item, index);
           }}
-          data-gloom-role="desktop-list-row"
+          data-surge-role="desktop-list-row"
           role="option"
           aria-selected={selected}
           aria-disabled={disabled || undefined}

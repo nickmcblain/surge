@@ -206,7 +206,7 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
               width={width}
               backgroundColor={titleBackground}
               flexDirection="row"
-              data-gloom-role="pane-header"
+              data-surge-role="pane-header"
               data-titlebar-overlay={titleBarOverlay ? "true" : undefined}
               data-floating="true"
               data-focused={focused ? "true" : "false"}
@@ -224,7 +224,7 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
                 style={{ position: "relative" }}
               >
                 <Box minWidth={0} flexShrink={1} overflow="hidden">
-                  <Text fg={paneTitleText(focused, true, colors)} selectable={false} data-gloom-role="pane-title">{title}</Text>
+                  <Text fg={paneTitleText(focused, true, colors)} selectable={false} data-surge-role="pane-title">{title}</Text>
                 </Box>
                 {quickSettings.map((setting) => (
                   <Box
@@ -236,9 +236,9 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
                     alignItems="center"
                     justifyContent="center"
                     className="electrobun-webkit-app-region-no-drag"
-                    data-gloom-role="pane-quick-setting"
+                    data-surge-role="pane-quick-setting"
                     data-setting-key={setting.key}
-                    data-gloom-interactive="true"
+                    data-surge-interactive="true"
                     aria-label={`${setting.label}: ${setting.value ? "on" : "off"}`}
                     aria-pressed={setting.value}
                     title={`${setting.label}: ${setting.value ? "on" : "off"}`}
@@ -258,8 +258,8 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
                     fg={paneTitleText(focused, true, colors)}
                     selectable={false}
                     className="electrobun-webkit-app-region-no-drag"
-                    data-gloom-role="pane-action"
-                    data-gloom-interactive="true"
+                    data-surge-role="pane-action"
+                    data-surge-interactive="true"
                     aria-label="Pane actions"
                     onMouseDown={openActions}
                   >

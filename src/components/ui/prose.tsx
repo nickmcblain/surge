@@ -75,7 +75,7 @@ export function Prose({
   if (!text.trim()) return null;
   if (nativePaneChrome) {
     return (
-      <Box flexDirection="row" width="100%" style={NATIVE_STRETCH_STYLE} data-gloom-ui="prose">
+      <Box flexDirection="row" width="100%" style={NATIVE_STRETCH_STYLE} data-surge-ui="prose">
         {prefix ? (
           <Text fg={prefixForeground} attributes={TextAttributes.BOLD}>
             {prefix}
@@ -93,7 +93,7 @@ export function Prose({
   const indent = " ".repeat(prefix.length);
   return wrapTextLines(text, Math.max(8, width - prefix.length)).map(
     (line, index) => (
-      <Box key={index} height={1} flexDirection="row" data-gloom-ui="prose">
+      <Box key={index} height={1} flexDirection="row" data-surge-ui="prose">
         {prefix ? (
           <Text
             fg={prefixForeground}

@@ -109,7 +109,7 @@ function nativePromptSurfaceStyle(colors: ReturnType<typeof useThemeColors>, ope
 }
 
 /**
- * The command bar's input while the bar is open. Gloomberb's panes are driven
+ * The command bar's input while the bar is open. Surge's panes are driven
  * by bare single keys, so the input only exists while the bar is open; the idle
  * prompt is an affordance that never takes keyboard focus.
  */
@@ -147,8 +147,8 @@ function HeaderPromptInput({
         onInput={onQueryChange}
         placeholder={placeholder}
         focused
-        data-gloom-remote-scope="command-bar"
-        data-gloom-remote-surface="command-bar"
+        data-surge-remote-scope="command-bar"
+        data-surge-remote-surface="command-bar"
         width={nativePaneChrome ? "100%" : width}
         backgroundColor="transparent"
         focusedBackgroundColor="transparent"
@@ -215,8 +215,8 @@ function HeaderCommandPrompt({
       paddingRight={1}
       backgroundColor={backgroundColor}
       hoverBackgroundColor={open ? undefined : hoverBg}
-      data-gloom-role="header-command-prompt"
-      data-gloom-interactive={open ? undefined : "true"}
+      data-surge-role="header-command-prompt"
+      data-surge-interactive={open ? undefined : "true"}
       role={open ? undefined : "button"}
       tabIndex={open ? undefined : 0}
       aria-label={t("Search or run a command")}
@@ -428,7 +428,7 @@ export function Header({
         height={1}
         alignItems="center"
         backgroundColor={headerBg}
-        data-gloom-role="app-header"
+        data-surge-role="app-header"
         data-titlebar-overlay="true"
         onMouseDown={startWindowDrag}
         style={{
@@ -447,8 +447,8 @@ export function Header({
             height={1}
             flexDirection="row"
             alignItems="center"
-            data-gloom-role="header-help-action"
-            data-gloom-interactive="true"
+            data-surge-role="header-help-action"
+            data-surge-interactive="true"
             role="button"
             tabIndex={0}
             aria-label="Open Help"
@@ -483,7 +483,7 @@ export function Header({
       flexDirection="row"
       height={1}
       backgroundColor={headerBg}
-      data-gloom-role="app-header"
+      data-surge-role="app-header"
       data-titlebar-overlay={titleBarOverlay ? "true" : undefined}
       onMouseDown={startWindowDrag}
     >

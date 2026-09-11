@@ -1,8 +1,8 @@
 import type { ApplicationMenuItemConfig } from "electrobun/bun";
 import type { DesktopApplicationMenuCommand } from "../../../../types/desktop-menu";
 
-export const ELECTROBUN_APPLICATION_MENU_ACTION = "gloom.application-menu.select";
-const GITHUB_ISSUE_URL = "https://github.com/gloom-sh/gloomberb/issues/new/choose";
+export const ELECTROBUN_APPLICATION_MENU_ACTION = "surge.application-menu.select";
+const GITHUB_ISSUE_URL = "https://github.com/nickmc-lumion/surge/issues/new/choose";
 
 export type ElectrobunApplicationMenuCommand =
   | DesktopApplicationMenuCommand
@@ -29,7 +29,7 @@ function openCommandBar(label: string, query: string, options?: { accelerator?: 
 function buildApplicationMenu(): ApplicationMenuItemConfig[] {
   return [
     {
-      label: "Gloomberb",
+      label: "Surge",
       submenu: [
         { role: "about" },
         { type: "divider" },
@@ -39,7 +39,7 @@ function buildApplicationMenu(): ApplicationMenuItemConfig[] {
         { role: "hideOthers" },
         { role: "showAll" },
         { type: "divider" },
-        commandItem("Quit Gloomberb", { type: "quit" }, { accelerator: "CmdOrCtrl+Q" }),
+        commandItem("Quit Surge", { type: "quit" }, { accelerator: "CmdOrCtrl+Q" }),
       ],
     },
     {
@@ -116,7 +116,7 @@ function buildApplicationMenu(): ApplicationMenuItemConfig[] {
     {
       label: "Help",
       submenu: [
-        openCommandBar("Gloomberb Help", "HELP"),
+        openCommandBar("Surge Help", "HELP"),
         commandItem("Open Issue on GitHub", { type: "open-url", url: GITHUB_ISSUE_URL }),
       ],
     },

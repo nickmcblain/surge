@@ -1,5 +1,5 @@
 /**
- * Test helpers for external plugin repositories (`gloomberb/test-support`).
+ * Test helpers for external plugin repositories (`surge/test-support`).
  *
  * Plugins live in their own repos and run their own `bun test`, so the fakes and
  * render harness they need have to ship with the host rather than being copied

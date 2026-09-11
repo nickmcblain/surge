@@ -6,7 +6,7 @@ import type { DesktopExternalPluginBundle } from "../shared/protocol";
 import { bundleExternalPlugin, pluginBundleCacheDir } from "../../../plugins/bundle";
 import { linkHostPackages } from "../../../plugins/host-link";
 import { getPluginCacheDir, getPluginsDir, isPluginDirectory, resolvePluginEntry } from "../../../plugins/loader";
-import type { GloomPlugin } from "../../../types/plugin";
+import type { SurgePlugin } from "../../../types/plugin";
 import { debugLog } from "../../../utils/debug-log";
 
 const log = debugLog.createLogger("desktop-plugins");
@@ -14,7 +14,7 @@ const log = debugLog.createLogger("desktop-plugins");
 /**
  * Prepares external plugins for the desktop view.
  *
- * The view is a browser context and cannot read `~/.gloomberb/plugins`, so the
+ * The view is a browser context and cannot read `~/.surge/plugins`, so the
  * Bun process does both halves here: it imports each plugin natively to read
  * its metadata, and compiles it to an ES module the view can evaluate.
  *
@@ -49,10 +49,10 @@ async function newestMtime(dir: string): Promise<number> {
   return newest;
 }
 
-async function readPluginMetadata(entryFile: string): Promise<GloomPlugin | null> {
+async function readPluginMetadata(entryFile: string): Promise<SurgePlugin | null> {
   try {
     const mod = await import(entryFile);
-    const plugin: GloomPlugin = mod.default ?? mod.plugin;
+    const plugin: SurgePlugin = mod.default ?? mod.plugin;
     return plugin?.id && plugin?.name ? plugin : null;
   } catch (error) {
     log.error(`Metadata read failed for ${entryFile}: ${error}`);
@@ -102,7 +102,7 @@ export async function collectExternalPluginBundles(): Promise<DesktopExternalPlu
     };
 
     if (!plugin) {
-      bundles.push({ ...base, error: "Plugin did not export a valid GloomPlugin." });
+      bundles.push({ ...base, error: "Plugin did not export a valid SurgePlugin." });
       continue;
     }
 

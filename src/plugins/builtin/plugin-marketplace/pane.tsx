@@ -135,7 +135,7 @@ function EntryDetail({ entry, width }: { entry: MarketplaceEntry; width: number 
         runsExternalPlugins() ? (
           <Box paddingTop={1} flexDirection="column">
             <Text fg={colors.textDim}>Runs with your full permissions. Read the source first.</Text>
-            <Text fg={colors.textBright}>{`gloomberb install ${entry.repo}`}</Text>
+            <Text fg={colors.textBright}>{`surge install ${entry.repo}`}</Text>
           </Box>
         ) : (
           // No shell here, so the install command would be a dead end. Say

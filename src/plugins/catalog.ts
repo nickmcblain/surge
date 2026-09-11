@@ -1,11 +1,11 @@
-import type { GloomPlugin, PluginTarget } from "../types/plugin";
+import type { SurgePlugin, PluginTarget } from "../types/plugin";
 import type { LoadedExternalPlugin } from "./loader";
 import { debugPlugin } from "./builtin/debug";
 import { yahooPlugin } from "./builtin/yahoo";
 import { uiBuiltinPlugins } from "./catalog-ui";
 
 export interface PluginCatalogEntry {
-  plugin: GloomPlugin;
+  plugin: SurgePlugin;
   source: "builtin" | "external";
   path?: string;
   error?: string;
@@ -17,7 +17,7 @@ export interface PluginCatalogEntry {
   unsupportedTarget?: PluginTarget;
 }
 
-const builtinPlugins: GloomPlugin[] = [
+const builtinPlugins: SurgePlugin[] = [
   yahooPlugin,
   ...uiBuiltinPlugins,
   debugPlugin,
@@ -39,7 +39,7 @@ export function getPluginCatalog(externalPlugins: LoadedExternalPlugin[] = []): 
   ];
 }
 
-export function getLoadablePlugins(externalPlugins: LoadedExternalPlugin[] = []): GloomPlugin[] {
+export function getLoadablePlugins(externalPlugins: LoadedExternalPlugin[] = []): SurgePlugin[] {
   return getPluginCatalog(externalPlugins)
     .filter((entry) => !entry.error && !entry.unsupportedTarget)
     .map((entry) => entry.plugin);

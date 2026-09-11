@@ -123,7 +123,7 @@ const ChartVectors = memo(function ChartVectors({ vectors }: { vectors: readonly
               height: 9,
               borderRadius: 999,
               border: `2px solid ${shape.color}`,
-              backgroundColor: "var(--gloom-bg)",
+              backgroundColor: "var(--surge-bg)",
               boxSizing: "border-box",
               transform: "translate(-50%, -50%)",
               pointerEvents: "none",
@@ -216,7 +216,7 @@ export const WebChartSurface = forwardRef<BoxRenderable, Record<string, unknown>
       <WebBox
         {...props}
         ref={ref as Ref<HTMLDivElement>}
-        data-gloom-role={(props["data-gloom-role"] as string | undefined) ?? "chart-surface"}
+        data-surge-role={(props["data-surge-role"] as string | undefined) ?? "chart-surface"}
         style={{
           position: "relative",
           overflow: "hidden",

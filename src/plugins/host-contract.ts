@@ -9,7 +9,7 @@
  * at module scope — into the desktop view, where it threw on load.
  */
 
-export const PLUGIN_HOST_GLOBAL = "__GLOOM_PLUGIN_HOST__";
+export const PLUGIN_HOST_GLOBAL = "__SURGE_PLUGIN_HOST__";
 
 /**
  * Specifiers a plugin may import that must resolve to the host's copy. Anything
@@ -24,19 +24,19 @@ export const SHARED_SPECIFIERS = [
   "react",
   "react/jsx-runtime",
   "react/jsx-dev-runtime",
-  "gloomberb/types/plugin",
-  "gloomberb/types/persistence",
-  "gloomberb/ui",
-  "gloomberb/components",
-  "gloomberb/theme",
-  "gloomberb/capabilities",
-  "gloomberb/utils",
-  "gloomberb/react",
+  "surge/types/plugin",
+  "surge/types/persistence",
+  "surge/ui",
+  "surge/components",
+  "surge/theme",
+  "surge/capabilities",
+  "surge/utils",
+  "surge/react",
   // Modules below hold state or reach the host's services, so a bundled copy
   // is worse than a missing one.
-  "gloomberb/dialog",
-  "gloomberb/market-data",
-  "gloomberb/time-series",
+  "surge/dialog",
+  "surge/market-data",
+  "surge/time-series",
 ] as const;
 
 export type SharedSpecifier = (typeof SHARED_SPECIFIERS)[number];

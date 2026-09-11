@@ -13,7 +13,7 @@ import {
 function registryPlugin(overrides: Partial<RegistryPlugin> & Pick<RegistryPlugin, "id">): RegistryPlugin {
   return {
     name: overrides.id,
-    repo: `gloom-sh/${overrides.id}`,
+    repo: `surge-sh/${overrides.id}`,
     tagline: "",
     author: { name: "Someone" },
     categories: ["data"],
@@ -48,7 +48,7 @@ describe("mergeCatalog", () => {
   test("marks a bundled plugin installed even when the local catalog has not reported it", () => {
     // Happens whenever the feed ships an entry before the user upgrades.
     const [entry] = mergeCatalog({
-      registry: [registryPlugin({ id: "gloomberb-cloud", bundled: true, tier: "official" })],
+      registry: [registryPlugin({ id: "surge-cloud", bundled: true, tier: "official" })],
       installed: [],
       target: "tui",
     });

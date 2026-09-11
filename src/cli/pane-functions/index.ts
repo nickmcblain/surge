@@ -61,7 +61,7 @@ export async function runPaneFunction(args: string[], ctx: CliCommandContext) {
       )) {
         throw new Error(
           `${resolved.token} is not a verified bot-safe report capability. `
-          + `Use "gloomberb catalog ${resolved.token}" to inspect readiness.`,
+          + `Use "surge catalog ${resolved.token}" to inspect readiness.`,
         );
       }
       const report = await withPersistedCloudSession(
@@ -91,7 +91,7 @@ export async function runPaneScreenshot(args: string[], ctx: CliCommandContext) 
       )) {
         throw new Error(
           `${resolved.token} is not a verified bot-safe screenshot capability. `
-          + `Use "gloomberb catalog ${resolved.token}" to inspect readiness.`,
+          + `Use "surge catalog ${resolved.token}" to inspect readiness.`,
         );
       }
       const outputPath = parsed.outputPath

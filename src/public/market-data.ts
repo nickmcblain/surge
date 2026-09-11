@@ -1,5 +1,5 @@
 /**
- * Market-data request shapes and price formatting (`gloomberb/market-data`).
+ * Market-data request shapes and price formatting (`surge/market-data`).
  *
  * A plugin that provides quotes or history has to build the same request
  * objects the host does, and format prices the same way, or its output looks

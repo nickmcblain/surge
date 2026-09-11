@@ -234,14 +234,14 @@ export const commands: Command[] = [
     id: "export-config",
     prefix: "",
     label: "Export Config",
-    description: "Save config to ~/gloomberb-config-backup.json",
+    description: "Save config to ~/surge-config-backup.json",
     category: "Config",
   },
   {
     id: "import-config",
     prefix: "",
     label: "Import Config",
-    description: "Load config from ~/gloomberb-config-backup.json",
+    description: "Load config from ~/surge-config-backup.json",
     category: "Config",
   },
 

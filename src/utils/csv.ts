@@ -31,7 +31,7 @@ export function createCsvExportFilename(title: string): string {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
     .replace(/^[. -]+|[. -]+$/g, "")
-    .slice(0, 80) || "gloomberb-table";
+    .slice(0, 80) || "surge-table";
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   return `${stem}-${timestamp}.csv`;
 }

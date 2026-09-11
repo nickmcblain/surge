@@ -8,13 +8,13 @@ import { PLUGIN_HOST_GLOBAL, SHARED_SPECIFIERS } from "./host-contract";
  * Compiles an external plugin for a renderer that cannot read the filesystem.
  *
  * The terminal renderer runs in Bun and can `import()` a plugin directly from
- * `~/.gloomberb/plugins`. The desktop view and the hosted browser app cannot:
+ * `~/.surge/plugins`. The desktop view and the hosted browser app cannot:
  * they are browser contexts running a sealed bundle, so plugin source has to be
  * compiled to an ES module they can fetch.
  *
  * The hard part is not compiling, it is *sharing*. A plugin bundle that carries
  * its own React would give the process a second React instance and throw on the
- * first hook, and it has no way to reach the host's `gloomberb/*` modules at
+ * first hook, and it has no way to reach the host's `surge/*` modules at
  * all. So those specifiers are not bundled — they are rewritten to read from a
  * registry the host publishes on `globalThis` before it loads any plugin. One
  * instance of every shared module, exactly as on the terminal side where the
@@ -32,7 +32,7 @@ import { PLUGIN_HOST_GLOBAL, SHARED_SPECIFIERS } from "./host-contract";
 export function buildSharedModuleSource(specifier: string, exportNames: readonly string[]): string {
   const lines = [
     `const mod = globalThis[${JSON.stringify(PLUGIN_HOST_GLOBAL)}]?.[${JSON.stringify(specifier)}];`,
-    `if (!mod) throw new Error(${JSON.stringify(`Gloomberb host module "${specifier}" is unavailable. The plugin host was not installed before this plugin loaded.`)});`,
+    `if (!mod) throw new Error(${JSON.stringify(`Surge host module "${specifier}" is unavailable. The plugin host was not installed before this plugin loaded.`)});`,
     "export default mod;",
   ];
   for (const name of exportNames) {
@@ -63,11 +63,11 @@ export function createSharedModuleResolver(
   exportNamesFor: (specifier: string) => Promise<readonly string[]>,
   onShared?: (specifier: string) => void,
 ): import("bun").BunPlugin {
-  const namespace = "gloom-host";
+  const namespace = "surge-host";
   const shared = new Set<string>(SHARED_SPECIFIERS);
 
   return {
-    name: "gloomberb-host-modules",
+    name: "surge-host-modules",
     setup(build) {
       build.onResolve({ filter: /.*/ }, (args) => {
         if (!shared.has(args.path)) return undefined;

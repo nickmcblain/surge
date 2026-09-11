@@ -1,7 +1,7 @@
 import { buildBuiltinManifest } from "../src/plugins/catalog-manifest";
 
 /**
- * Writes `plugin-manifest.json`, the published description of Gloomberb's
+ * Writes `plugin-manifest.json`, the published description of Surge's
  * built-in plugins. The plugin directory reads it so the built-in half of the
  * catalog comes from this repository rather than a hand-kept copy elsewhere.
  *

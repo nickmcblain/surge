@@ -2,21 +2,21 @@ import { readdir } from "fs/promises";
 import { join } from "path";
 import { existsSync } from "fs";
 import { homedir } from "os";
-import type { GloomPlugin, PluginTarget } from "../types/plugin";
+import type { SurgePlugin, PluginTarget } from "../types/plugin";
 import { debugLog } from "../utils/debug-log";
 import { linkHostPackages } from "./host-link";
 
 const loaderLog = debugLog.createLogger("plugin-loader");
 
-const PLUGINS_DIR = join(process.env.HOME || homedir(), ".gloomberb", "plugins");
+const PLUGINS_DIR = join(process.env.HOME || homedir(), ".surge", "plugins");
 /**
  * Host-owned scratch space for plugins, kept beside the plugins folder rather
  * than inside it so nothing the host writes can be mistaken for an install.
  */
-const PLUGIN_CACHE_DIR = join(process.env.HOME || homedir(), ".gloomberb", "plugin-cache");
+const PLUGIN_CACHE_DIR = join(process.env.HOME || homedir(), ".surge", "plugin-cache");
 
 export interface LoadedExternalPlugin {
-  plugin: GloomPlugin;
+  plugin: SurgePlugin;
   path: string;
   error?: string;
   /** Set when the plugin loaded but does not support the running renderer. */
@@ -35,8 +35,8 @@ export function getPluginCacheDir(): string {
  * Whether a directory inside the plugins folder is a plugin at all.
  *
  * Dot-directories are bookkeeping, not plugins: the desktop bundle cache used
- * to be written to `plugins/.cache`, and it showed up in `gloomberb plugins`
- * as an installed plugin and in `gloomberb update` as a repo to pull. The
+ * to be written to `plugins/.cache`, and it showed up in `surge plugins`
+ * as an installed plugin and in `surge update` as a repo to pull. The
  * cache has moved out, but old installs still have that directory, so this
  * stays as the single rule every reader shares.
  */
@@ -91,7 +91,7 @@ export async function resolvePluginBrowserEntry(pluginDir: string): Promise<stri
     ?? await resolvePluginEntry(pluginDir);
 }
 
-export function pluginSupportsTarget(plugin: GloomPlugin, target: PluginTarget): boolean {
+export function pluginSupportsTarget(plugin: SurgePlugin, target: PluginTarget): boolean {
   // No declaration means "everywhere"; the registry fills this in for listed plugins.
   return !plugin.targets || plugin.targets.length === 0 || plugin.targets.includes(target);
 }
@@ -109,13 +109,13 @@ export async function loadExternalPlugins(target: PluginTarget = "cli"): Promise
     const entryFile = await resolvePluginEntry(pluginDir);
     if (!entryFile) continue;
 
-    // Repairs `gloomberb`/`react` links for plugins copied in by hand or left
+    // Repairs `surge`/`react` links for plugins copied in by hand or left
     // behind by a `bun install` that pruned them.
     linkHostPackages(pluginDir);
 
     try {
       const mod = await import(entryFile);
-      const plugin: GloomPlugin = mod.default ?? mod.plugin;
+      const plugin: SurgePlugin = mod.default ?? mod.plugin;
       if (plugin && plugin.id && plugin.name) {
         if (!pluginSupportsTarget(plugin, target)) {
           loaderLog.info(`Skipped ${plugin.id}: does not support "${target}"`);
@@ -128,7 +128,7 @@ export async function loadExternalPlugins(target: PluginTarget = "cli"): Promise
     } catch (err) {
       loaderLog.error(`Failed to load plugin from ${pluginDir}: ${err}`);
       results.push({
-        plugin: { id: entry.name, name: entry.name, version: "0.0.0" } as GloomPlugin,
+        plugin: { id: entry.name, name: entry.name, version: "0.0.0" } as SurgePlugin,
         path: pluginDir,
         error: String(err),
       });

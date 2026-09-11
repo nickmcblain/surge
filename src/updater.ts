@@ -67,7 +67,7 @@ export function getAssetBaseNameForRuntime(
   // reports that instead of overwriting itself with an unrunnable binary.
   const arch = runtimeProcess?.arch === "arm64" ? "arm64" : "x64";
   const extension = os === "windows" ? ".exe" : "";
-  return `gloomberb-${os}-${arch}${extension}`;
+  return `surge-${os}-${arch}${extension}`;
 }
 
 function getAssetBaseName(): string {
@@ -146,7 +146,7 @@ function isMacAppBundleExecutable(execPath: string): boolean {
 function isBundledDesktopTuiRuntime(execPath: string, argv: string[]): boolean {
   const normalizedExecPath = normalizePath(execPath);
   const entrypoint = normalizePath(resolveEntrypointPath(argv));
-  if (!entrypoint.endsWith("/resources/gloomberb-tui/tui-entry.js")) return false;
+  if (!entrypoint.endsWith("/resources/surge-tui/tui-entry.js")) return false;
   return normalizedExecPath.endsWith("/contents/macos/bun")
     || normalizedExecPath.endsWith("/bin/bun")
     || normalizedExecPath.endsWith("/bin/bun.exe");
@@ -180,7 +180,7 @@ export function detectUpdateAction(
   const normalizedExecPath = normalizePath(execPath);
   const execBase = basename(normalizedExecPath);
   const entrypoint = normalizePath(resolveEntrypointPath(argv));
-  if (execBase === "gloomberb.exe") return null;
+  if (execBase === "surge.exe") return null;
 
   if (resolveSelfUpdateTargetPath(execPath, argv)) {
     return { kind: "self" };
@@ -197,7 +197,7 @@ export function detectUpdateAction(
     || entrypoint.includes("/.bun/install/")
     || entrypoint.includes("/install/global/")
   ) {
-    return { kind: "manual", command: "bun install -g gloomberb@latest" };
+    return { kind: "manual", command: "bun install -g surge@latest" };
   }
 
   if (
@@ -220,7 +220,7 @@ export function detectUpdateAction(
     || entrypoint.includes("/lib/node_modules/")
     || entrypoint.includes("/node_modules/")
   ) {
-    return { kind: "manual", command: "npm install -g gloomberb@latest" };
+    return { kind: "manual", command: "npm install -g surge@latest" };
   }
 
   return null;
@@ -344,7 +344,7 @@ export async function performUpdate(
   if (!execPath) {
     onProgress({
       phase: "error",
-      error: "Self-update is unavailable when running from source or via Bun/Node. Relaunch the packaged gloomberb binary to update.",
+      error: "Self-update is unavailable when running from source or via Bun/Node. Relaunch the packaged surge binary to update.",
     });
     return;
   }

@@ -5,7 +5,7 @@ import { AppPersistence } from "../../data/app-persistence";
 import { TickerRepository } from "../../data/ticker-repository";
 import { createDefaultConfig } from "../../types/config";
 import type { DataProvider } from "../../types/data-provider";
-import type { GloomPlugin, GloomPluginContext } from "../../types/plugin";
+import type { SurgePlugin, SurgePluginContext } from "../../types/plugin";
 import { applicationPlugin, marketOverviewPlugin } from "../builtin/composite-plugins";
 import { composeBuiltinPlugin } from "../builtin/plugin-module";
 import { useMarketData, usePluginAppActions } from "../runtime";
@@ -45,7 +45,7 @@ function createRegistry(options: {
     { enableCapabilityHandlers: options.enableCapabilityHandlers },
   );
   registry.getConfigFn = () => ({
-    ...createDefaultConfig("/tmp/gloomberb-context-menu-test"),
+    ...createDefaultConfig("/tmp/surge-context-menu-test"),
     disabledPlugins: options.disabledPlugins ?? [],
     disabledSources: options.disabledSources ?? [],
   });
@@ -54,7 +54,7 @@ function createRegistry(options: {
   return registry;
 }
 
-function plugin(id: string, setup: (ctx: GloomPluginContext) => void): GloomPlugin {
+function plugin(id: string, setup: (ctx: SurgePluginContext) => void): SurgePlugin {
   return {
     id,
     name: id,
@@ -332,7 +332,7 @@ describe("PluginRegistry command bar search providers", () => {
 describe("PluginRegistry pane settings", () => {
   test("resolves effective pane setting values from settings definitions", async () => {
     const registry = createRegistry();
-    const config = createDefaultConfig("/tmp/gloomberb-pane-settings-test");
+    const config = createDefaultConfig("/tmp/surge-pane-settings-test");
     config.layout = {
       dockRoot: { kind: "pane", instanceId: "test-pane:main" },
       instances: [{
@@ -388,7 +388,7 @@ describe("PluginRegistry pane settings", () => {
 
   test("resolves plugin-scoped pane setting values from plugin config", async () => {
     const registry = createRegistry();
-    const config = createDefaultConfig("/tmp/gloomberb-pane-settings-test");
+    const config = createDefaultConfig("/tmp/surge-pane-settings-test");
     config.layout = {
       dockRoot: { kind: "pane", instanceId: "test-pane:main" },
       instances: [{
@@ -431,7 +431,7 @@ describe("PluginRegistry pane settings", () => {
 
   test("resolves and applies toggle-backed pane quick settings", async () => {
     const registry = createRegistry();
-    const config = createDefaultConfig("/tmp/gloomberb-pane-quick-settings-test");
+    const config = createDefaultConfig("/tmp/surge-pane-quick-settings-test");
     config.layout = {
       dockRoot: { kind: "pane", instanceId: "test-pane:main" },
       instances: [{

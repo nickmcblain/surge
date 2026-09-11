@@ -20,9 +20,9 @@ export function getPaneWindowAttributes({
   showBorderColor?: boolean;
 }): Record<string, unknown> {
   const attributes: Record<string, unknown> = {
-    "data-gloom-role": role,
+    "data-surge-role": role,
   };
-  if (paneId) attributes["data-gloom-pane-id"] = paneId;
+  if (paneId) attributes["data-surge-pane-id"] = paneId;
   if (!enabled) return attributes;
 
   attributes["data-focused"] = focused ? "true" : "false";
@@ -48,7 +48,7 @@ export function PaneBodyFrame({
   children: ReactNode;
 }) {
   return (
-    <Box {...layoutProps} overflow="hidden" backgroundColor={backgroundColor} data-gloom-role="pane-body">
+    <Box {...layoutProps} overflow="hidden" backgroundColor={backgroundColor} data-surge-role="pane-body">
       {children}
     </Box>
   );

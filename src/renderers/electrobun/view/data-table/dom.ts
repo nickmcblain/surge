@@ -12,13 +12,13 @@ import type { DataTableColumn } from "../../../../components/ui/data-table";
 import { WEB_CELL_HEIGHT, WEB_CELL_WIDTH } from "../input-host";
 
 export const TABLE_INLINE_PADDING_PX = 8;
-export const CSS_BG = "var(--gloom-bg)";
-export const CSS_PANEL = "var(--gloom-panel)";
-export const CSS_TEXT = "var(--gloom-text)";
-export const CSS_TEXT_DIM = "var(--gloom-text-dim)";
-export const CSS_TEXT_BRIGHT = "var(--gloom-text-bright)";
-export const CSS_SELECTED = "var(--gloom-selected)";
-export const CSS_SELECTED_TEXT = "var(--gloom-selected-text)";
+export const CSS_BG = "var(--surge-bg)";
+export const CSS_PANEL = "var(--surge-panel)";
+export const CSS_TEXT = "var(--surge-text)";
+export const CSS_TEXT_DIM = "var(--surge-text-dim)";
+export const CSS_TEXT_BRIGHT = "var(--surge-text-bright)";
+export const CSS_SELECTED = "var(--surge-selected)";
+export const CSS_SELECTED_TEXT = "var(--surge-selected-text)";
 
 function hasAttribute(attributes: unknown, flag: number): boolean {
   return typeof attributes === "number" && (attributes & flag) !== 0;

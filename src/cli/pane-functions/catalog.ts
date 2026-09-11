@@ -238,11 +238,11 @@ export function filterPaneCatalogEntries(entries: PaneCatalogEntry[], query: str
 export function renderPaneCatalogReport(entries: PaneCatalogEntry[], args: ParsedPaneCatalogArgs): string {
   const shown = entries.slice(0, args.limit);
   const lines = [
-    "Gloomberb Function Catalog",
+    "Surge Function Catalog",
     "",
     "Use:",
-    "  gloomberb fn <shortcut-or-pane> [argument] [--key value]",
-    "  gloomberb shot <shortcut-or-pane> [argument] [--output path] [--key value]",
+    "  surge fn <shortcut-or-pane> [argument] [--key value]",
+    "  surge shot <shortcut-or-pane> [argument] [--output path] [--key value]",
     "",
     args.query
       ? `Matches for "${args.query}" (${shown.length}${entries.length > shown.length ? ` of ${entries.length}` : ""})`
@@ -284,8 +284,8 @@ export function renderPaneCatalogReport(entries: PaneCatalogEntry[], args: Parse
       lines.push(`  Limitations: ${entry.capability.limitations.join(" ")}`);
     }
     lines.push(`  Defaults: ${formatCatalogSettings(entry.defaultSettings)}`);
-    const fnExample = `gloomberb fn ${entry.token}${arg ? ` ${arg}` : ""}`;
-    const shotExample = `gloomberb shot ${entry.token}${arg ? ` ${arg}` : ""} --output /tmp/${entry.token.toLowerCase()}.png`;
+    const fnExample = `surge fn ${entry.token}${arg ? ` ${arg}` : ""}`;
+    const shotExample = `surge shot ${entry.token}${arg ? ` ${arg}` : ""} --output /tmp/${entry.token.toLowerCase()}.png`;
     lines.push(`  Examples: ${fnExample} | ${shotExample}`);
     lines.push("");
   }

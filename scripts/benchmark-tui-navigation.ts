@@ -39,10 +39,10 @@ interface CachedSeriesRow {
 
 const root = resolve(import.meta.dir, "..");
 const options = parseOptions(process.argv.slice(2));
-const session = `gloomberb-nav-${process.pid}`;
-const sandbox = await mkdtemp(join(tmpdir(), "gloomberb-nav-"));
+const session = `surge-nav-${process.pid}`;
+const sandbox = await mkdtemp(join(tmpdir(), "surge-nav-"));
 const sandboxHome = join(sandbox, "home");
-const dataDir = join(sandboxHome, ".gloomberb");
+const dataDir = join(sandboxHome, ".surge");
 const appLog = join(sandbox, "app.log");
 
 try {
@@ -61,7 +61,7 @@ try {
     String(options.height),
     "-c",
     root,
-    `env HOME=${shellQuote(sandboxHome)} GLOOMBERB_INTERACTION_PERF=${shellQuote(options.output)} bun src/index.tsx`,
+    `env HOME=${shellQuote(sandboxHome)} SURGE_INTERACTION_PERF=${shellQuote(options.output)} bun src/index.tsx`,
   ]);
   await runTmux(["pipe-pane", "-o", "-t", session, `cat > ${shellQuote(appLog)}`]);
 
@@ -145,7 +145,7 @@ async function seedSandbox(targetDataDir: string): Promise<void> {
   };
   await writeFile(join(targetDataDir, "config.json"), `${JSON.stringify(config, null, 2)}\n`, "utf8");
 
-  const target = new SqliteDatabase(join(targetDataDir, ".gloomberb-cache.db"));
+  const target = new SqliteDatabase(join(targetDataDir, ".surge-cache.db"));
   try {
     const sourcePath = await currentDatabasePath();
     if (!sourcePath || !existsSync(sourcePath)) return;
@@ -196,12 +196,12 @@ async function currentDatabasePath(): Promise<string | null> {
   const home = process.env.HOME;
   if (!home) return null;
   try {
-    const globalConfig = JSON.parse(await readFile(join(home, ".gloomberb", "config.json"), "utf8")) as {
+    const globalConfig = JSON.parse(await readFile(join(home, ".surge", "config.json"), "utf8")) as {
       dataDir?: string;
     };
-    return join(globalConfig.dataDir || join(home, ".gloomberb"), ".gloomberb-cache.db");
+    return join(globalConfig.dataDir || join(home, ".surge"), ".surge-cache.db");
   } catch {
-    return join(home, ".gloomberb", ".gloomberb-cache.db");
+    return join(home, ".surge", ".surge-cache.db");
   }
 }
 
@@ -276,7 +276,7 @@ async function waitForPopulatedTable(
 
 function parseOptions(args: string[]): Options {
   const output = takeOption(args, "--output")
-    ?? join(tmpdir(), `gloomberb-navigation-${Date.now()}.json`);
+    ?? join(tmpdir(), `surge-navigation-${Date.now()}.json`);
   const command = takeOption(args, "--command") ?? "ECST";
   const expectedPaneId = takeOption(args, "--pane-id")
     ?? (command.trim().split(/\s+/, 1)[0]?.toUpperCase() === "ECST" ? "econ-statistics" : null);

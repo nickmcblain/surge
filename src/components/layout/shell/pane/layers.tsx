@@ -241,7 +241,7 @@ export function ShellPaneLayers({
             zIndex={active ? 2 : 1}
             backgroundColor={active ? colors.borderFocused : colors.border}
             {...(nativePaneChrome ? {
-              "data-gloom-role": "dock-divider",
+              "data-surge-role": "dock-divider",
               "data-axis": divider.axis,
               "data-active": active ? "true" : "false",
               style: { "--divider-color": active ? colors.borderFocused : colors.border } as any,

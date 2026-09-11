@@ -44,7 +44,7 @@ function Harness() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [openRow, setOpenRow] = useState<Row | null>(null);
   const state = createInitialState(
-    createDefaultConfig("/tmp/gloomberb-data-table-stack-view-test"),
+    createDefaultConfig("/tmp/surge-data-table-stack-view-test"),
   );
   const columns: Column[] = [
     { id: "title", label: "Title", width: 20, align: "left" },
@@ -92,7 +92,7 @@ function GroupedHarness() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [cursorIndex, setCursorIndex] = useState(0);
   const state = createInitialState(
-    createDefaultConfig("/tmp/gloomberb-data-table-stack-view-grouped-test"),
+    createDefaultConfig("/tmp/surge-data-table-stack-view-grouped-test"),
   );
   const columns: Column[] = [
     { id: "title", label: "Title", width: 20, align: "left" },

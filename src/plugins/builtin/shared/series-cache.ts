@@ -21,7 +21,7 @@ export interface SeriesCache {
   load(key: string, loader: () => Promise<DatedObservation[]>): Promise<DatedObservation[]>;
 }
 
-const CACHE_SOURCE = "gloomberb-cloud";
+const CACHE_SOURCE = "surge-cloud";
 const CACHE_SCHEMA_VERSION = 1;
 
 /**

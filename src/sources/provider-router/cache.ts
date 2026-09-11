@@ -180,7 +180,7 @@ export function listCachedResources<T>(
     return ![...(value.annualStatements ?? []), ...(value.quarterlyStatements ?? [])]
       .some((row) => row.availableAt || Object.keys(row.fieldAvailability ?? {}).length > 0);
   }).map((record) => {
-    if (kind !== "financials" || record.sourceKey !== "provider:gloomberb-cloud") return record;
+    if (kind !== "financials" || record.sourceKey !== "provider:surge-cloud") return record;
     // Legacy cloud aggregates lost the nested quote's stale flag. Retain valid
     // issuer data, but obtain the quote through its independent freshness route.
     let value = record.value as TickerFinancials;

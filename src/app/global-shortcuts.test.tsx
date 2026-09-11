@@ -114,7 +114,7 @@ const emitKeypress = (event: TestKeyEvent) => emitTuiKeypress(testSetup!, event,
 describe("useAppGlobalShortcuts", () => {
   test("toggles the command bar with Ctrl-P", async () => {
     const actions: AppAction[] = [];
-    const state = createInitialState(createResearchTestConfig("/tmp/gloomberb-global-shortcuts"));
+    const state = createInitialState(createResearchTestConfig("/tmp/surge-global-shortcuts"));
     await renderHarness(state, createRegistry(), (action) => actions.push(action));
 
     const event = await emitKeypress({ name: "p", ctrl: true });
@@ -126,7 +126,7 @@ describe("useAppGlobalShortcuts", () => {
 
   test("toggles the command bar with Ctrl-K", async () => {
     const actions: AppAction[] = [];
-    const state = createInitialState(createResearchTestConfig("/tmp/gloomberb-global-shortcuts"));
+    const state = createInitialState(createResearchTestConfig("/tmp/surge-global-shortcuts"));
     await renderHarness(state, createRegistry(), (action) => actions.push(action));
 
     const event = await emitKeypress({ name: "k", ctrl: true });
@@ -138,7 +138,7 @@ describe("useAppGlobalShortcuts", () => {
 
   test("opens ticker search with backtick", async () => {
     const actions: AppAction[] = [];
-    const state = createInitialState(createResearchTestConfig("/tmp/gloomberb-global-shortcuts"));
+    const state = createInitialState(createResearchTestConfig("/tmp/surge-global-shortcuts"));
     await renderHarness(state, createRegistry(), (action) => actions.push(action));
 
     const event = await emitKeypress({ name: "`" });
@@ -154,7 +154,7 @@ describe("useAppGlobalShortcuts", () => {
   });
 
   function layoutState(suffix: string, options: { commandBarOpen?: boolean } = {}) {
-    const config = createResearchTestConfig(`/tmp/gloomberb-global-shortcuts-${suffix}`);
+    const config = createResearchTestConfig(`/tmp/surge-global-shortcuts-${suffix}`);
     config.layouts = [
       { name: "One", layout: cloneLayout(config.layout) },
       { name: "Two", layout: cloneLayout(config.layout) },
@@ -218,7 +218,7 @@ describe("useAppGlobalShortcuts", () => {
 
   test("consumes primary-modifier numbers with only one layout", async () => {
     const actions: AppAction[] = [];
-    const config = createResearchTestConfig("/tmp/gloomberb-global-shortcuts-one-layout");
+    const config = createResearchTestConfig("/tmp/surge-global-shortcuts-one-layout");
     const state = { ...createInitialState(config), commandBarOpen: true };
     await renderHarness(state, createRegistry(), (action) => actions.push(action));
 
@@ -245,7 +245,7 @@ describe("useAppGlobalShortcuts", () => {
     let executed = 0;
     const actions: AppAction[] = [];
     const state = {
-      ...createInitialState(createResearchTestConfig("/tmp/gloomberb-global-shortcuts-captured")),
+      ...createInitialState(createResearchTestConfig("/tmp/surge-global-shortcuts-captured")),
       inputCaptured: true,
     };
     await renderHarness(state, createRegistry(() => {
@@ -263,7 +263,7 @@ describe("useAppGlobalShortcuts", () => {
   test("opens Help with question mark after the command bar is closed", async () => {
     const openedPanes: string[] = [];
     const actions: AppAction[] = [];
-    const state = createInitialState(createResearchTestConfig("/tmp/gloomberb-global-shortcuts-help"));
+    const state = createInitialState(createResearchTestConfig("/tmp/surge-global-shortcuts-help"));
     await renderHarness(state, createRegistry(undefined, (paneId) => openedPanes.push(paneId)), (action) => actions.push(action));
 
     const event = await emitKeypress({ name: "?", shift: true });
@@ -277,7 +277,7 @@ describe("useAppGlobalShortcuts", () => {
   test("does not open Help with question mark while using the command bar", async () => {
     const openedPanes: string[] = [];
     const actions: AppAction[] = [];
-    const config = createResearchTestConfig("/tmp/gloomberb-global-shortcuts-help-guard");
+    const config = createResearchTestConfig("/tmp/surge-global-shortcuts-help-guard");
     const commandBarState = {
       ...createInitialState(config),
       commandBarOpen: true,
@@ -294,7 +294,7 @@ describe("useAppGlobalShortcuts", () => {
   test("does not open Help with question mark while typing", async () => {
     const openedPanes: string[] = [];
     const actions: AppAction[] = [];
-    const config = createResearchTestConfig("/tmp/gloomberb-global-shortcuts-help-input");
+    const config = createResearchTestConfig("/tmp/surge-global-shortcuts-help-input");
     const inputCapturedState = {
       ...createInitialState(config),
       inputCaptured: true,
@@ -311,7 +311,7 @@ describe("useAppGlobalShortcuts", () => {
   test("cycles panes with Tab while input is captured", async () => {
     const actions: AppAction[] = [];
     const state = {
-      ...createInitialState(createResearchTestConfig("/tmp/gloomberb-global-shortcuts-tab-captured")),
+      ...createInitialState(createResearchTestConfig("/tmp/surge-global-shortcuts-tab-captured")),
       inputCaptured: true,
     };
     await renderHarness(state, createRegistry(), (action) => actions.push(action));
@@ -331,7 +331,7 @@ describe("useAppGlobalShortcuts", () => {
 
   test("does not treat modified Shift-R as force refresh", async () => {
     const refreshes: Array<{ symbol: string; priority?: number }> = [];
-    const state = createInitialState(createResearchTestConfig("/tmp/gloomberb-global-shortcuts-resize"));
+    const state = createInitialState(createResearchTestConfig("/tmp/surge-global-shortcuts-resize"));
     state.tickers.set("AAPL", {
       metadata: { ticker: "AAPL", exchange: "NASDAQ" },
     } as any);

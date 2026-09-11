@@ -4,9 +4,9 @@ import { dirname, join, resolve } from "path";
 import { isPluginPackageName, pluginDirectoryNames } from "./plugin-names";
 
 /**
- * External plugins live in `~/.gloomberb/plugins/<name>/`, outside any
- * `node_modules` chain that could reach the running Gloomberb install. Left
- * alone, `import { Box } from "gloomberb/ui"` does not resolve, and a plugin
+ * External plugins live in `~/.surge/plugins/<name>/`, outside any
+ * `node_modules` chain that could reach the running Surge install. Left
+ * alone, `import { Box } from "surge/ui"` does not resolve, and a plugin
  * that lists `react` as a real dependency gets its *own* copy — two React
  * instances in one process, which throws on the first hook.
  *
@@ -20,11 +20,11 @@ import { isPluginPackageName, pluginDirectoryNames } from "./plugin-names";
  * copied in by hand still works.
  */
 
-const LINKED_PACKAGES = ["gloomberb", "react", "react-dom"] as const;
+const LINKED_PACKAGES = ["surge", "react", "react-dom"] as const;
 
 let cachedHostRoot: string | null | undefined;
 
-/** Walks up from this module to the directory holding the `gloomberb` package.json. */
+/** Walks up from this module to the directory holding the `surge` package.json. */
 export function findHostPackageRoot(startDir: string = import.meta.dir): string | null {
   if (cachedHostRoot !== undefined && startDir === import.meta.dir) return cachedHostRoot;
   let dir = resolve(startDir);
@@ -33,7 +33,7 @@ export function findHostPackageRoot(startDir: string = import.meta.dir): string 
     if (existsSync(pkgPath)) {
       try {
         const pkg = JSON.parse(require("fs").readFileSync(pkgPath, "utf-8")) as { name?: string };
-        if (pkg.name === "gloomberb") {
+        if (pkg.name === "surge") {
           if (startDir === import.meta.dir) cachedHostRoot = dir;
           return dir;
         }
@@ -50,7 +50,7 @@ export function findHostPackageRoot(startDir: string = import.meta.dir): string 
 }
 
 function linkTarget(hostRoot: string, pkg: string): string | null {
-  if (pkg === "gloomberb") return hostRoot;
+  if (pkg === "surge") return hostRoot;
   const candidate = join(hostRoot, "node_modules", pkg);
   return existsSync(candidate) ? candidate : null;
 }
@@ -116,7 +116,7 @@ export interface HostLinkResult {
 }
 
 /**
- * Points `<pluginDir>/node_modules/{gloomberb,react,react-dom}` at the running
+ * Points `<pluginDir>/node_modules/{surge,react,react-dom}` at the running
  * install. Safe to call repeatedly.
  */
 export function linkHostPackages(
@@ -124,7 +124,7 @@ export function linkHostPackages(
   hostRoot = findHostPackageRoot(),
   pluginsDir = dirname(pluginDir),
 ): HostLinkResult {
-  if (!hostRoot) return { linked: [], skipped: [...LINKED_PACKAGES], error: "Could not locate the Gloomberb install." };
+  if (!hostRoot) return { linked: [], skipped: [...LINKED_PACKAGES], error: "Could not locate the Surge install." };
 
   const modulesDir = join(pluginDir, "node_modules");
   const linked: string[] = [];
@@ -152,7 +152,7 @@ export function linkHostPackages(
       linked.push(pkg);
     } catch (err) {
       skipped.push(pkg);
-      if (pkg === "gloomberb") return { linked, skipped, error: String(err) };
+      if (pkg === "surge") return { linked, skipped, error: String(err) };
     }
   }
 

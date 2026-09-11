@@ -50,7 +50,7 @@ describe("headless pane printer", () => {
       headless: definition, token: "benchmark", label: "Benchmark", options: {},
       instance: {}, capability: { id: "benchmark" },
     } as ResolvedPaneFunction, {
-      config: createDefaultConfig("/tmp/gloomberb-headless-symbols"),
+      config: createDefaultConfig("/tmp/surge-headless-symbols"),
     } as MarketContext, "");
     expect(report.data).toMatchObject({
       symbols: ["SPY"], unavailableSymbols: ["SPY"], empty: true, complete: false,
@@ -276,7 +276,7 @@ test("partial usable reports retain rows without marking their symbol wholly una
   };
   const report = await buildHeadlessFunctionReport({
     headless: definition, token: "partial", label: "Partial", options: {}, instance: {}, capability: { id: "partial" },
-  } as ResolvedPaneFunction, { config: createDefaultConfig("/tmp/gloomberb-headless-partial") } as MarketContext, "");
+  } as ResolvedPaneFunction, { config: createDefaultConfig("/tmp/surge-headless-partial") } as MarketContext, "");
   expect(report.data).toMatchObject({ rowCount: 1, empty: false, complete: false, unavailableSymbols: [], rows: [{ date: "2025-06-30", margin: .46 }] });
 });
 

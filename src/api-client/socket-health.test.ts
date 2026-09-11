@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   ConnectionHealthRegistry,
-  GLOOM_CLOUD_SOCKET_CONNECTION_ID,
+  SURGE_CLOUD_SOCKET_CONNECTION_ID,
   type ConnectionHealthStatus,
 } from "../core/connection-health";
 import { CloudApiSocket } from "./socket";
@@ -46,8 +46,8 @@ describe("CloudApiSocket connection health", () => {
     });
     const health = new ConnectionHealthRegistry();
     health.registerSource({
-      id: GLOOM_CLOUD_SOCKET_CONNECTION_ID,
-      name: "Gloom Cloud Stream",
+      id: SURGE_CLOUD_SOCKET_CONNECTION_ID,
+      name: "Surge Cloud Stream",
       kind: "websocket",
     });
     const socket = new CloudApiSocket(

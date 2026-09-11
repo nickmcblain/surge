@@ -41,7 +41,7 @@ function makeAlert(
 }
 
 function createAlertsConfig(alerts: AlertRule[]): AppConfig {
-  const baseConfig = createTestPaneConfig("/tmp/gloomberb-alerts", {
+  const baseConfig = createTestPaneConfig("/tmp/surge-alerts", {
     instanceId: TEST_PANE_ID,
     paneId: "alerts",
     binding: { kind: "none" },

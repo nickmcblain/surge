@@ -20,9 +20,9 @@ const sent = new Set<string>();
 let anonymousId: string | undefined;
 let attribution: Record<string, string> = {};
 
-const ATTRIBUTION_STORAGE_KEY = "gloomberb.web.attribution";
-const ANONYMOUS_ID_STORAGE_KEY = "gloomberb.web.anonymous-id";
-const HANDOFF_ID_KEY = "_gloom";
+const ATTRIBUTION_STORAGE_KEY = "surge.web.attribution";
+const ANONYMOUS_ID_STORAGE_KEY = "surge.web.anonymous-id";
+const HANDOFF_ID_KEY = "_surge";
 const ATTRIBUTION_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 /** Another device's clock may run slightly ahead; a touch from a minute in the future is still fresh. */
 const CLOCK_SKEW_MS = 5 * 60 * 1000;
@@ -80,7 +80,7 @@ function externalReferrer(referrer: string | undefined, href: string): string | 
   return new URL(value).origin === new URL(href).origin ? undefined : value;
 }
 
-/** `gloomberb://cloud/success` has no meaningful pathname on its own; keep the host. */
+/** `surge://cloud/success` has no meaningful pathname on its own; keep the host. */
 function landingPageOf(url: URL): string {
   return url.protocol === "http:" || url.protocol === "https:" ? url.pathname : `${url.host}${url.pathname}`;
 }
@@ -239,7 +239,7 @@ export function initializeBrowserResearchActivity(): void {
 
 /**
  * The desktop app never mints an identifier or invents a touch of its own. It
- * only continues what the website handed over in a gloomberb:// link, so a
+ * only continues what the website handed over in a surge:// link, so a
  * visitor who read gloom.sh, installed the app, and signed up inside it is one
  * person in analytics instead of two.
  */
@@ -297,8 +297,8 @@ export function observeDesktopDeepLinks(
 /** What the server stores against the account: stored touches plus the product marker. */
 function attributionPayload(): Record<string, string> | undefined {
   const target = getCurrentPluginTarget();
-  if (target === "web") return { product: "gloomberb", ...attribution };
-  if (target === "desktop" && Object.keys(attribution).length > 0) return { product: "gloomberb", ...attribution };
+  if (target === "web") return { product: "surge", ...attribution };
+  if (target === "desktop" && Object.keys(attribution).length > 0) return { product: "surge", ...attribution };
   return undefined;
 }
 

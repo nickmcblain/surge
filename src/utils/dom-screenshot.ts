@@ -19,11 +19,11 @@ function findPaneScreenshotTarget(paneId?: string): HTMLElement | null {
   if (typeof document === "undefined") return null;
   if (paneId) {
     const escapedPaneId = escapeAttributeValue(paneId);
-    const target = document.querySelector<HTMLElement>(`[data-gloom-pane-id="${escapedPaneId}"]`);
+    const target = document.querySelector<HTMLElement>(`[data-surge-pane-id="${escapedPaneId}"]`);
     if (target) return target;
   }
   return document.querySelector<HTMLElement>(
-    "[data-gloom-role='pane-window'][data-focused='true'], [data-gloom-role='detached-pane-window'][data-focused='true']",
+    "[data-surge-role='pane-window'][data-focused='true'], [data-surge-role='detached-pane-window'][data-focused='true']",
   );
 }
 

@@ -27,7 +27,7 @@ afterEach(async () => {
 
 describe("useInlineTickers", () => {
   test("does not leak rejected quote lookups for existing inline tickers", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-inline-tickers-test");
+    const config = createDefaultConfig("/tmp/surge-inline-tickers-test");
     const state = createInitialState(config);
     state.tickers.set("LGD1L", {
       metadata: {
@@ -76,7 +76,7 @@ describe("useInlineTickers", () => {
   });
 
   test("can resolve inline ticker badges without live quote lookups", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-inline-tickers-static-test");
+    const config = createDefaultConfig("/tmp/surge-inline-tickers-static-test");
     const state = createInitialState(config);
     state.tickers.set("LGD1L", {
       metadata: {

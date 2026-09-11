@@ -6,7 +6,7 @@ import { removePane } from "../../../plugins/pane-manager";
 
 describe("appReducer command bar state", () => {
   test("tracks layout undo and redo history", () => {
-    const initial = createInitialState(createResearchTestConfig("/tmp/gloomberb-test"));
+    const initial = createInitialState(createResearchTestConfig("/tmp/surge-test"));
     const defaultRatio = initial.config.layout.dockRoot && initial.config.layout.dockRoot.kind === "split"
       ? initial.config.layout.dockRoot.ratio
       : null;
@@ -38,7 +38,7 @@ describe("appReducer command bar state", () => {
   });
 
   test("keeps layout history isolated per saved layout", () => {
-    const initial = createInitialState(createResearchTestConfig("/tmp/gloomberb-test"));
+    const initial = createInitialState(createResearchTestConfig("/tmp/surge-test"));
     const defaultRatio = initial.config.layout.dockRoot && initial.config.layout.dockRoot.kind === "split"
       ? initial.config.layout.dockRoot.ratio
       : null;
@@ -80,7 +80,7 @@ describe("appReducer command bar state", () => {
   });
 
   test("reorders saved layouts without changing the active workspace", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-layout-reorder-test");
+    const config = createResearchTestConfig("/tmp/surge-layout-reorder-test");
     const baseLayout = cloneLayout(config.layout);
     config.layouts = [
       { name: "Home", layout: cloneLayout(baseLayout) },
@@ -125,7 +125,7 @@ describe("appReducer command bar state", () => {
   });
 
   test("keeps saved layout operations coherent after a reorder", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-layout-operations-test");
+    const config = createResearchTestConfig("/tmp/surge-layout-operations-test");
     const baseLayout = cloneLayout(config.layout);
     config.layouts = [
       { name: "Home", layout: cloneLayout(baseLayout) },
@@ -181,7 +181,7 @@ describe("appReducer command bar state", () => {
   });
 
   test("installs marketplace layouts as independent editable copies", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-marketplace-install-test");
+    const config = createResearchTestConfig("/tmp/surge-marketplace-install-test");
     config.layouts.push(
       { name: "Research", layout: cloneLayout(config.layout) },
       { name: "Research (2)", layout: cloneLayout(config.layout) },
@@ -215,7 +215,7 @@ describe("appReducer command bar state", () => {
   });
 
   test("restores an explicit focus target after a layout removes the focused pane", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test-focus-restore");
+    const config = createResearchTestConfig("/tmp/surge-test-focus-restore");
     const nextLayout = removePane(config.layout, "ticker-detail:main");
     const state = {
       ...createInitialState(config),
@@ -234,7 +234,7 @@ describe("appReducer command bar state", () => {
   });
 
   test("preserves the restore source while activating a pane in another panel", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test-focus-activation");
+    const config = createResearchTestConfig("/tmp/surge-test-focus-activation");
     let state = {
       ...createInitialState(config),
       focusedPaneId: "portfolio-list:main",
@@ -261,7 +261,7 @@ describe("appReducer command bar state", () => {
   });
 
   test("tracks manual update-check feedback", () => {
-    const initial = createInitialState(createResearchTestConfig("/tmp/gloomberb-test"));
+    const initial = createInitialState(createResearchTestConfig("/tmp/surge-test"));
     const checking = appReducer(initial, { type: "SET_UPDATE_CHECK_IN_PROGRESS", checking: true });
     const noticed = appReducer(checking, { type: "SET_UPDATE_NOTICE", notice: "Already on v0.3.1" });
 
@@ -271,7 +271,7 @@ describe("appReducer command bar state", () => {
 
   test("clears stale update notices when an update becomes available", () => {
     const initial = {
-      ...createInitialState(createResearchTestConfig("/tmp/gloomberb-test")),
+      ...createInitialState(createResearchTestConfig("/tmp/surge-test")),
       updateNotice: "Already on v0.3.1",
     };
     const next = appReducer(initial, {
@@ -279,7 +279,7 @@ describe("appReducer command bar state", () => {
       release: {
         version: "0.3.2",
         tagName: "v0.3.2",
-        downloadUrl: "https://example.com/gloomberb.gz",
+        downloadUrl: "https://example.com/surge.gz",
         publishedAt: "2026-04-03T00:00:00Z",
         updateAction: { kind: "self" },
         compressed: true,

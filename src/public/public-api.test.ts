@@ -20,12 +20,12 @@ test("a bundled external plugin uses the host's React and public hooks", async (
   const { useMarketData } = await import("./react");
   const { bundleExternalPlugin } = await import("../plugins/bundle");
   const { installPluginHostModules } = await import("../plugins/host-modules");
-  const dir = await mkdtemp(join(tmpdir(), "gloom-public-plugin-"));
+  const dir = await mkdtemp(join(tmpdir(), "surge-public-plugin-"));
   try {
     await Bun.write(join(dir, "package.json"), JSON.stringify({ name: "smoke-plugin", main: "index.tsx" }));
     await Bun.write(join(dir, "index.tsx"), `
       import { createElement, useState } from "react";
-      import { useMarketData } from "gloomberb/react";
+      import { useMarketData } from "surge/react";
       export default {
         id: "smoke-plugin", name: "Smoke", version: "1.0.0", useMarketData,
         component() { return createElement("div", null, useState("ready")[0]); },

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   ConnectionHealthRegistry,
-  registerGloomCloudConnectionSources,
+  registerSurgeCloudConnectionSources,
 } from "./connection-health";
 
 function source(id = "quotes") {
@@ -28,16 +28,16 @@ describe("ConnectionHealthRegistry", () => {
   test("keeps source disposal scoped to its registry", () => {
     const first = new ConnectionHealthRegistry();
     const second = new ConnectionHealthRegistry();
-    const disposeFirst = registerGloomCloudConnectionSources(first);
-    registerGloomCloudConnectionSources(second);
+    const disposeFirst = registerSurgeCloudConnectionSources(first);
+    registerSurgeCloudConnectionSources(second);
 
     disposeFirst();
 
     expect(first.getSnapshot().sources).toEqual([]);
     expect(second.getSnapshot().sources.map((entry) => entry.id)).toEqual([
-      "gloom-cloud-http",
-      "gloom-cloud-socket",
-      "gloom-cloud-fred",
+      "surge-cloud-http",
+      "surge-cloud-socket",
+      "surge-cloud-fred",
     ]);
   });
 
@@ -120,22 +120,22 @@ describe("ConnectionHealthRegistry", () => {
 
   test("overlays external sources by canonical id without duplicate rows", () => {
     const renderer = new ConnectionHealthRegistry();
-    renderer.registerSource({ id: "gloom-cloud-http", name: "Local HTTP", kind: "api" });
+    renderer.registerSource({ id: "surge-cloud-http", name: "Local HTTP", kind: "api" });
     const backend = new ConnectionHealthRegistry();
-    backend.registerSource({ id: "gloom-cloud-http", name: "Backend HTTP", kind: "api" });
-    backend.reportRequest("gloom-cloud-http", { operation: "GET /market/quotes", success: true, latencyMs: 12 });
+    backend.registerSource({ id: "surge-cloud-http", name: "Backend HTTP", kind: "api" });
+    backend.reportRequest("surge-cloud-http", { operation: "GET /market/quotes", success: true, latencyMs: 12 });
 
     renderer.replaceExternalSnapshot("backend", backend.getSnapshot());
     expect(renderer.getSnapshot().sources).toHaveLength(1);
     expect(renderer.getSnapshot().sources[0]).toMatchObject({
-      id: "gloom-cloud-http",
+      id: "surge-cloud-http",
       name: "Backend HTTP",
       status: "connected",
     });
 
     renderer.clearExternalSnapshot("backend");
     expect(renderer.getSnapshot().sources[0]).toMatchObject({
-      id: "gloom-cloud-http",
+      id: "surge-cloud-http",
       name: "Local HTTP",
       status: "idle",
     });

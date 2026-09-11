@@ -112,7 +112,7 @@ function readRenderablePaneId(renderable: unknown): string | null {
     seen.add(current);
     depth += 1;
     const record = current as Record<string, unknown>;
-    const paneId = record["data-gloom-pane-id"];
+    const paneId = record["data-surge-pane-id"];
     if (typeof paneId === "string") return paneId;
     current = record.parent;
   }

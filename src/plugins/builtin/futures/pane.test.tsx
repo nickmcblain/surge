@@ -88,7 +88,7 @@ function makeRuntime(): PluginRuntimeAccess {
 }
 
 function Harness() {
-  const state = createInitialState(createDefaultConfig("/tmp/gloomberb-futures-pane-test"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-futures-pane-test"));
   return (
     <TestPaneProvider state={state} paneId="futures" runtime={makeRuntime()} pluginId="market-overview">
       <FuturesPane paneId="futures" paneType="futures" focused width={80} height={24} />

@@ -49,7 +49,7 @@ function Harness({ onCursor = () => {} }: { onCursor?: () => void }) {
   const [cursorIndex, setCursorIndex] = useState(1);
   const [activatedTitle, setActivatedTitle] = useState("");
   const state = createInitialState(
-    createDefaultConfig("/tmp/gloomberb-data-table-view-test"),
+    createDefaultConfig("/tmp/surge-data-table-view-test"),
   );
   const selectedTitle = rows[selectedIndex]?.title ?? "none";
   const cursorTitle = rows[cursorIndex]?.title ?? "none";
@@ -102,7 +102,7 @@ function LargeSelectionHarness({
   onIsSelected: () => void;
 }) {
   const state = createInitialState(
-    createDefaultConfig("/tmp/gloomberb-data-table-view-large-test"),
+    createDefaultConfig("/tmp/surge-data-table-view-large-test"),
   );
 
   return (
@@ -146,7 +146,7 @@ function DeferredScrollHarness({ onScroll, initialRows = [], initialIndex = 500,
   const [requestedIndex, requestIndex] = useState(initialIndex);
   setDeferredRows = setItems;
   setRequestedIndex = requestIndex;
-  const state = createInitialState(createDefaultConfig("/tmp/gloomberb-table-deferred-scroll"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-table-deferred-scroll"));
   return (
     <AppContext value={{ state, dispatch: () => {} }}>
       <PaneInstanceProvider paneId="deferred-scroll-test">

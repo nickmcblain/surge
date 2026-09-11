@@ -1,7 +1,7 @@
 import { getPluginCatalog } from "./catalog";
 
 /**
- * The public description of the plugins that ship inside Gloomberb.
+ * The public description of the plugins that ship inside Surge.
  *
  * The plugin directory has to list built-ins alongside installable ones, but a
  * built-in has no repository to read metadata from. Hand-maintaining that half

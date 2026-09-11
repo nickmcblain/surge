@@ -55,7 +55,7 @@ async function buildElectrobunViewBundle({
       "process.env.NODE_ENV": "\"production\"",
       // The webview has no `process`, so the cloud endpoint override the terminal
       // already reads from the environment is baked in at build time.
-      __GLOOMBERB_API_URL__: JSON.stringify(process.env.GLOOMBERB_API_URL ?? ""),
+      __SURGE_API_URL__: JSON.stringify(process.env.SURGE_API_URL ?? ""),
     },
     plugins: [electrobunViewAliasPlugin(pluginName, extraAliasRules)],
   });
@@ -91,7 +91,7 @@ function renderElectrobunViewHtml({
     <style>${stylesheet}</style>
   </head>
   <body style="margin:0;background:#000;">
-    <div id="root"><div class="gloom-loading">${loadingText}</div></div>
+    <div id="root"><div class="surge-loading">${loadingText}</div></div>
     <script>
 ${bootstrapScript}
     </script>

@@ -8,7 +8,7 @@ const caskScript = join(import.meta.dir, "write-homebrew-cask.ts");
 let workDir = "";
 
 beforeEach(() => {
-  workDir = mkdtempSync(join(tmpdir(), "gloomberb-cask-"));
+  workDir = mkdtempSync(join(tmpdir(), "surge-cask-"));
 });
 
 afterEach(() => {
@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 async function renderCask(): Promise<string> {
-  const output = join(workDir, "gloomberb.rb");
+  const output = join(workDir, "surge.rb");
   const proc = Bun.spawn([
     "bun",
     "run",
@@ -39,7 +39,7 @@ async function renderCask(): Promise<string> {
 describe("write-homebrew-cask", () => {
   // The cask points at an Apple Silicon app bundle, so Homebrew has to refuse
   // Intel Macs instead of installing something that cannot launch.
-  // https://github.com/gloom-sh/gloomberb/issues/539
+  // https://github.com/nickmc-lumion/surge/issues/539
   test("declares the cask as Apple Silicon only", async () => {
     expect(await renderCask()).toContain("depends_on arch: :arm64");
   });
@@ -48,11 +48,11 @@ describe("write-homebrew-cask", () => {
     const cask = await renderCask();
 
     expect(cask).toContain(
-      'url "https://github.com/gloom-sh/gloomberb/releases/download/v#{version}/stable-macos-arm64-Gloomberb.app.zip"',
+      'url "https://github.com/nickmc-lumion/surge/releases/download/v#{version}/stable-macos-arm64-Surge.app.zip"',
     );
-    expect(cask).toContain('app "Gloomberb.app"');
+    expect(cask).toContain('app "Surge.app"');
     expect(cask).toContain(
-      'binary "#{appdir}/Gloomberb.app/Contents/Resources/gloomberb", target: "gloomberb"',
+      'binary "#{appdir}/Surge.app/Contents/Resources/surge", target: "surge"',
     );
   });
 });

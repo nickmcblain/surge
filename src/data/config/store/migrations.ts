@@ -47,7 +47,7 @@ const PRE_DAY_PNL_PORTFOLIO_COLUMN_IDS = [
   "pnl",
   "pnl_pct",
 ];
-const BUILTIN_SOURCE_IDS = new Set(["yahoo", "gloomberb-cloud"]);
+const BUILTIN_SOURCE_IDS = new Set(["yahoo", "surge-cloud"]);
 
 interface ConfigMigration {
   name: string;
@@ -184,13 +184,13 @@ function migrateCloudDefault(saved: Record<string, unknown>): Record<string, unk
   return {
     ...saved,
     disabledPlugins: stringList(saved.disabledPlugins)
-      .filter((pluginId) => pluginId !== "gloomberb-cloud"),
+      .filter((pluginId) => pluginId !== "surge-cloud"),
   };
 }
 
 function migrateCloudMacroAndSources(saved: Record<string, unknown>): Record<string, unknown> {
   const disabledPlugins = stringList(saved.disabledPlugins);
-  if (disabledPlugins.includes("gloomberb-cloud") && !disabledPlugins.includes("macro")) {
+  if (disabledPlugins.includes("surge-cloud") && !disabledPlugins.includes("macro")) {
     disabledPlugins.push("macro");
   }
   const disabledSources = new Set(stringList(saved.disabledSources));

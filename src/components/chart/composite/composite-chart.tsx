@@ -498,9 +498,9 @@ function ChartToolChip({
         onPress();
       }}
       cursor="pointer"
-      data-gloom-interactive="true"
-      data-gloom-role="composite-chart-tool"
-      data-gloom-label={label}
+      data-surge-interactive="true"
+      data-surge-role="composite-chart-tool"
+      data-surge-label={label}
       data-active={active ? "true" : "false"}
       title={isDesktopWeb ? label : undefined}
       // Cells size the terminal strip; the desktop chip sizes to its icon.
@@ -533,7 +533,7 @@ function ChartToolChip({
 
 /** Blurs a focused text field, the focus change a consumed mousedown prevents. */
 function releaseEditableFocus(event: ChartMouseEvent): void {
-  if (!event.target?.closest?.(`[data-gloom-role="${COMPOSITE_PANEL_ROLE}"]`)) return;
+  if (!event.target?.closest?.(`[data-surge-role="${COMPOSITE_PANEL_ROLE}"]`)) return;
   const active = (globalThis as {
     document?: { activeElement?: { tagName?: string; blur?: () => void } };
   }).document?.activeElement;
@@ -572,9 +572,9 @@ function ChartColorSwatch({
         onPress();
       }}
       cursor="pointer"
-      data-gloom-interactive="true"
-      data-gloom-role="composite-chart-color"
-      data-gloom-label={`Drawing colour ${color}`}
+      data-surge-interactive="true"
+      data-surge-role="composite-chart-color"
+      data-surge-label={`Drawing colour ${color}`}
       data-active={active ? "true" : "false"}
       style={isDesktopWeb
         ? {
@@ -631,7 +631,7 @@ function ChartToolbar({
           height: "auto",
         }
         : undefined}
-      data-gloom-role="composite-chart-toolbar"
+      data-surge-role="composite-chart-toolbar"
     >
       {CHART_TOOLS.map((tool) => (
         <ChartToolChip
@@ -1258,7 +1258,7 @@ function CompositePanelSurface({
               backgroundColor: `color-mix(in srgb, ${colors.background} 82%, transparent)`,
             }
             : undefined}
-          data-gloom-role="composite-chart-measure"
+          data-surge-role="composite-chart-measure"
         >
           <Text fg={measureReadout.color}>{measureReadout.text}</Text>
         </Box>
@@ -1298,10 +1298,10 @@ function CompositePanelSurface({
         onMouseScroll={interactive && navigable ? panFromWheel : undefined}
         onMouseOut={interactive ? clearCursor : undefined}
         cursor={interactive ? toolDrag || !navigable ? "crosshair" : "grab" : undefined}
-        data-gloom-interactive={interactive ? "true" : undefined}
-        data-gloom-role={COMPOSITE_PANEL_ROLE}
-        data-gloom-remote-kind={remoteKind}
-        data-gloom-label={panel.label ?? panel.id}
+        data-surge-interactive={interactive ? "true" : undefined}
+        data-surge-role={COMPOSITE_PANEL_ROLE}
+        data-surge-remote-kind={remoteKind}
+        data-surge-label={panel.label ?? panel.id}
       >
         {textLines.map((line, index) => <Text key={index} fg={colors.text}>{line}</Text>)}
       </ChartSurface>
@@ -1500,7 +1500,7 @@ function CompositeLegend({
       height={1}
       overflow="visible"
       zIndex={20}
-      data-gloom-role="composite-chart-legend"
+      data-surge-role="composite-chart-legend"
     >
       {seriesWidth > 0 ? (
         <ScrollBox
@@ -1512,7 +1512,7 @@ function CompositeLegend({
           focusable={false}
           horizontalScrollbarOptions={{ visible: false }}
           onMouseScroll={handleMouseScroll}
-          data-gloom-role="composite-chart-legend-scroll"
+          data-surge-role="composite-chart-legend-scroll"
         >
           <Box flexDirection="row" width={desiredSeriesWidth} height={1} gap={1}>
             {entries.map(({ entry, text, toggleable, tooltip, width: entryWidth }, index) => {
@@ -1534,9 +1534,9 @@ function CompositeLegend({
                   onToggleSeries?.(entry.id);
                 } : undefined}
                 cursor={toggleable ? "pointer" : undefined}
-                data-gloom-interactive={toggleable ? "true" : undefined}
-                data-gloom-role="composite-chart-legend-series"
-                data-gloom-label={`${toggleable
+                data-surge-interactive={toggleable ? "true" : undefined}
+                data-surge-role="composite-chart-legend-series"
+                data-surge-label={`${toggleable
                   ? `${entryVisible ? "Hide" : "Show"} `
                   : ""}${tooltip}`}
                 data-visible={entryVisible ? "true" : "false"}
@@ -1553,7 +1553,7 @@ function CompositeLegend({
                       border: `1px solid ${entry.color}`,
                       backgroundColor: entryVisible ? entry.color : "transparent",
                     }}
-                    data-gloom-role="composite-chart-legend-marker"
+                    data-surge-role="composite-chart-legend-marker"
                   />
                 ) : (
                   <Text fg={entryVisible ? entry.color : themeColors.textMuted}>● </Text>
@@ -2133,7 +2133,7 @@ export function CompositeChart({
         width={totalWidth}
         height={totalHeight}
         overflow="hidden"
-        data-gloom-role="composite-chart"
+        data-surge-role="composite-chart"
       >
         {legendRows > 0 && legendAccessory ? (
           <CompositeLegend
@@ -2161,9 +2161,9 @@ export function CompositeChart({
               justifyContent="center"
               onMouseScroll={interactive && navigable && navigationFrame ? handleEmptyMouseScroll : undefined}
               cursor={interactive && navigable && navigationFrame ? "grab" : undefined}
-              data-gloom-interactive={interactive && navigable && navigationFrame ? "true" : undefined}
-              data-gloom-role="composite-chart-empty"
-              data-gloom-label={emptyMessage}
+              data-surge-interactive={interactive && navigable && navigationFrame ? "true" : undefined}
+              data-surge-role="composite-chart-empty"
+              data-surge-label={emptyMessage}
             >
               <Text fg={resolvedColors.textDim}>{emptyMessage}</Text>
             </ChartSurface>
@@ -2217,7 +2217,7 @@ export function CompositeChart({
       overflow="hidden"
       // The tool overlay anchors here; without it the desktop pins it to the page.
       position="relative"
-      data-gloom-role="composite-chart"
+      data-surge-role="composite-chart"
     >
       {showLegend ? (
         <CompositeLegend

@@ -1,6 +1,6 @@
 import { renderAsciiText, type AsciiFontName } from "../../../../ui/ascii-font";
 
-const WEB_GLOOMBERB_WORDMARK = [
+const WEB_SURGE_WORDMARK = [
   "  ____ _                       _               _     ",
   " / ___| | ___   ___  _ __ ___ | |__   ___ _ __| |__  ",
   "| |  _| |/ _ \\ / _ \\| '_ ` _ \\| '_ \\ / _ \\ '__| '_ \\ ",
@@ -45,7 +45,7 @@ export function webAsciiTextWordmarkVariant(
   font: AsciiFontName = "tiny",
   desktopPlatform?: string,
 ): WebWordmarkVariant {
-  if (font !== "wordmark" || text.trim().toLowerCase() !== "gloomberb") return null;
+  if (font !== "wordmark" || text.trim().toLowerCase() !== "surge") return null;
   return isMacDesktopPlatform(desktopPlatform) ? "legacy" : "compat";
 }
 
@@ -55,6 +55,6 @@ export function webAsciiTextLines(
   desktopPlatform?: string,
 ): string[] {
   return webAsciiTextWordmarkVariant(text, font, desktopPlatform) === "compat"
-    ? WEB_GLOOMBERB_WORDMARK
+    ? WEB_SURGE_WORDMARK
     : renderAsciiText(text, font);
 }

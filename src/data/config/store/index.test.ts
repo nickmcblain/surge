@@ -21,7 +21,7 @@ afterEach(async () => {
 });
 
 async function createTempConfigDir(): Promise<string> {
-  const dataDir = await mkdtemp(join(tmpdir(), "gloomberb-config-"));
+  const dataDir = await mkdtemp(join(tmpdir(), "surge-config-"));
   tempDirs.push(dataDir);
   return dataDir;
 }
@@ -834,19 +834,19 @@ describe("loadConfig", () => {
     const dataDir = await createTempConfigDir();
     await writeConfigJson(dataDir, createSavedConfig({
       configVersion: 19,
-      disabledPlugins: ["gloomberb-cloud"],
+      disabledPlugins: ["surge-cloud"],
     }));
 
     const config = await loadConfig(dataDir);
 
-    expect(config.disabledPlugins).toEqual(["gloomberb-cloud"]);
+    expect(config.disabledPlugins).toEqual(["surge-cloud"]);
   });
 
-  test("enables Gloom Cloud when migrating older default configs", async () => {
+  test("enables Surge Cloud when migrating older default configs", async () => {
     const dataDir = await createTempConfigDir();
     await writeConfigJson(dataDir, createSavedConfig({
       configVersion: 12,
-      disabledPlugins: ["gloomberb-cloud", "news"],
+      disabledPlugins: ["surge-cloud", "news"],
     }));
 
     const config = await loadConfig(dataDir);
@@ -858,21 +858,21 @@ describe("loadConfig", () => {
     const beforeDir = await createTempConfigDir();
     await writeConfigJson(beforeDir, createSavedConfig({
       configVersion: 14,
-      disabledPlugins: ["gloomberb-cloud"],
+      disabledPlugins: ["surge-cloud"],
       disabledSources: [],
     }));
     const before = await loadConfig(beforeDir);
-    expect(before.disabledPlugins).toEqual(["gloomberb-cloud", "macro"]);
-    expect(before.disabledSources).toEqual(["gloomberb-cloud"]);
+    expect(before.disabledPlugins).toEqual(["surge-cloud", "macro"]);
+    expect(before.disabledSources).toEqual(["surge-cloud"]);
 
     const atBoundaryDir = await createTempConfigDir();
     await writeConfigJson(atBoundaryDir, createSavedConfig({
       configVersion: 15,
-      disabledPlugins: ["gloomberb-cloud"],
+      disabledPlugins: ["surge-cloud"],
       disabledSources: [],
     }));
     const atBoundary = await loadConfig(atBoundaryDir);
-    expect(atBoundary.disabledPlugins).toEqual(["gloomberb-cloud"]);
+    expect(atBoundary.disabledPlugins).toEqual(["surge-cloud"]);
     expect(atBoundary.disabledSources).toEqual([]);
   });
 
@@ -1001,7 +1001,7 @@ describe("loadConfig", () => {
       layout: currentLayout,
       layouts: [{ name: "Current", layout: currentLayout, paneState: legacyPaneState }],
       pluginConfig: legacyPluginConfig,
-      disabledPlugins: ["options", "gloomberb-cloud"],
+      disabledPlugins: ["options", "surge-cloud"],
       disabledSources: [],
     }));
 
@@ -1012,7 +1012,7 @@ describe("loadConfig", () => {
     }));
     expect(config.layouts[0]?.paneState).toEqual(legacyPaneState);
     expect(config.pluginConfig).toEqual(legacyPluginConfig);
-    expect(config.disabledPlugins).toEqual(["options", "gloomberb-cloud"]);
+    expect(config.disabledPlugins).toEqual(["options", "surge-cloud"]);
     expect(findPaneInstance(config.layout, "portfolio-list:main")?.settings?.columnIds)
       .toEqual(selectedPortfolioColumns);
 
@@ -1020,7 +1020,7 @@ describe("loadConfig", () => {
     const persisted = JSON.parse(await readFile(join(dataDir, "config.json"), "utf-8")) as typeof config;
     expect(persisted.layouts[0]?.paneState).toEqual(legacyPaneState);
     expect(persisted.pluginConfig).toEqual(legacyPluginConfig);
-    expect(persisted.disabledPlugins).toEqual(["options", "gloomberb-cloud"]);
+    expect(persisted.disabledPlugins).toEqual(["options", "surge-cloud"]);
     expect(findPaneInstance(persisted.layout, "portfolio-list:main")?.settings?.columnIds)
       .toEqual(selectedPortfolioColumns);
     expect(findPaneInstance(persisted.layout, "ticker-detail:main")?.settings).toEqual(expect.objectContaining({
@@ -1147,15 +1147,15 @@ describe("config backup files", () => {
 
     try {
       const config = await loadConfig(dataDir);
-      await exportConfig({ ...config, baseCurrency: "EUR" }, "~/gloomberb-config-backup.json");
+      await exportConfig({ ...config, baseCurrency: "EUR" }, "~/surge-config-backup.json");
 
-      const backupPath = join(homeDir, "gloomberb-config-backup.json");
+      const backupPath = join(homeDir, "surge-config-backup.json");
       const exported = JSON.parse(await readFile(backupPath, "utf-8")) as Record<string, unknown>;
       expect(exported.baseCurrency).toBe("EUR");
       expect(exported.dataDir).toBeUndefined();
 
       await writeFile(backupPath, JSON.stringify({ ...exported, baseCurrency: "JPY" }), "utf-8");
-      const imported = await importConfig(importDataDir, "~/gloomberb-config-backup.json");
+      const imported = await importConfig(importDataDir, "~/surge-config-backup.json");
 
       expect(imported.baseCurrency).toBe("JPY");
       expect(imported.dataDir).toBe(importDataDir);

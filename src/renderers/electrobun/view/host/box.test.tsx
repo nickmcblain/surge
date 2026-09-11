@@ -89,7 +89,7 @@ test("a tab bar occupies exactly the one row panes reserve for it", async () => 
     />,
   );
   await settle();
-  const list = container.querySelector('[data-gloom-role="tab-list"]') as unknown as HTMLElement;
+  const list = container.querySelector('[data-surge-role="tab-list"]') as unknown as HTMLElement;
   // Panes size their content as `height - 1` for the tab bar. Any extra pixel
   // here is a pixel the content is told it owns and the pane then clips.
   expect(list.style.height).toBe(`${WEB_CELL_HEIGHT}px`);
@@ -114,7 +114,7 @@ test("desktop tabs reorder through mouse dragging", async () => {
     />,
   );
 
-  const buttons = [...container.querySelectorAll('[data-gloom-role="tab-button"]')] as unknown as HTMLElement[];
+  const buttons = [...container.querySelectorAll('[data-surge-role="tab-button"]')] as unknown as HTMLElement[];
   buttons.forEach((button, index) => {
     button.getBoundingClientRect = () => ({ left: index * 100, right: index * 100 + 80, width: 80 }) as DOMRect;
   });

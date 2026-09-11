@@ -14,12 +14,12 @@ test.each(["single", "batch"] as const)("%s financials recover a stale embedded 
   const staleQuote = makeQuote({ symbol: "7203", price: 2980.5, currency: "JPY", change: 9.5,
     changePercent: 0.31975765735442613, previousClose: 2971, stale: true,
     lastUpdated: Date.parse("2026-09-10T06:24:00Z"), exchangeName: "TYO",
-    providerId: "gloomberb-cloud", dataSource: "delayed", marketState: "PRE" });
+    providerId: "surge-cloud", dataSource: "delayed", marketState: "PRE" });
   const snapshot = makeFinancials({ quote: staleQuote, profile: { description: "Toyota Motor Corporation" },
     annualStatements: Array.from({ length: 5 }, (_, i) => ({ date: `${2022 + i}-03-31`, currency: "JPY", totalRevenue: 100 + i, inventory: 10 })),
   });
   const cloud: DataProvider = {
-    ...fallbackProvider, id: "gloomberb-cloud", priority: 100,
+    ...fallbackProvider, id: "surge-cloud", priority: 100,
     async getTickerFinancials() { calls.financials++; return snapshot; },
     async getTickerFinancialsBatch(targets) { calls.financials++; return targets.map((target) => ({ target, financials: snapshot })); },
     async getQuote() { return staleQuote; },

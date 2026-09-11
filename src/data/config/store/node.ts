@@ -13,7 +13,7 @@ import {
 const configLog = debugLog.createLogger("config");
 
 function getGlobalConfigDir(): string {
-  return join(getHomeDir(), ".gloomberb");
+  return join(getHomeDir(), ".surge");
 }
 
 function getGlobalConfigFile(): string {

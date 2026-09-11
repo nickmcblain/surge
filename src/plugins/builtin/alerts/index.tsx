@@ -1,6 +1,6 @@
 import { formatMarketPrice } from "../../../market-data/market/format";
 import type { Quote } from "../../../types/financials";
-import type { GloomPlugin } from "../../../types/plugin";
+import type { SurgePlugin } from "../../../types/plugin";
 import {
   createAlert,
   evaluateAlert,
@@ -26,7 +26,7 @@ import {
 let pollGeneration = 0;
 let pollTimer: ReturnType<typeof setTimeout> | null = null;
 
-export const alertsPlugin: GloomPlugin = {
+export const alertsPlugin: SurgePlugin = {
   id: "alerts",
   name: "Alerts",
   version: "1.0.0",

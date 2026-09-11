@@ -12,7 +12,7 @@ export interface NoteFileEntry {
 }
 
 const QUICK_NOTES_INDEX = "__quick-notes-index__";
-const LOCAL_TIMESTAMP_KEY = "gloomberb:notes:__updated-at__";
+const LOCAL_TIMESTAMP_KEY = "surge:notes:__updated-at__";
 
 function joinPath(...parts: string[]): string {
   return parts.join("/").replace(/\/+/g, "/");
@@ -34,7 +34,7 @@ async function readTextFile(path: string): Promise<string> {
     const { readFile } = await import(fsModulePath) as typeof import("fs/promises");
     return readFile(path, "utf-8");
   }
-  return getLocalStorage()?.getItem(`gloomberb:notes:${path}`) ?? "";
+  return getLocalStorage()?.getItem(`surge:notes:${path}`) ?? "";
 }
 
 /** Browsers have no mtime, so note writes keep their own timestamp index. */
@@ -66,7 +66,7 @@ async function writeTextFile(path: string, value: string): Promise<void> {
     await writeFile(path, value, "utf-8");
     return;
   }
-  getLocalStorage()?.setItem(`gloomberb:notes:${path}`, value);
+  getLocalStorage()?.setItem(`surge:notes:${path}`, value);
   writeLocalTimestamp(path, Date.now());
 }
 
@@ -77,7 +77,7 @@ async function deleteTextFile(path: string): Promise<void> {
     await unlink(path);
     return;
   }
-  getLocalStorage()?.removeItem(`gloomberb:notes:${path}`);
+  getLocalStorage()?.removeItem(`surge:notes:${path}`);
   writeLocalTimestamp(path, null);
 }
 
@@ -149,12 +149,12 @@ export class NotesFiles {
     }
     const prefix = joinPath(this.dataDir, "");
     const timestamps = readLocalTimestamps();
-    const storageKeyPrefix = `gloomberb:notes:${prefix}`;
+    const storageKeyPrefix = `surge:notes:${prefix}`;
     // Notes written before the index existed are stamped now rather than at
     // the epoch, so an older cloud copy cannot overwrite them on first sync.
     for (const storageKey of Object.keys(globalThis.localStorage ?? {})) {
       if (!storageKey.startsWith(storageKeyPrefix) || !storageKey.endsWith(".md")) continue;
-      const path = storageKey.slice("gloomberb:notes:".length);
+      const path = storageKey.slice("surge:notes:".length);
       if (timestamps[path] == null) writeLocalTimestamp(path, timestamps[path] = Date.now());
     }
     return Object.entries(timestamps)

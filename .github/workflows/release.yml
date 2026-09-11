@@ -16,17 +16,17 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            asset: gloomberb-darwin-arm64
+            asset: surge-darwin-arm64
           # Intel Macs only get the terminal build. GitHub retires this runner
           # image in 2027; the desktop app stays Apple Silicon only.
           - os: macos-15-intel
-            asset: gloomberb-darwin-x64
+            asset: surge-darwin-x64
           - os: ubuntu-latest
-            asset: gloomberb-linux-x64
+            asset: surge-linux-x64
           - os: ubuntu-24.04-arm
-            asset: gloomberb-linux-arm64
+            asset: surge-linux-arm64
           - os: windows-latest
-            asset: gloomberb-windows-x64
+            asset: surge-windows-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -105,28 +105,28 @@ jobs:
           set -euo pipefail
           brew install zstd
           tmp_dir="$(mktemp -d)"
-          zstd -d -o "$tmp_dir/Gloomberb.app.tar" artifacts/stable-macos-arm64-Gloomberb.app.tar.zst
-          tar -xf "$tmp_dir/Gloomberb.app.tar" -C "$tmp_dir"
-          test -x "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb"
-          test -f "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb-tui/tui-entry.js"
-          test -f "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb-tui/node_modules/@opentui/core-darwin-arm64/index.js"
-          test -f "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb-tui/node_modules/@opentui/core-darwin-arm64/libopentui.dylib"
-          "$tmp_dir/Gloomberb.app/Contents/Resources/gloomberb" help
-          ditto -c -k --keepParent "$tmp_dir/Gloomberb.app" artifacts/stable-macos-arm64-Gloomberb.app.zip
+          zstd -d -o "$tmp_dir/Surge.app.tar" artifacts/stable-macos-arm64-Surge.app.tar.zst
+          tar -xf "$tmp_dir/Surge.app.tar" -C "$tmp_dir"
+          test -x "$tmp_dir/Surge.app/Contents/Resources/surge"
+          test -f "$tmp_dir/Surge.app/Contents/Resources/surge-tui/tui-entry.js"
+          test -f "$tmp_dir/Surge.app/Contents/Resources/surge-tui/node_modules/@opentui/core-darwin-arm64/index.js"
+          test -f "$tmp_dir/Surge.app/Contents/Resources/surge-tui/node_modules/@opentui/core-darwin-arm64/libopentui.dylib"
+          "$tmp_dir/Surge.app/Contents/Resources/surge" help
+          ditto -c -k --keepParent "$tmp_dir/Surge.app" artifacts/stable-macos-arm64-Surge.app.zip
 
       - name: Verify desktop artifacts
         run: |
           set -euo pipefail
-          test -f artifacts/stable-macos-arm64-Gloomberb.dmg
-          test -f artifacts/stable-macos-arm64-Gloomberb.app.tar.zst
-          test -f artifacts/stable-macos-arm64-Gloomberb.app.zip
+          test -f artifacts/stable-macos-arm64-Surge.dmg
+          test -f artifacts/stable-macos-arm64-Surge.app.tar.zst
+          test -f artifacts/stable-macos-arm64-Surge.app.zip
           test -f artifacts/stable-macos-arm64-update.json
-          codesign --verify --verbose=4 artifacts/stable-macos-arm64-Gloomberb.dmg
-          xcrun stapler validate -v artifacts/stable-macos-arm64-Gloomberb.dmg
+          codesign --verify --verbose=4 artifacts/stable-macos-arm64-Surge.dmg
+          xcrun stapler validate -v artifacts/stable-macos-arm64-Surge.dmg
 
       - uses: actions/upload-artifact@v4
         with:
-          name: gloomberb-desktop-macos-arm64
+          name: surge-desktop-macos-arm64
           path: artifacts/*
 
   desktop-windows:
@@ -154,7 +154,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: gloomberb-desktop-windows-x64
+          name: surge-desktop-windows-x64
           path: artifacts/*
 
   release:
@@ -210,7 +210,7 @@ jobs:
           fi
 
           VERSION="${GITHUB_REF_NAME#v}"
-          ZIP_PATH="dist/stable-macos-arm64-Gloomberb.app.zip"
+          ZIP_PATH="dist/stable-macos-arm64-Surge.app.zip"
           if [ ! -f "$ZIP_PATH" ]; then
             echo "macOS desktop zip is missing; skipping Homebrew tap update."
             exit 0
@@ -218,22 +218,22 @@ jobs:
           SHA256="$(sha256sum "$ZIP_PATH" | awk '{print $1}')"
           TAP_DIR="$RUNNER_TEMP/homebrew-tap"
 
-          git config --global user.name "gloomberb-release"
+          git config --global user.name "surge-release"
           git config --global user.email "actions@users.noreply.github.com"
           gh repo clone vincelwt/homebrew-tap "$TAP_DIR"
           git -C "$TAP_DIR" remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/vincelwt/homebrew-tap.git"
           bun run scripts/write-homebrew-cask.ts \
             --version "$VERSION" \
             --sha256 "$SHA256" \
-            --output "$TAP_DIR/Casks/gloomberb.rb"
+            --output "$TAP_DIR/Casks/surge.rb"
 
           cd "$TAP_DIR"
-          git add Casks/gloomberb.rb
+          git add Casks/surge.rb
           if git diff --cached --quiet; then
             echo "Homebrew tap already up to date."
             exit 0
           fi
-          git commit -m "Update Gloomberb to $VERSION"
+          git commit -m "Update Surge to $VERSION"
           git push
 
       - uses: actions/setup-node@v4

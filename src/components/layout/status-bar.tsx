@@ -308,7 +308,7 @@ function NativeStatusBar({
       height={1}
       alignItems="center"
       backgroundColor={colors.panel}
-      data-gloom-role="status-bar"
+      data-surge-role="status-bar"
       onContextMenu={(event: any) => {
         void openLayoutContextMenu(activeLayoutIdx, event);
       }}
@@ -340,7 +340,7 @@ function TerminalStatusBar({
       height={1}
       alignItems="center"
       backgroundColor={colors.panel}
-      data-gloom-role="status-bar"
+      data-surge-role="status-bar"
       onContextMenu={(event: any) => {
         void openLayoutContextMenu(activeLayoutIdx, event);
       }}
@@ -443,7 +443,7 @@ function VersionChip({
         role={openChangelog ? "button" : undefined}
         onMouseOver={() => setHoveredControl((current) => (current === "version" ? current : "version"))}
         onMouseDown={openChangelog}
-        {...(nativePaneChrome && openChangelog ? { "data-gloom-interactive": "true" } : {})}
+        {...(nativePaneChrome && openChangelog ? { "data-surge-interactive": "true" } : {})}
         style={openChangelog ? { cursor: "pointer" } : undefined}
       >
         {label}
@@ -467,7 +467,7 @@ function NativeTidyWindows({
         title={t("Tidy Windows")}
         onMouseOver={() => setHoveredControl((current) => (current === "tidy-windows" ? current : "tidy-windows"))}
         onMouseDown={handleTidyWindows}
-        data-gloom-interactive="true"
+        data-surge-interactive="true"
       >
         {t("Tidy Windows")}
       </Text>

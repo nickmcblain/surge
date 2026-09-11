@@ -22,7 +22,7 @@ const BOUNDS = { x: 0, y: 0, width: 120, height: 40 };
 
 describe("pane-manager split-tree drops", () => {
   test("clamps a pane's preferred floating size to a small terminal", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const next = addPaneFloating(
       cloneLayout(config.layout),
       createPaneInstance("help"),
@@ -35,7 +35,7 @@ describe("pane-manager split-tree drops", () => {
   });
 
   test("docks the first floating pane into an empty dock root", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const layout = {
       ...cloneLayout(config.layout),
       dockRoot: null,
@@ -53,7 +53,7 @@ describe("pane-manager split-tree drops", () => {
   });
 
   test("keeps frame-drop previews identical to the committed rect", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const notesPane = createPaneInstance("chat");
     const withFloating = addPaneFloating(cloneLayout(config.layout), notesPane, 120, 30);
     const target = { kind: "frame", edge: "right" } as const;
@@ -95,7 +95,7 @@ describe("pane-manager split-tree drops", () => {
   });
 
   test("desktop resize targets stay centered without covering lower pane header actions", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const layout: LayoutConfig = { ...config.layout, dockRoot: {
       kind: "split", axis: "horizontal", ratio: 0.5,
       first: { kind: "split", axis: "vertical", ratio: 0.5,
@@ -117,7 +117,7 @@ describe("pane-manager split-tree drops", () => {
   });
 
   test("splits the hovered pane on leaf drops and matches the preview", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const notesPane = createPaneInstance("chat");
     const withFloating = addPaneFloating(cloneLayout(config.layout), notesPane, 120, 30);
     const target = { kind: "leaf", targetId: "ticker-detail:main", position: "top" } as const;
@@ -136,7 +136,7 @@ describe("pane-manager split-tree drops", () => {
   });
 
   test("gridlocks floating windows back into a tiled layout", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     let layout = cloneLayout(config.layout);
     layout = addPaneFloating(layout, createPaneInstance("chat"), 120, 30);
     layout = addPaneFloating(layout, createPaneInstance("chat"), 120, 30);
@@ -209,7 +209,7 @@ describe("pane-manager split-tree drops", () => {
   });
 
   test("gridlock infers a matching tiled layout from arranged windows", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     let layout: LayoutConfig = {
       ...cloneLayout(config.layout),
       dockRoot: null,
@@ -237,7 +237,7 @@ describe("pane-manager split-tree drops", () => {
   });
 
   test("moves floating panes repeatedly within the terminal bounds", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const pane = createPaneInstance("chat");
     let layout = addPaneFloating(cloneLayout(config.layout), pane, 120, 40);
     layout = floatAtRect(layout, pane.instanceId, { x: 8, y: 4, width: 30, height: 10 });
@@ -254,7 +254,7 @@ describe("pane-manager split-tree drops", () => {
   });
 
   test("resizes a floating pane from the focused corner", () => {
-    const config = createResearchTestConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/surge-test");
     const pane = createPaneInstance("chat");
     let layout = addPaneFloating(cloneLayout(config.layout), pane, 120, 40);
     layout = floatAtRect(layout, pane.instanceId, { x: 20, y: 8, width: 40, height: 14 });

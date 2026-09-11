@@ -56,7 +56,7 @@ export function commonStyle(props: Record<string, unknown>): CSSProperties {
     marginBottom: cellInset(props.marginBottom ?? props.marginY ?? props.margin, "y"),
     gap: typeof props.gap === "number" ? `${props.gap * gapUnit}px` : props.gap as CSSProperties["gap"],
     overflow: props.overflow as CSSProperties["overflow"],
-    border: props.border ? `1px solid ${typeof props.borderColor === "string" ? props.borderColor : "var(--gloom-border)"}` : undefined,
+    border: props.border ? `1px solid ${typeof props.borderColor === "string" ? props.borderColor : "var(--surge-border)"}` : undefined,
     boxSizing: "border-box",
     minInlineSize: zeroMinInlineSize ? 0 : undefined,
     minBlockSize: zeroMinBlockSize ? 0 : undefined,

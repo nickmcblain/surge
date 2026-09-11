@@ -304,17 +304,17 @@ export function WebDataTable<T, C extends DataTableColumn = DataTableColumn>({
   };
 
   return (
-    <div data-gloom-role="data-table" style={rootStyle}>
+    <div data-surge-role="data-table" style={rootStyle}>
       <div
         ref={bodyElementRef}
-        data-gloom-role="data-table-body-scroll"
-        data-gloom-scrollbar-x={
+        data-surge-role="data-table-body-scroll"
+        data-surge-scrollbar-x={
           horizontalScrollEnabled && bodyHorizontal.visible
             ? "visible"
             : "hidden"
         }
-        data-gloom-scrollbar-y={bodyVertical.visible ? "visible" : "hidden"}
-        data-gloom-scrollbar-active={scrollbarActive ? "true" : undefined}
+        data-surge-scrollbar-y={bodyVertical.visible ? "visible" : "hidden"}
+        data-surge-scrollbar-active={scrollbarActive ? "true" : undefined}
         style={bodyScrollerStyle}
         onMouseDown={() => {
           focusPane();
@@ -339,7 +339,7 @@ export function WebDataTable<T, C extends DataTableColumn = DataTableColumn>({
         onTouchMove={() => { controlledScrollOffsetRef.current = null; }}
       >
         <div
-          data-gloom-role="data-table-scroll-content"
+          data-surge-role="data-table-scroll-content"
           style={{
             position: "relative",
             width: scrollContentWidth,
@@ -424,7 +424,7 @@ export function WebDataTable<T, C extends DataTableColumn = DataTableColumn>({
           )}
           {items.length > 0 && bodyAfter ? (
             <div
-              data-gloom-role="data-table-body-after"
+              data-surge-role="data-table-body-after"
               style={{
                 position: "absolute",
                 top: totalHeight,

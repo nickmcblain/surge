@@ -27,7 +27,7 @@ function expectedAssetName(compressed = false): string {
   const os = process.platform === "darwin" ? "darwin" : process.platform === "win32" ? "windows" : "linux";
   const arch = process.arch === "arm64" ? "arm64" : "x64";
   const extension = os === "windows" ? ".exe" : "";
-  return compressed ? `gloomberb-${os}-${arch}${extension}.gz` : `gloomberb-${os}-${arch}${extension}`;
+  return compressed ? `surge-${os}-${arch}${extension}.gz` : `surge-${os}-${arch}${extension}`;
 }
 
 describe("getAssetBaseNameForRuntime", () => {
@@ -35,14 +35,14 @@ describe("getAssetBaseNameForRuntime", () => {
     expect(getAssetBaseNameForRuntime({
       platform: "win32",
       arch: "x64",
-    })).toBe("gloomberb-windows-x64.exe");
+    })).toBe("surge-windows-x64.exe");
   });
 
   test("keeps macOS arm64 runtimes on the arm64 asset", () => {
     expect(getAssetBaseNameForRuntime({
       platform: "darwin",
       arch: "arm64",
-    })).toBe("gloomberb-darwin-arm64");
+    })).toBe("surge-darwin-arm64");
   });
 
   // An arm64 asset cannot run on an x64 macOS runtime, so it must never be
@@ -51,52 +51,52 @@ describe("getAssetBaseNameForRuntime", () => {
     expect(getAssetBaseNameForRuntime({
       platform: "darwin",
       arch: "x64",
-    })).toBe("gloomberb-darwin-x64");
+    })).toBe("surge-darwin-x64");
   });
 });
 
 describe("detectUpdateAction", () => {
   test("uses self-update for standalone binaries", () => {
     expect(detectUpdateAction(
-      "/Users/vince/.local/bin/gloomberb",
-      ["/Users/vince/.local/bin/gloomberb"],
+      "/Users/vince/.local/bin/surge",
+      ["/Users/vince/.local/bin/surge"],
     )).toEqual({ kind: "self" });
   });
 
   test("uses manual bun updates for bun-managed installs", () => {
     expect(detectUpdateAction(
       "/opt/homebrew/bin/bun",
-      ["/opt/homebrew/bin/bun", "/Users/vince/.bun/install/global/node_modules/gloomberb/bin/gloomberb"],
+      ["/opt/homebrew/bin/bun", "/Users/vince/.bun/install/global/node_modules/surge/bin/surge"],
     )).toEqual({
       kind: "manual",
-      command: "bun install -g gloomberb@latest",
+      command: "bun install -g surge@latest",
     });
   });
 
   test("uses manual bun updates for Windows bun-managed installs", () => {
     expect(detectUpdateAction(
       "C:\\Program Files\\Bun\\bun.exe",
-      ["C:\\Program Files\\Bun\\bun.exe", "C:\\Users\\vince\\.bun\\install\\global\\node_modules\\gloomberb\\bin\\gloomberb"],
+      ["C:\\Program Files\\Bun\\bun.exe", "C:\\Users\\vince\\.bun\\install\\global\\node_modules\\surge\\bin\\surge"],
     )).toEqual({
       kind: "manual",
-      command: "bun install -g gloomberb@latest",
+      command: "bun install -g surge@latest",
     });
   });
 
   test("uses manual npm updates for node-managed installs", () => {
     expect(detectUpdateAction(
       "/opt/homebrew/bin/node",
-      ["/opt/homebrew/bin/node", "/usr/local/lib/node_modules/gloomberb/bin/gloomberb"],
+      ["/opt/homebrew/bin/node", "/usr/local/lib/node_modules/surge/bin/surge"],
     )).toEqual({
       kind: "manual",
-      command: "npm install -g gloomberb@latest",
+      command: "npm install -g surge@latest",
     });
   });
 
   test("does not offer self-update for standalone Windows executables", () => {
     expect(detectUpdateAction(
-      "C:\\Users\\vince\\Downloads\\gloomberb.exe",
-      ["C:\\Users\\vince\\Downloads\\gloomberb.exe"],
+      "C:\\Users\\vince\\Downloads\\surge.exe",
+      ["C:\\Users\\vince\\Downloads\\surge.exe"],
     )).toBeNull();
   });
 
@@ -109,24 +109,24 @@ describe("detectUpdateAction", () => {
 
   test("does not treat a macOS app bundle launcher as a standalone CLI binary", () => {
     expect(detectUpdateAction(
-      "/Applications/Gloomberb.app/Contents/MacOS/launcher",
-      ["/Applications/Gloomberb.app/Contents/MacOS/launcher"],
+      "/Applications/Surge.app/Contents/MacOS/launcher",
+      ["/Applications/Surge.app/Contents/MacOS/launcher"],
     )).toBeNull();
   });
 
   test("does not suggest Bun-managed updates for the bundled macOS app runtime", () => {
     expect(detectUpdateAction(
-      "/Applications/Gloomberb.app/Contents/MacOS/bun",
-      ["/Applications/Gloomberb.app/Contents/MacOS/bun", "/Applications/Gloomberb.app/Contents/Resources/gloomberb-tui/tui-entry.js"],
+      "/Applications/Surge.app/Contents/MacOS/bun",
+      ["/Applications/Surge.app/Contents/MacOS/bun", "/Applications/Surge.app/Contents/Resources/surge-tui/tui-entry.js"],
     )).toBeNull();
   });
 
   test("does not suggest Bun-managed updates for the bundled Windows app TUI runtime", () => {
     expect(detectUpdateAction(
-      "C:\\Users\\vince\\AppData\\Local\\Programs\\Gloomberb\\bin\\bun.exe",
+      "C:\\Users\\vince\\AppData\\Local\\Programs\\Surge\\bin\\bun.exe",
       [
-        "C:\\Users\\vince\\AppData\\Local\\Programs\\Gloomberb\\bin\\bun.exe",
-        "C:\\Users\\vince\\AppData\\Local\\Programs\\Gloomberb\\Resources\\gloomberb-tui\\tui-entry.js",
+        "C:\\Users\\vince\\AppData\\Local\\Programs\\Surge\\bin\\bun.exe",
+        "C:\\Users\\vince\\AppData\\Local\\Programs\\Surge\\Resources\\surge-tui\\tui-entry.js",
       ],
     )).toBeNull();
   });
@@ -154,17 +154,17 @@ describe("resolveSelfUpdateTargetPath", () => {
     )).toBeNull();
   });
 
-  it("accepts packaged gloomberb binaries", () => {
+  it("accepts packaged surge binaries", () => {
     expect(resolveSelfUpdateTargetPath(
-      "/Applications/gloomberb",
-      ["/Applications/gloomberb"],
-    )).toBe("/Applications/gloomberb");
+      "/Applications/surge",
+      ["/Applications/surge"],
+    )).toBe("/Applications/surge");
   });
 
   it("rejects launchers inside macOS app bundles", () => {
     expect(resolveSelfUpdateTargetPath(
-      "/Applications/Gloomberb.app/Contents/MacOS/launcher",
-      ["/Applications/Gloomberb.app/Contents/MacOS/launcher"],
+      "/Applications/Surge.app/Contents/MacOS/launcher",
+      ["/Applications/Surge.app/Contents/MacOS/launcher"],
     )).toBeNull();
   });
 });
@@ -257,7 +257,7 @@ describe("checkForUpdate", () => {
       published_at: "2026-04-03T00:00:00Z",
       assets: [{
         name: expectedAssetName(true),
-        browser_download_url: "https://example.com/gloomberb.gz",
+        browser_download_url: "https://example.com/surge.gz",
         digest: `sha256:${"ab".repeat(32)}`,
       }],
     }), {
@@ -266,16 +266,16 @@ describe("checkForUpdate", () => {
     })) as typeof fetch;
 
     try {
-      Object.defineProperty(process, "execPath", { value: "/Applications/gloomberb", configurable: true });
+      Object.defineProperty(process, "execPath", { value: "/Applications/surge", configurable: true });
       Object.defineProperty(process, "argv", {
-        value: ["/Applications/gloomberb"],
+        value: ["/Applications/surge"],
         configurable: true,
       });
 
       await expect(checkForUpdate("0.3.1")).resolves.toEqual({
         version: "0.3.2",
         tagName: "v0.3.2",
-        downloadUrl: "https://example.com/gloomberb.gz",
+        downloadUrl: "https://example.com/surge.gz",
         publishedAt: "2026-04-03T00:00:00Z",
         updateAction: { kind: "self" },
         compressed: true,
@@ -295,9 +295,9 @@ describe("checkForUpdateDetailed", () => {
     globalThis.fetch = (async () => new Response("busy", { status: 503 })) as typeof fetch;
 
     try {
-      Object.defineProperty(process, "execPath", { value: "/Applications/gloomberb", configurable: true });
+      Object.defineProperty(process, "execPath", { value: "/Applications/surge", configurable: true });
       Object.defineProperty(process, "argv", {
-        value: ["/Applications/gloomberb"],
+        value: ["/Applications/surge"],
         configurable: true,
       });
 
@@ -322,14 +322,14 @@ describe("checkForUpdateDetailed", () => {
       published_at: "2026-04-03T00:00:00Z",
       assets: [{
         name: expectedAssetName(),
-        browser_download_url: "https://example.com/gloomberb",
+        browser_download_url: "https://example.com/surge",
         ...(digest ? { digest } : {}),
       }],
     }), { status: 200 })) as typeof fetch;
 
     try {
-      Object.defineProperty(process, "execPath", { value: "/Applications/gloomberb", configurable: true });
-      Object.defineProperty(process, "argv", { value: ["/Applications/gloomberb"], configurable: true });
+      Object.defineProperty(process, "execPath", { value: "/Applications/surge", configurable: true });
+      Object.defineProperty(process, "argv", { value: ["/Applications/surge"], configurable: true });
 
       await expect(checkForUpdateDetailed("0.3.1")).resolves.toEqual({
         kind: "error",
@@ -348,9 +348,9 @@ describe("performUpdate", () => {
     const release: ReleaseInfo = {
       version: "9.9.9",
       tagName: "v9.9.9",
-      downloadUrl: "https://example.com/gloomberb-darwin-arm64",
+      downloadUrl: "https://example.com/surge-darwin-arm64",
       publishedAt: "2026-04-01T00:00:00Z",
-      updateAction: { kind: "manual", command: "bun install -g gloomberb@latest" },
+      updateAction: { kind: "manual", command: "bun install -g surge@latest" },
     };
 
     await performUpdate(release, (entry) => {
@@ -360,7 +360,7 @@ describe("performUpdate", () => {
     expect(progress).toEqual([
       {
         phase: "error",
-        error: "Run bun install -g gloomberb@latest",
+        error: "Run bun install -g surge@latest",
       },
     ]);
   });
@@ -372,7 +372,7 @@ describe("performUpdate", () => {
     const release: ReleaseInfo = {
       version: "9.9.9",
       tagName: "v9.9.9",
-      downloadUrl: "https://example.com/gloomberb-darwin-arm64",
+      downloadUrl: "https://example.com/surge-darwin-arm64",
       publishedAt: "2026-04-01T00:00:00Z",
       updateAction: { kind: "self" },
     };
@@ -391,7 +391,7 @@ describe("performUpdate", () => {
       expect(progress).toEqual([
         {
           phase: "error",
-          error: "Self-update is unavailable when running from source or via Bun/Node. Relaunch the packaged gloomberb binary to update.",
+          error: "Self-update is unavailable when running from source or via Bun/Node. Relaunch the packaged surge binary to update.",
         },
       ]);
     } finally {
@@ -406,8 +406,8 @@ describe("performUpdate", () => {
   ])("leaves the installed binary untouched when the checksum is %s", async (_label, checksum) => {
     const originalExecPath = process.execPath;
     const originalArgv = process.argv;
-    const tempDir = mkdtempSync(join(tmpdir(), "gloomberb-update-"));
-    const execPath = join(tempDir, "gloomberb");
+    const tempDir = mkdtempSync(join(tmpdir(), "surge-update-"));
+    const execPath = join(tempDir, "surge");
     const oldBinary = Buffer.from("old-binary");
     const progress: UpdateProgress[] = [];
 
@@ -422,7 +422,7 @@ describe("performUpdate", () => {
       await performUpdate({
         version: "9.9.9",
         tagName: "v9.9.9",
-        downloadUrl: "https://example.com/gloomberb.gz",
+        downloadUrl: "https://example.com/surge.gz",
         publishedAt: "2026-04-03T00:00:00Z",
         updateAction: { kind: "self" },
         compressed: true,
@@ -444,8 +444,8 @@ describe("performUpdate", () => {
   it("replaces the binary when the downloaded asset checksum matches", async () => {
     const originalExecPath = process.execPath;
     const originalArgv = process.argv;
-    const tempDir = mkdtempSync(join(tmpdir(), "gloomberb-update-"));
-    const execPath = join(tempDir, "gloomberb");
+    const tempDir = mkdtempSync(join(tmpdir(), "surge-update-"));
+    const execPath = join(tempDir, "surge");
     const nextBinary = Buffer.from("verified-binary");
     const checksum = createHash("sha256").update(nextBinary).digest("hex");
     const progress: UpdateProgress[] = [];
@@ -461,7 +461,7 @@ describe("performUpdate", () => {
       await performUpdate({
         version: "9.9.9",
         tagName: "v9.9.9",
-        downloadUrl: "https://example.com/gloomberb",
+        downloadUrl: "https://example.com/surge",
         publishedAt: "2026-04-03T00:00:00Z",
         updateAction: { kind: "self" },
         checksum,
@@ -479,8 +479,8 @@ describe("performUpdate", () => {
   it("leaves the installed binary untouched when the checksum mismatches", async () => {
     const originalExecPath = process.execPath;
     const originalArgv = process.argv;
-    const tempDir = mkdtempSync(join(tmpdir(), "gloomberb-update-"));
-    const execPath = join(tempDir, "gloomberb");
+    const tempDir = mkdtempSync(join(tmpdir(), "surge-update-"));
+    const execPath = join(tempDir, "surge");
     const oldBinary = Buffer.from("old-binary");
     const progress: UpdateProgress[] = [];
 
@@ -495,7 +495,7 @@ describe("performUpdate", () => {
       await performUpdate({
         version: "9.9.9",
         tagName: "v9.9.9",
-        downloadUrl: "https://example.com/gloomberb",
+        downloadUrl: "https://example.com/surge",
         publishedAt: "2026-04-03T00:00:00Z",
         updateAction: { kind: "self" },
         checksum: "00".repeat(32),

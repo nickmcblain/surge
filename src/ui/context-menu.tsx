@@ -37,12 +37,12 @@ const noopContextMenuController: ContextMenuController = {
 };
 const EDITABLE_SELECTOR = "input, textarea, [contenteditable='true']";
 const MENU_SURFACE_SELECTOR = [
-  "[data-gloom-context-menu-surface='true']",
-  "[data-gloom-role='pane-header']",
-  "[data-gloom-role='pane-action']",
-  "[data-gloom-role='pane-close']",
-  "[data-gloom-role='status-bar']",
-  "[data-gloom-role='tab-button']",
+  "[data-surge-context-menu-surface='true']",
+  "[data-surge-role='pane-header']",
+  "[data-surge-role='pane-action']",
+  "[data-surge-role='pane-close']",
+  "[data-surge-role='status-bar']",
+  "[data-surge-role='tab-button']",
 ].join(", ");
 
 function isDivider(item: ContextMenuItem): item is ContextMenuDividerItem {

@@ -16,7 +16,7 @@ describe("remote control server", () => {
   });
 
   test("writes an endpoint and serves authenticated RPC requests", async () => {
-    const dataDir = await mkdtemp(join(tmpdir(), "gloom-remote-"));
+    const dataDir = await mkdtemp(join(tmpdir(), "surge-remote-"));
     tempDirs.push(dataDir);
     const server = await startRemoteControlServer({
       dataDir,
@@ -35,7 +35,7 @@ describe("remote control server", () => {
   });
 
   test("removes endpoint files on close", async () => {
-    const dataDir = await mkdtemp(join(tmpdir(), "gloom-remote-"));
+    const dataDir = await mkdtemp(join(tmpdir(), "surge-remote-"));
     tempDirs.push(dataDir);
     const server = await startRemoteControlServer({
       dataDir,

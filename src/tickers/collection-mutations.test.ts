@@ -29,7 +29,7 @@ function makeTicker(overrides: Partial<TickerRecord["metadata"]> = {}): TickerRe
 
 describe("portfolio-list mutations", () => {
   test("identifies manual portfolios", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-mutations");
+    const config = createDefaultConfig("/tmp/surge-mutations");
     expect(isManualPortfolio(config.portfolios[0]!)).toBe(true);
     expect(isManualPortfolio({
       id: "broker:ibkr",
@@ -41,12 +41,12 @@ describe("portfolio-list mutations", () => {
   });
 
   test("rejects duplicate manual portfolio names", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-mutations");
+    const config = createDefaultConfig("/tmp/surge-mutations");
     expect(() => createManualPortfolio(config, "Main Portfolio", config.baseCurrency)).toThrow('Portfolio "Main Portfolio" already exists.');
   });
 
   test("deletes a manual portfolio and cleans memberships plus positions", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-mutations");
+    const config = createDefaultConfig("/tmp/surge-mutations");
     config.portfolios.push({ id: "research", name: "Research", currency: "USD" });
 
     const firstTicker = makeTicker({

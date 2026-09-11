@@ -190,7 +190,7 @@ function makePluginRegistry(hasPaneSettings: (paneId: string) => boolean = () =>
     createBrokerInstanceFn: async () => { throw new Error("unused"); },
     syncBrokerInstanceFn: async () => {},
     removeBrokerInstanceFn: async () => {},
-    getConfigFn: () => createResearchTestConfig("/tmp/gloomberb-test"),
+    getConfigFn: () => createResearchTestConfig("/tmp/surge-test"),
   } as unknown as PluginRegistry;
 }
 
@@ -199,7 +199,7 @@ export function makeQuoteMonitorPaneSettingsDescriptor(
   fields: PaneSettingField[],
   settings: Record<string, unknown> = {},
 ) {
-  const config = createResearchTestConfig("/tmp/gloomberb-test");
+  const config = createResearchTestConfig("/tmp/surge-test");
   const pane = {
     instanceId: "quote-monitor:main",
     paneId: "quote-monitor",
@@ -275,7 +275,7 @@ export function CommandBarHarness({
   onUnhandledEnter?: () => void;
 }) {
   let config = {
-    ...createResearchTestConfig("/tmp/gloomberb-test"),
+    ...createResearchTestConfig("/tmp/surge-test"),
     recentTickers: ["AAPL", "MSFT"],
     disabledPlugins,
   };

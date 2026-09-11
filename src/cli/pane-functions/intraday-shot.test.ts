@@ -61,8 +61,8 @@ function financials(priceHistory: PricePoint[] = []): TickerFinancials {
 
 function contextWithProvider(provider: DataProvider): MarketContext {
   return {
-    config: createDefaultConfig("/tmp/gloomberb-shot-test"),
-    dataDir: "/tmp/gloomberb-shot-test",
+    config: createDefaultConfig("/tmp/surge-shot-test"),
+    dataDir: "/tmp/surge-shot-test",
     persistence: {
       pluginState: { get: () => null },
     },

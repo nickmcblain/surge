@@ -100,7 +100,7 @@ export function NativeSelect({
         ref={selectRef}
         value={value}
         disabled={disabled}
-        data-gloom-interactive="true"
+        data-surge-interactive="true"
         onFocus={onFocus}
         onMouseDown={(event) => {
           event.stopPropagation();

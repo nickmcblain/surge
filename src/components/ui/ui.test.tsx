@@ -727,7 +727,7 @@ describe("shared UI kit", () => {
   });
 
   test("activates data table rows on a second click", async () => {
-    const state = createInitialState(createDefaultConfig("/tmp/gloomberb-test"));
+    const state = createInitialState(createDefaultConfig("/tmp/surge-test"));
     testSetup = await testRender(
       <AppContext value={{ state, dispatch: () => {} }}>
         <PaneInstanceProvider paneId="portfolio-list:main">
@@ -757,7 +757,7 @@ describe("shared UI kit", () => {
   });
 
   test("renders data table section headers as non-selectable rows", async () => {
-    const state = createInitialState(createDefaultConfig("/tmp/gloomberb-test"));
+    const state = createInitialState(createDefaultConfig("/tmp/surge-test"));
     testSetup = await testRender(
       <AppContext value={{ state, dispatch: () => {} }}>
         <PaneInstanceProvider paneId="portfolio-list:main">
@@ -792,7 +792,7 @@ describe("shared UI kit", () => {
   });
 
   test("hides data table horizontal scrolling when disabled", async () => {
-    const state = createInitialState(createDefaultConfig("/tmp/gloomberb-test"));
+    const state = createInitialState(createDefaultConfig("/tmp/surge-test"));
     tableScrollBoxForTest = null;
     testSetup = await testRender(
       <AppContext value={{ state, dispatch: () => {} }}>
@@ -812,7 +812,7 @@ describe("shared UI kit", () => {
   });
 
   test("hides data table horizontal scrolling when content fits", async () => {
-    const state = createInitialState(createDefaultConfig("/tmp/gloomberb-test"));
+    const state = createInitialState(createDefaultConfig("/tmp/surge-test"));
     tableScrollBoxForTest = null;
     testSetup = await testRender(
       <AppContext value={{ state, dispatch: () => {} }}>
@@ -832,7 +832,7 @@ describe("shared UI kit", () => {
   });
 
   test("shows data table horizontal scrolling when content overflows", async () => {
-    const state = createInitialState(createDefaultConfig("/tmp/gloomberb-test"));
+    const state = createInitialState(createDefaultConfig("/tmp/surge-test"));
     tableScrollBoxForTest = null;
     testSetup = await testRender(
       <AppContext value={{ state, dispatch: () => {} }}>
@@ -858,7 +858,7 @@ describe("shared UI kit", () => {
   });
 
   test("shows data table vertical scrolling when rows overflow", async () => {
-    const state = createInitialState(createDefaultConfig("/tmp/gloomberb-test"));
+    const state = createInitialState(createDefaultConfig("/tmp/surge-test"));
     tableScrollBoxForTest = null;
     testSetup = await testRender(
       <AppContext value={{ state, dispatch: () => {} }}>
@@ -878,7 +878,7 @@ describe("shared UI kit", () => {
   });
 
   test("virtualizes data table rows and refreshes after wheel scrolling", async () => {
-    const state = createInitialState(createDefaultConfig("/tmp/gloomberb-test"));
+    const state = createInitialState(createDefaultConfig("/tmp/surge-test"));
     tableScrollBoxForTest = null;
     testSetup = await testRender(
       <AppContext value={{ state, dispatch: () => {} }}>

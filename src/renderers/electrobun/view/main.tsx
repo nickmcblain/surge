@@ -53,9 +53,9 @@ const bootLog = debugLog.createLogger("electrobun-web-boot");
 let appMounted = false;
 
 appRootElement.tabIndex = -1;
-root.render(<div className="gloom-loading">Starting Gloomberb...</div>);
+root.render(<div className="surge-loading">Starting Surge...</div>);
 
-function renderFatalError(error: unknown, details?: string, title = "Gloomberb failed to start"): void {
+function renderFatalError(error: unknown, details?: string, title = "Surge failed to start"): void {
   root.render(
     <DesktopFatalScreen
       title={title}
@@ -66,11 +66,11 @@ function renderFatalError(error: unknown, details?: string, title = "Gloomberb f
   );
 }
 
-window.__gloomRenderFatalError = (error, details, source) => {
+window.__surgeRenderFatalError = (error, details, source) => {
   if (appMounted && source === "unhandledrejection") {
     return;
   }
-  renderFatalError(error, details, "Gloomberb crashed");
+  renderFatalError(error, details, "Surge crashed");
 };
 
 function focusWebSurface(): void {

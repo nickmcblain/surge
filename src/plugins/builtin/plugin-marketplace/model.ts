@@ -17,7 +17,7 @@ export interface RegistryPlugin {
   targets: PluginTarget[];
   hosts: string[];
   contributes: { panes: string[]; capabilities: string[]; broker: boolean };
-  minGloomberb?: string;
+  minSurge?: string;
   tier: PluginTier;
   bundled: boolean;
   featured?: boolean;
@@ -58,7 +58,7 @@ export interface MarketplaceEntry {
   repo?: string;
   stars: number;
   featured: boolean;
-  /** Ships inside Gloomberb; there is nothing to install or remove. */
+  /** Ships inside Surge; there is nothing to install or remove. */
   bundled: boolean;
   installed: boolean;
   enabled: boolean;

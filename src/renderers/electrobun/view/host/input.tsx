@@ -30,7 +30,7 @@ function textInputStyle(props: Record<string, unknown>, multiline: boolean): CSS
     resize: "none",
     border: "none",
     outline: "none",
-    color: typeof textColor === "string" ? textColor : "var(--gloom-text)",
+    color: typeof textColor === "string" ? textColor : "var(--surge-text)",
     backgroundColor: typeof backgroundColor === "string" ? backgroundColor : "transparent",
     whiteSpace: multiline && props.wrapText ? "pre-wrap" : "pre",
     overflow: multiline ? "auto" : "hidden",

@@ -62,7 +62,7 @@ function installCoordinator(): void {
 }
 
 function Harness() {
-  const state = createInitialState(createDefaultConfig("/tmp/gloomberb-fxc-pane-test"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-fxc-pane-test"));
   const runtime = { getMarketData: () => ({}) } as unknown as PluginRuntimeAccess;
 
   return (

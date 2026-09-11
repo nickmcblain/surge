@@ -42,7 +42,7 @@ export async function startOpenTuiApp(options: StartOpenTuiAppOptions = {}): Pro
   debugLog.interceptConsole();
 
   const appLog = debugLog.createLogger("app");
-  appLog.info("Gloomberb starting");
+  appLog.info("Surge starting");
   const remoteControlAdapter: RemoteControlAdapter = {
     startServer: ({ dataDir, handle }) => {
       let closed = false;
@@ -115,7 +115,7 @@ export async function startOpenTuiApp(options: StartOpenTuiAppOptions = {}): Pro
   try {
     let dataDir = await getDataDir();
     if (!dataDir) {
-      dataDir = join(process.env.HOME || "~", ".gloomberb");
+      dataDir = join(process.env.HOME || "~", ".surge");
     }
 
     if (!existsSync(dataDir)) {

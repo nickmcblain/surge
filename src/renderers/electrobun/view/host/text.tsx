@@ -113,7 +113,7 @@ export function WebAsciiText({
   return (
     <div
       {...cleanDomProps(props)}
-      data-gloom-role={(props["data-gloom-role"] as string | undefined) ?? "ascii-text"}
+      data-surge-role={(props["data-surge-role"] as string | undefined) ?? "ascii-text"}
       style={{
         ...commonStyle({ ...props, fg: resolvedColor, bg: resolvedBackground }),
         display: isLegacyWordmark ? "flex" : "block",

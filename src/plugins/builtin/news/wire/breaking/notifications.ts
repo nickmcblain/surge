@@ -1,4 +1,4 @@
-import type { GloomPluginContext } from "../../../../../types/plugin";
+import type { SurgePluginContext } from "../../../../../types/plugin";
 import type { MarketNewsItem, NewsQueryState } from "../../../../../types/news-source";
 import { NEWS_QUERY_PRESETS } from "../news/query-presets";
 import {
@@ -47,7 +47,7 @@ function notificationSubtitle(article: MarketNewsItem): string {
   return tickers ? `${article.source} ${tickers}` : article.source;
 }
 
-export function setupBreakingNewsNotifications(ctx: GloomPluginContext): () => void {
+export function setupBreakingNewsNotifications(ctx: SurgePluginContext): () => void {
   let disposeWatch: (() => void) | null = null;
   let primed = false;
   let seenArticleIds = new Set<string>();

@@ -125,7 +125,7 @@ export function createRemoteAssetDataClient(): RemoteAssetDataClient {
 
   const base: RemoteAssetDataClientBase = {
     id: "desktop-backend",
-    name: "Gloomberb Backend",
+    name: "Surge Backend",
     getCachedFinancialsForTargets: (targets, options) => (
       hasRendererOperation(assetDataOperations, "getCachedFinancialsForTargets")
         ? invoke<Map<string, TickerFinancials>>(ASSET_DATA_CAPABILITY_ID, "getCachedFinancialsForTargets", { targets, options })

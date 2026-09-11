@@ -29,7 +29,7 @@ type NotifyFn = (body: string, options?: { type?: "info" | "success" | "error" }
 
 function getDefaultConfigBackupPath(): string {
   const home = typeof process !== "undefined" ? process.env.HOME : undefined;
-  return `${home || "~"}/gloomberb-config-backup.json`;
+  return `${home || "~"}/surge-config-backup.json`;
 }
 
 export function runDirectCommandAction(options: {
@@ -182,7 +182,7 @@ export function runDirectCommandAction(options: {
         title: "Reset All Data",
         body: [
           "This will permanently delete all portfolios, tickers, notes, broker credentials, and settings.",
-          "Gloomberb will quit and show the setup wizard on next launch.",
+          "Surge will quit and show the setup wizard on next launch.",
         ],
         confirmLabel: "Reset Everything",
         cancelLabel: "Back",

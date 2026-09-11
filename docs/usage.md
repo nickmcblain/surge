@@ -6,11 +6,11 @@
 - [Command reference and chart composer](#command-reference)
 - [CLI commands and output formats](#cli)
 - [Broker position sync](#broker-position-sync)
-- [Gloom Cloud sign-in](#gloom-cloud-sign-in)
+- [Surge Cloud sign-in](#surge-cloud-sign-in)
 - [Interface language](#localized-interface)
 - [Live TV](#live-tv)
 
-The desktop app and TUI share the command language and plugin system. The [browser app](browser.md) offers a smaller feature set. Use `HELP` in the app or `gloomberb help` in your shell for the commands available in your installation.
+The desktop app and TUI share the command language and plugin system. The [browser app](browser.md) offers a smaller feature set. Use `HELP` in the app or `surge help` in your shell for the commands available in your installation.
 
 ## Keyboard
 
@@ -35,7 +35,7 @@ Desktop builds also accept `Cmd/Ctrl+K` for the command bar, the matching `Cmd` 
 
 ## Command Reference
 
-Use `HELP` inside Gloomberb for the live shortcut list. The common command-bar prefixes are listed here for quick scanning.
+Use `HELP` inside Surge for the live shortcut list. The common command-bar prefixes are listed here for quick scanning.
 
 ### Company Research
 
@@ -114,7 +114,7 @@ The toolbar controls preset or exact date ranges, intervals from one minute thro
 | `ERN` | Earnings calendar |
 | `IPO` | Upcoming and recent IPOs |
 | `HALT` | US trading halts with reason and resumption times |
-| `TV` | Live Bloomberg, CNBC, and Yahoo Finance television ([TV plugin](https://github.com/gloom-sh/gloom-tv)) |
+| `TV` | Live Bloomberg, CNBC, and Yahoo Finance television ([TV plugin](https://github.com/surge-sh/surge-tv)) |
 | `BI` / `SP` | S&P 500 sector performance |
 | `FXC` | Major FX cross rates |
 | `FNG` | Fear and greed market gauge |
@@ -129,9 +129,9 @@ The toolbar controls preset or exact date ranges, intervals from one minute thro
 | `SA <symbol condition price>` | Create a price alert |
 | `AI <prompt>` | AI screener |
 | `AGENT` | Local AI research workspace |
-| `CHAT [channel]` | Gloom Cloud chat |
+| `CHAT [channel]` | Surge Cloud chat |
 | `DM @user [@user...]` | Open or start a direct or group chat |
-| `ACM` | Gloom Cloud account settings |
+| `ACM` | Surge Cloud account settings |
 | `NOTE` | Notes |
 | `IBKR` | IBKR trading pane |
 | `BR` | Broker connections |
@@ -159,64 +159,64 @@ Published layouts preserve portable pane setup and state, including searches, ch
 
 ## CLI
 
-Running `gloomberb` with no arguments launches the terminal UI. Normal commands run through a headless CLI path; use `gloomberb launch-ui` when a script should explicitly open the UI.
+Running `surge` with no arguments launches the terminal UI. Normal commands run through a headless CLI path; use `surge launch-ui` when a script should explicitly open the UI.
 
 Human-readable output is the default. Automation can opt into structured output with `--json`, `--csv`, or `--ndjson`. JSON output favors the richest fetched model available and includes display-column metadata when a command has table columns; CSV and NDJSON use the command's tabular row view. Common global flags include `--limit`, `--refresh`, `--quiet`, `--no-color`, `--dry-run`, and `--yes`.
 
 | Command | Use |
 |---------|-----|
-| `gloomberb` | Launch the terminal UI |
-| `gloomberb launch-ui` | Explicitly launch the terminal UI |
-| `gloomberb help` | Show all CLI commands |
-| `gloomberb api list\|get\|invoke\|subscribe` | Inspect and call plugin capabilities directly |
-| `gloomberb quote <symbols>` | Fetch current quotes |
-| `gloomberb search <query>` / `provider-search <query>` | Search tickers and provider symbols |
-| `gloomberb ticker <symbol>` | Show quote, ownership, and financials |
-| `gloomberb history\|financials\|fundamentals\|options <symbol>` | Fetch research data |
-| `gloomberb news\|filings\|holders\|insider\|13f\|analyst\|events\|valuation <symbol>` | Fetch company research feeds |
-| `gloomberb movers\|indices\|sectors\|fx\|fear-greed\|earnings` | Fetch market overview data |
-| `gloomberb econ\|fred\|yield-curve` | Fetch macro data |
-| `gloomberb compare\|correlation\|relationship <symbols>` | Compare securities |
-| `gloomberb portfolio [action]` | Manage manual portfolios |
-| `gloomberb watchlist [action]` | Manage watchlists |
-| `gloomberb notes\|alerts [action]` | Manage local notes and alerts |
-| `gloomberb broker\|ibkr [action]` | Inspect broker profiles |
-| `gloomberb ai providers\|ask` | Use configured AI providers |
-| `gloomberb rss fetch <url>` | Fetch an RSS feed |
-| `gloomberb provider status` | Inspect enabled data providers |
-| `gloomberb config\|cache\|plugin\|layout\|pane\|debug\|doctor\|version\|changelog` | Inspect and manage local app state |
-| `gloomberb fn [...]` | Run a pane-backed report command |
-| `gloomberb shot [...]` | Capture a pane-backed screenshot |
-| `gloomberb predictions [...]` | Launch Prediction Markets |
-| `gloomberb plugins` | List installed plugins |
-| `gloomberb install <user/repo>` | Install a plugin from GitHub |
-| `gloomberb remove <name>` | Remove an installed plugin |
-| `gloomberb update [name]` | Update plugins |
+| `surge` | Launch the terminal UI |
+| `surge launch-ui` | Explicitly launch the terminal UI |
+| `surge help` | Show all CLI commands |
+| `surge api list\|get\|invoke\|subscribe` | Inspect and call plugin capabilities directly |
+| `surge quote <symbols>` | Fetch current quotes |
+| `surge search <query>` / `provider-search <query>` | Search tickers and provider symbols |
+| `surge ticker <symbol>` | Show quote, ownership, and financials |
+| `surge history\|financials\|fundamentals\|options <symbol>` | Fetch research data |
+| `surge news\|filings\|holders\|insider\|13f\|analyst\|events\|valuation <symbol>` | Fetch company research feeds |
+| `surge movers\|indices\|sectors\|fx\|fear-greed\|earnings` | Fetch market overview data |
+| `surge econ\|fred\|yield-curve` | Fetch macro data |
+| `surge compare\|correlation\|relationship <symbols>` | Compare securities |
+| `surge portfolio [action]` | Manage manual portfolios |
+| `surge watchlist [action]` | Manage watchlists |
+| `surge notes\|alerts [action]` | Manage local notes and alerts |
+| `surge broker\|ibkr [action]` | Inspect broker profiles |
+| `surge ai providers\|ask` | Use configured AI providers |
+| `surge rss fetch <url>` | Fetch an RSS feed |
+| `surge provider status` | Inspect enabled data providers |
+| `surge config\|cache\|plugin\|layout\|pane\|debug\|doctor\|version\|changelog` | Inspect and manage local app state |
+| `surge fn [...]` | Run a pane-backed report command |
+| `surge shot [...]` | Capture a pane-backed screenshot |
+| `surge predictions [...]` | Launch Prediction Markets |
+| `surge plugins` | List installed plugins |
+| `surge install <user/repo>` | Install a plugin from GitHub |
+| `surge remove <name>` | Remove an installed plugin |
+| `surge update [name]` | Update plugins |
 
 ## Broker position sync
 
-Use **New Portfolio** or **Add Broker Account** to connect a broker. Gloomberb can import positions from Interactive Brokers, Public, Robinhood, and SimpleFIN.
+Use **New Portfolio** or **Add Broker Account** to connect a broker. Surge can import positions from Interactive Brokers, Public, Robinhood, and SimpleFIN.
 
-Each broker is a plugin with its own repository, installed on first launch and updatable on its own. Manage them from the plugin directory, or with `gloomberb install gloom-sh/gloomberb-public` and friends.
+Each broker is a plugin with its own repository, installed on first launch and updatable on its own. Manage them from the plugin directory, or with `surge install nickmc-lumion/surge-public` and friends.
 
-- Robinhood opens a browser sign-in page. Gloomberb uses only the read-only account and equity-position tools from the Robinhood Trading MCP server.
-- Public needs an API secret from Public API settings. Gloomberb creates a short-lived access token and uses only the account and portfolio endpoints.
-- SimpleFIN needs a one-time setup token from SimpleFIN Bridge. Gloomberb exchanges the token and imports only accounts that contain holdings.
+- Robinhood opens a browser sign-in page. Surge uses only the read-only account and equity-position tools from the Robinhood Trading MCP server.
+- Public needs an API secret from Public API settings. Surge creates a short-lived access token and uses only the account and portfolio endpoints.
+- SimpleFIN needs a one-time setup token from SimpleFIN Bridge. Surge exchanges the token and imports only accounts that contain holdings.
 
-Gloomberb saves the connection data on the local device. It does not include this data in Gloom Cloud synchronization. A later position sync updates the managed portfolios and removes positions that the broker no longer reports.
+Surge saves the connection data on the local device. It does not include this data in Surge Cloud synchronization. A later position sync updates the managed portfolios and removes positions that the broker no longer reports.
 
-## Gloom Cloud sign-in
+## Surge Cloud sign-in
 
-Sign in with email and password, or pick `Log In with QR Code` from the command bar and scan the code with the Gloomberb mobile companion app to sign the terminal in without typing. The onboarding wizard offers the same QR option as the recommended path, with email and password as the alternative.
+Sign in with email and password, or pick `Log In with QR Code` from the command bar and scan the code with the Surge mobile companion app to sign the terminal in without typing. The onboarding wizard offers the same QR option as the recommended path, with email and password as the alternative.
 
 ## Localized interface
 
-Gloomberb includes English, Spanish, Simplified Chinese, Traditional Chinese, Japanese, and Korean UI support. English remains the default fallback language.
+Surge includes English, Spanish, Simplified Chinese, Traditional Chinese, Japanese, and Korean UI support. English remains the default fallback language.
 
 - **Automatic detection:** supported `LANG` / `LC_ALL` and desktop system locales select the matching interface automatically.
 - **Command switching:** enter `LANG` in the command bar (Ctrl+P) to cycle languages, or use `LANG auto`, `LANG en`, `LANG es`, `LANG zh-CN`, `LANG zh-TW`, `LANG ja`, or `LANG ko`. The choice is persisted in `config.json`.
-- **One-run override:** `GLOOMBERB_LANG=ja gloomberb` (or another supported locale) takes highest priority in environments that expose process locale variables.
+- **One-run override:** `SURGE_LANG=ja surge` (or another supported locale) takes highest priority in environments that expose process locale variables.
 
 ## Live TV
 
-Install [TV](https://github.com/gloom-sh/gloomberb-tv) with `gloomberb install gloom-sh/gloomberb-tv`. Existing installations restore it once after upgrading. Live TV in the terminal also requires `mpv` with Kitty video output. Gloomberb resolves the stream in JavaScript and runs `mpv` with its `yt-dlp` integration disabled, so `yt-dlp` is not required.
+Install [TV](https://github.com/nickmc-lumion/surge-tv) with `surge install nickmc-lumion/surge-tv`. Existing installations restore it once after upgrading. Live TV in the terminal also requires `mpv` with Kitty video output. Surge resolves the stream in JavaScript and runs `mpv` with its `yt-dlp` integration disabled, so `yt-dlp` is not required.

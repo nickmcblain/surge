@@ -24,7 +24,7 @@ describe("AssetDataRouter chart history", () => {
     const policy = { staleMs: 60_000, expireMs: 60_000 };
     const wrong = [{ date: new Date("2026-08-10"), close: 0.000004 }];
     const corrected = [{ date: new Date("2026-08-01"), close: 0.000006 }];
-    const sourceKey = "provider:gloomberb-cloud";
+    const sourceKey = "provider:surge-cloud";
     for (const symbol of ["SHIB-USD", "OFFLINE-USD"]) {
       persistence.resources.set({ namespace: "market", kind: "price-history", entityKey: symbol,
         variantKey: "exchange=CCC;range=ALL;resolution=1mo;version=4;calendar=1", sourceKey }, wrong, { cachePolicy: policy });
@@ -34,7 +34,7 @@ describe("AssetDataRouter chart history", () => {
     persistence.close();
     persistence = new AppPersistence(path);
     let calls = 0;
-    const provider: DataProvider = { ...fallbackProvider, id: "gloomberb-cloud", name: "Cloud",
+    const provider: DataProvider = { ...fallbackProvider, id: "surge-cloud", name: "Cloud",
       async getPriceHistoryForResolution(symbol) {
         calls++;
         if (symbol !== "SHIB-USD") throw new Error("Provider temporarily unavailable");
@@ -223,7 +223,7 @@ describe("AssetDataRouter chart history", () => {
         kind: "price-history",
         entityKey: "META",
         variantKey: "exchange=NASDAQ;range=1M;resolution=5m;version=3",
-        sourceKey: "provider:gloomberb-cloud",
+        sourceKey: "provider:surge-cloud",
       },
       [
         { date: previousDate, close: 620 },
@@ -237,8 +237,8 @@ describe("AssetDataRouter chart history", () => {
     let providerCalls = 0;
     const router = new AssetDataRouter({
       ...fallbackProvider,
-      id: "gloomberb-cloud",
-      name: "Gloomberb Cloud",
+      id: "surge-cloud",
+      name: "Surge Cloud",
       async getPriceHistoryForResolution() {
         providerCalls += 1;
         return [
@@ -274,7 +274,7 @@ describe("AssetDataRouter chart history", () => {
         kind: "price-history",
         entityKey: "FTC",
         variantKey: "exchange=LSE;range=ALL;resolution=1wk",
-        sourceKey: "provider:gloomberb-cloud",
+        sourceKey: "provider:surge-cloud",
       },
       [
         { date: new Date("2026-05-21T00:00:00Z"), close: 405 },
@@ -288,8 +288,8 @@ describe("AssetDataRouter chart history", () => {
     let providerCalls = 0;
     const router = new AssetDataRouter({
       ...fallbackProvider,
-      id: "gloomberb-cloud",
-      name: "Gloomberb Cloud",
+      id: "surge-cloud",
+      name: "Surge Cloud",
       async getPriceHistoryForResolution() {
         providerCalls += 1;
         return [

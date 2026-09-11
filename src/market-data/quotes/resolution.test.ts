@@ -39,9 +39,9 @@ describe("quote-resolution", () => {
         routingExchangeFullName: "SMART",
         sessionConfidence: "unknown",
       },
-      "gloomberb-cloud": {
+      "surge-cloud": {
         symbol: "AMD",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         dataSource: "delayed",
         price: 99.8,
         currency: "USD",
@@ -176,9 +176,9 @@ describe("quote-resolution", () => {
       },
       {
         contributions: {
-          "gloomberb-cloud": {
+          "surge-cloud": {
             symbol: "3HNX",
-            providerId: "gloomberb-cloud",
+            providerId: "surge-cloud",
             dataSource: "delayed",
             price: 5.81,
             currency: "GBP",
@@ -227,9 +227,9 @@ describe("quote-resolution", () => {
   test("prefers yahoo day reference fields over stale cloud previous close data", () => {
     const now = Date.parse("2026-07-06T15:45:00Z");
     const contributions: QuoteContributionMap = {
-      "gloomberb-cloud": {
+      "surge-cloud": {
         symbol: "VICR",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         dataSource: "delayed",
         price: 299.8,
         currency: "USD",
@@ -259,21 +259,21 @@ describe("quote-resolution", () => {
 
     const quote = resolveCanonicalQuote(contributions, now).quote;
 
-    expect(quote?.providerId).toBe("gloomberb-cloud");
+    expect(quote?.providerId).toBe("surge-cloud");
     expect(quote?.price).toBe(299.8);
     expect(quote?.previousClose).toBe(282.95);
     expect(quote?.change).toBeCloseTo(16.85, 10);
     expect(quote?.changePercent).toBeCloseTo((16.85 / 282.95) * 100, 10);
-    expect(quote?.provenance?.price?.providerId).toBe("gloomberb-cloud");
+    expect(quote?.provenance?.price?.providerId).toBe("surge-cloud");
     expect(quote?.provenance?.fields?.previousClose?.providerId).toBe("yahoo");
   });
 
   test("prefers cloud session data over yahoo when confidence is tied", () => {
     const now = Date.parse("2026-04-08T11:00:00Z");
     const contributions: QuoteContributionMap = {
-      "gloomberb-cloud": {
+      "surge-cloud": {
         symbol: "ELF",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         dataSource: "delayed",
         price: 88,
         currency: "USD",
@@ -305,15 +305,15 @@ describe("quote-resolution", () => {
 
     expect(quote?.marketState).toBe("PRE");
     expect(quote?.preMarketPrice).toBe(89);
-    expect(quote?.provenance?.session?.providerId).toBe("gloomberb-cloud");
+    expect(quote?.provenance?.session?.providerId).toBe("surge-cloud");
   });
 
   test("prefers yahoo extended-hours session data when cloud premarket lacks an active-session price", () => {
     const now = Date.parse("2026-04-08T11:00:00Z");
     const contributions: QuoteContributionMap = {
-      "gloomberb-cloud": {
+      "surge-cloud": {
         symbol: "AMD",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         dataSource: "delayed",
         price: 221.53,
         currency: "USD",
@@ -358,7 +358,7 @@ describe("quote-resolution", () => {
       priceHistory: [],
       quote: {
         symbol: "AMD",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         dataSource: "delayed",
         price: 221.53,
         currency: "USD",
@@ -380,13 +380,13 @@ describe("quote-resolution", () => {
     for (const marketState of ["PRE", "POST"] as const) {
       for (const dataSource of ["delayed", undefined] as const) {
         const contribution = normalizeQuoteContribution({
-          symbol: "ASML", providerId: "gloomberb-cloud", listingExchangeName: "AMS",
+          symbol: "ASML", providerId: "surge-cloud", listingExchangeName: "AMS",
           price: 1472.8, currency: "EUR", previousClose: 1497.6,
           change: -24.8, changePercent: -1.65598,
           lastUpdated: Date.parse("2026-09-10T15:29:00Z"),
           marketState, sessionConfidence: "explicit", dataSource,
         })!;
-        const canonical = resolveCanonicalQuote({ "gloomberb-cloud": contribution }, contribution.lastUpdated).quote;
+        const canonical = resolveCanonicalQuote({ "surge-cloud": contribution }, contribution.lastUpdated).quote;
         for (const quote of [contribution, canonical]) {
           expect(quote?.price).toBe(1472.8);
           expect(quote?.marketState).toBe(marketState);
@@ -403,7 +403,7 @@ describe("quote-resolution", () => {
 
   test("preserves reported delayed after-hours fields without filling missing changes from the daily move", () => {
     const base = {
-      symbol: "ASML", providerId: "gloomberb-cloud", listingExchangeName: "AMS",
+      symbol: "ASML", providerId: "surge-cloud", listingExchangeName: "AMS",
       price: 1472.8, currency: "EUR", previousClose: 1497.6,
       change: -24.8, changePercent: -1.65598, lastUpdated: Date.parse("2026-09-10T16:00:00Z"),
       marketState: "POST" as const, sessionConfidence: "explicit" as const, dataSource: "delayed" as const,
@@ -414,7 +414,7 @@ describe("quote-resolution", () => {
     expect(priceOnly.postMarketChange).toBeUndefined();
     expect(priceOnly.postMarketChangePercent).toBeUndefined();
     const reported = normalizeQuoteContribution({ ...base, postMarketChange: 2.2, postMarketChangePercent: 0.1494 })!;
-    expect(resolveCanonicalQuote({ "gloomberb-cloud": reported }, reported.lastUpdated).quote).toMatchObject({
+    expect(resolveCanonicalQuote({ "surge-cloud": reported }, reported.lastUpdated).quote).toMatchObject({
       postMarketPrice: 1475, postMarketChange: 2.2, postMarketChangePercent: 0.1494,
     });
   });
@@ -422,9 +422,9 @@ describe("quote-resolution", () => {
   test("ignores stale cloud price contributions when a fresh yahoo quote exists", () => {
     const now = Date.parse("2026-04-08T10:30:00Z");
     const contributions: QuoteContributionMap = {
-      "gloomberb-cloud": {
+      "surge-cloud": {
         symbol: "HY9H",
-        providerId: "gloomberb-cloud",
+        providerId: "surge-cloud",
         dataSource: "delayed",
         price: 528,
         currency: "EUR",
@@ -477,7 +477,7 @@ describe("quote-resolution", () => {
 
     const next = upsertQuoteContributionMap(current, {
       symbol: "HY9H",
-      providerId: "gloomberb-cloud",
+      providerId: "surge-cloud",
       dataSource: "delayed",
       price: 528,
       currency: "EUR",
@@ -521,7 +521,7 @@ describe("quote-resolution", () => {
 
 
 test("live after-hours prices never inherit the daily loss as their session return", () => {
-  const base = { symbol: "NVDA", providerId: "gloomberb-cloud", dataSource: "live" as const,
+  const base = { symbol: "NVDA", providerId: "surge-cloud", dataSource: "live" as const,
     marketState: "POST" as const, price: 218.47, currency: "USD", previousClose: 223.67,
     change: -5.2, changePercent: -2.324853578933245,
     exchangeName: "NASDAQ", lastUpdated: Date.parse("2026-09-10T20:30:00Z") };
@@ -549,7 +549,7 @@ test("live after-hours prices never inherit the daily loss as their session retu
 test("a different price provider cannot inherit a closing-price anchor", () => {
   const now = Date.parse("2026-09-10T20:30:00Z");
   const result = resolveCanonicalQuote({
-    cloud: { symbol: "NVDA", providerId: "gloomberb-cloud", dataSource: "delayed", price: 218.47, currency: "USD",
+    cloud: { symbol: "NVDA", providerId: "surge-cloud", dataSource: "delayed", price: 218.47, currency: "USD",
       change: -5.2, changePercent: -2.32, lastUpdated: now - 900000, regularClose: 218.36, regularCloseSessionDate: "2026-09-10" },
     ibkr: { symbol: "NVDA", providerId: "ibkr", dataSource: "live", price: 219, currency: "USD",
       change: -4.67, changePercent: -2.08, lastUpdated: now },

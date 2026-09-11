@@ -140,7 +140,7 @@ describe("pane function CLI args", () => {
     ], "price chart");
 
     expect(matches.map((entry) => entry.token)).toEqual(["GP"]);
-    expect(renderPaneCatalogReport(matches, { query: "price chart", limit: 10, botSafeOnly: false })).toContain("gloomberb shot GP <ticker>");
+    expect(renderPaneCatalogReport(matches, { query: "price chart", limit: 10, botSafeOnly: false })).toContain("surge shot GP <ticker>");
   });
 
   test("exposes custom G as a bot-safe mixed-series capability", () => {

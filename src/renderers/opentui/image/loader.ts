@@ -47,7 +47,7 @@ function remember<K, V>(cache: Map<K, V>, key: K, value: V) {
 async function fetchImageBytes(src: string): Promise<Buffer> {
   const response = await fetch(src, {
     headers: {
-      "User-Agent": "Gloomberb/0.6 image renderer",
+      "User-Agent": "Surge/0.6 image renderer",
     },
   });
   if (!response.ok) {

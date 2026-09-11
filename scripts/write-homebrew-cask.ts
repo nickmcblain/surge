@@ -49,15 +49,15 @@ function readOptions(): Options {
 }
 
 function renderCask({ version, sha256 }: Pick<Options, "version" | "sha256">): string {
-  return `cask "gloomberb" do
+  return `cask "surge" do
   version "${version}"
   sha256 "${sha256}"
 
-  url "https://github.com/gloom-sh/gloomberb/releases/download/v#{version}/stable-macos-arm64-Gloomberb.app.zip",
-      verified: "github.com/gloom-sh/gloomberb/"
-  name "Gloomberb"
+  url "https://github.com/nickmc-lumion/surge/releases/download/v#{version}/stable-macos-arm64-Surge.app.zip",
+      verified: "github.com/nickmc-lumion/surge/"
+  name "Surge"
   desc "Open-source finance terminal"
-  homepage "https://gloom.sh"
+  homepage "https://github.com/nickmc-lumion/surge"
 
   livecheck do
     url :url
@@ -70,12 +70,12 @@ function renderCask({ version, sha256 }: Pick<Options, "version" | "sha256">): s
   # installs an app on Intel Macs that dies with "Bad CPU type in executable".
   depends_on arch: :arm64
 
-  app "Gloomberb.app"
-  binary "#{appdir}/Gloomberb.app/Contents/Resources/gloomberb", target: "gloomberb"
+  app "Surge.app"
+  binary "#{appdir}/Surge.app/Contents/Resources/surge", target: "surge"
 
-  uninstall quit: "com.vincelwt.gloomberb"
+  uninstall quit: "dev.surge.terminal"
 
-  zap trash: "~/.gloomberb"
+  zap trash: "~/.surge"
 end
 `;
 }

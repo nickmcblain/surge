@@ -36,20 +36,20 @@ test("stable display content follows theme changes and status transitions expose
     );
   }
   const container = await render(<View />);
-  const headingColor = () => (container.querySelector('[data-gloom-ui="section-heading"] span') as HTMLElement).style.color;
+  const headingColor = () => (container.querySelector('[data-surge-ui="section-heading"] span') as HTMLElement).style.color;
   const original = headingColor();
-  expect(container.querySelector('[data-gloom-status="loading"]')).not.toBeNull();
+  expect(container.querySelector('[data-surge-status="loading"]')).not.toBeNull();
   await act(async () => { updateTheme("midnight"); updateState("error"); });
   expect(headingColor()).not.toBe(original);
-  expect(container.querySelector('[data-gloom-status="loading"]')).toBeNull();
-  expect(container.querySelector('[data-gloom-status="empty"]')).toBeNull();
-  expect(container.querySelector('[data-gloom-status="error"]')?.textContent).toContain("Please retry this request.");
+  expect(container.querySelector('[data-surge-status="loading"]')).toBeNull();
+  expect(container.querySelector('[data-surge-status="empty"]')).toBeNull();
+  expect(container.querySelector('[data-surge-status="error"]')?.textContent).toContain("Please retry this request.");
   await act(async () => {
     container.querySelector("button")!.dispatchEvent(new window.MouseEvent("click", { bubbles: true }) as unknown as Event);
     updateState("ready");
   });
   expect(retries).toBe(1);
-  expect(container.querySelector('[data-gloom-status]')).toBeNull();
+  expect(container.querySelector('[data-surge-status]')).toBeNull();
   expect(container.textContent).toContain("Loaded history");
-  expect(container.querySelector('[data-gloom-ui="divider"]')?.textContent).toBe("");
+  expect(container.querySelector('[data-surge-ui="divider"]')?.textContent).toBe("");
 });

@@ -13,7 +13,7 @@ function readyEntry(quote: Quote): QueryEntry<Quote> {
     phase: "ready",
     data: quote,
     lastGoodData: quote,
-    source: "gloomberb-cloud",
+    source: "surge-cloud",
     fetchedAt: quote.receivedAt ?? null,
     staleAt: null,
     error: null,

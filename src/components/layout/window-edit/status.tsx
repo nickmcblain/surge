@@ -81,7 +81,7 @@ export function NativeWindowEditStatus({
       zIndex={zIndex}
       flexDirection="column"
       paddingX={1}
-      data-gloom-role="window-mode-status"
+      data-surge-role="window-mode-status"
     >
       <Text fg={textColor} bold selectable={false} width={lineWidth}>
         {truncateStatusText(`${status}${pending}`, lineWidth)}

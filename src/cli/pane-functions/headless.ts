@@ -40,7 +40,7 @@ function argumentName(definition: HeadlessPaneDefinition): string {
 }
 
 function requiredArgumentError(definition: HeadlessPaneDefinition, token: string): Error {
-  return new Error(`Usage: gloomberb fn ${token} <${argumentName(definition)}>`);
+  return new Error(`Usage: surge fn ${token} <${argumentName(definition)}>`);
 }
 
 function normalizeSymbol(value: string): string {

@@ -151,7 +151,7 @@ export interface AppConfig {
   brokerInstances: BrokerInstanceConfig[];
   disabledPlugins: string[];
   /**
-   * Plugins that used to ship inside Gloomberb and have since moved to their own
+   * Plugins that used to ship inside Surge and have since moved to their own
    * repositories. Recorded once installed, so an upgrade restores them without
    * re-installing on every launch, and so a user who removes one on purpose is
    * not fought with.

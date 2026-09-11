@@ -77,7 +77,7 @@ export const Box = forwardRef<any, ComponentProps<UiHost["Box"]>>((props, ref) =
       }
       : null,
   );
-  return createElement(HostBox as any, { ...props, ref, "data-gloom-remote-node-id": remoteNodeId ?? undefined });
+  return createElement(HostBox as any, { ...props, ref, "data-surge-remote-node-id": remoteNodeId ?? undefined });
 });
 Box.displayName = "Box";
 
@@ -99,7 +99,7 @@ export const Text = forwardRef<any, ComponentProps<UiHost["Text"]>>((props, ref)
       }
       : null,
   );
-  return createElement(HostText as any, { ...props, ref, "data-gloom-remote-node-id": remoteNodeId ?? undefined });
+  return createElement(HostText as any, { ...props, ref, "data-surge-remote-node-id": remoteNodeId ?? undefined });
 });
 Text.displayName = "Text";
 
@@ -160,7 +160,7 @@ export const ScrollBox = forwardRef<any, ComponentProps<UiHost["ScrollBox"]>>((p
       ? props.onMouseScroll as (event: { scroll: { direction: "up" | "down"; delta: number } }) => void
       : undefined,
   });
-  return createElement(HostScrollBox as any, { ...props, ref: localRef, "data-gloom-remote-node-id": remoteNodeId ?? undefined });
+  return createElement(HostScrollBox as any, { ...props, ref: localRef, "data-surge-remote-node-id": remoteNodeId ?? undefined });
 });
 ScrollBox.displayName = "ScrollBox";
 
@@ -193,7 +193,7 @@ export const Input = forwardRef<any, ComponentProps<UiHost["Input"]>>((props, re
       focused: rawProps.focused,
     },
   });
-  return createElement(HostInput as any, { ...props, ref, "data-gloom-remote-node-id": remoteNodeId ?? undefined });
+  return createElement(HostInput as any, { ...props, ref, "data-surge-remote-node-id": remoteNodeId ?? undefined });
 });
 Input.displayName = "Input";
 
@@ -223,7 +223,7 @@ export const Textarea = forwardRef<any, ComponentProps<UiHost["Textarea"]>>((pro
       focused: rawProps.focused,
     },
   });
-  return createElement(HostTextarea as any, { ...props, ref, "data-gloom-remote-node-id": remoteNodeId ?? undefined });
+  return createElement(HostTextarea as any, { ...props, ref, "data-surge-remote-node-id": remoteNodeId ?? undefined });
 });
 Textarea.displayName = "Textarea";
 
@@ -254,7 +254,7 @@ export const ChartSurface = forwardRef<any, ComponentProps<UiHost["ChartSurface"
   const bitmap = rawProps.bitmap;
   const bitmaps = Array.isArray(rawProps.bitmaps) ? rawProps.bitmaps : null;
   const hasBitmap = !!bitmap || (bitmaps?.length ?? 0) > 0;
-  const visualRole = typeof rawProps["data-gloom-role"] === "string" ? rawProps["data-gloom-role"] : undefined;
+  const visualRole = typeof rawProps["data-surge-role"] === "string" ? rawProps["data-surge-role"] : undefined;
   const remoteNodeId = useRemoteUiNode({
     role: "chart",
     label: remotePropLabel(rawProps) ?? "Chart",
@@ -277,7 +277,7 @@ export const ChartSurface = forwardRef<any, ComponentProps<UiHost["ChartSurface"
       visualRole,
     },
   });
-  return createElement(HostChartSurface as any, { ...props, ref: setSurfaceRef, "data-gloom-remote-node-id": remoteNodeId ?? undefined });
+  return createElement(HostChartSurface as any, { ...props, ref: setSurfaceRef, "data-surge-remote-node-id": remoteNodeId ?? undefined });
 });
 ChartSurface.displayName = "ChartSurface";
 

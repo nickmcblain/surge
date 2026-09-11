@@ -1,5 +1,5 @@
 /**
- * Public React runtime surface for external plugins (`gloomberb/react`).
+ * Public React runtime surface for external plugins (`surge/react`).
  *
  * These hooks are the renderer-neutral way for plugin panes to reach app
  * services. Plugin render code must use them instead of importing OpenTUI,

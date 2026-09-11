@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="https://gloom.sh/gloomberb-logo-grayscale.svg" alt="Gloomberb logo" width="76" />
+<img src="https://gloom.sh/surge-logo-grayscale.svg" alt="Surge logo" width="76" />
 
-# Gloomberb
+# Surge
 
 **Open-source finance terminal. Fast, keyboard-driven, and extensible.**
 
@@ -19,7 +19,7 @@ Desktop app for macOS and Windows. Terminal UI for macOS, Linux, and Windows.
 <br />
 <br />
 
-<img src="https://gloom.sh/landing-terminal.png" alt="Gloomberb terminal showing portfolio, watchlists, market data, and chart panels." width="720" />
+<img src="https://gloom.sh/landing-terminal.png" alt="Surge terminal showing portfolio, watchlists, market data, and chart panels." width="720" />
 
 </div>
 
@@ -27,7 +27,7 @@ Desktop app for macOS and Windows. Terminal UI for macOS, Linux, and Windows.
 - **Follow markets:** news, global indices, FX, economic events, and market scanners.
 - **Manage your workspace:** portfolios, watchlists, broker connections, alerts, notes, and AI tools.
 
-The desktop app and TUI share the command language and plugin system. The [browser app](https://term.gloom.sh) offers a smaller feature set and requires a free Gloom Cloud account: free market data is rate-limited and delayed by 15 minutes; Pro provides realtime data. See [browser features and limits](docs/browser.md).
+The desktop app and TUI share the command language and plugin system. The [browser app](https://term.gloom.sh) offers a smaller feature set and requires a free Surge Cloud account: free market data is rate-limited and delayed by 15 minutes; Pro provides realtime data. See [browser features and limits](docs/browser.md).
 
 ## Install
 
@@ -36,12 +36,12 @@ The desktop app and TUI share the command language and plugin system. The [brows
 On **macOS (Apple Silicon)**:
 
 ```bash
-brew install --cask vincelwt/tap/gloomberb
+brew install --cask vincelwt/tap/surge
 ```
 
-On **Windows 11**, [download the installer](https://github.com/gloom-sh/gloomberb/releases/latest/download/stable-win-x64-GloomberbSetup.exe). It supports x64, and ARM64 through x64 emulation.
+On **Windows 11**, [download the installer](https://github.com/nickmc-lumion/surge/releases/latest/download/stable-win-x64-SurgeSetup.exe). It supports x64, and ARM64 through x64 emulation.
 
-Both desktop installers include the `gloomberb` terminal command.
+Both desktop installers include the `surge` terminal command.
 
 ### Terminal
 
@@ -56,10 +56,10 @@ On Apple Silicon Macs, this installs the desktop app and TUI. On Intel Macs and 
 Or install with [Bun](https://bun.sh) on macOS, Linux, or Windows x64:
 
 ```bash
-bun install -g gloomberb
+bun install -g surge
 ```
 
-Run `gloomberb` to launch. For graphics, use a Kitty-compatible terminal such as Ghostty, Kitty, or WezTerm. See the [installation guide](docs/installation.md) for direct downloads, install locations, and updates.
+Run `surge` to launch. For graphics, use a Kitty-compatible terminal such as Ghostty, Kitty, or WezTerm. See the [installation guide](docs/installation.md) for direct downloads, install locations, and updates.
 
 ## Start
 
@@ -80,9 +80,9 @@ Use `Tab` to switch panes and `j` / `k` to navigate lists. The [user guide](docs
 Run commands directly from your shell:
 
 ```bash
-gloomberb quote AAPL
-gloomberb quote AAPL --json
-gloomberb help
+surge quote AAPL
+surge quote AAPL --json
+surge help
 ```
 
 Output is human-readable by default; use `--json`, `--csv`, or `--ndjson` for scripts. See the [CLI reference](docs/usage.md#cli) for commands and flags.
@@ -92,7 +92,7 @@ Output is human-readable by default; use `--json`, `--csv`, or `--ndjson` for sc
 Plugins add panes, data providers, broker connections, and commands. Install one from GitHub:
 
 ```bash
-gloomberb install gloom-sh/gloomberb-tv
+surge install nickmc-lumion/surge-tv
 ```
 
 See the [plugin development guide](PLUGINS.md), [TV setup](docs/usage.md#live-tv), or [contributing guide](CONTRIBUTING.md) to get started.

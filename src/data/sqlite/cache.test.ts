@@ -9,7 +9,7 @@ import { ResourceStore } from "../resource-store";
 const tempPaths: string[] = [];
 
 function createTempDbPath(name: string): string {
-  const path = join(tmpdir(), `gloomberb-${name}-${Date.now()}-${Math.random().toString(36).slice(2)}.db`);
+  const path = join(tmpdir(), `surge-${name}-${Date.now()}-${Math.random().toString(36).slice(2)}.db`);
   tempPaths.push(path);
   return path;
 }
@@ -224,10 +224,10 @@ describe("AppPersistence", () => {
   test("lists plugin ids that have stored state", () => {
     const dbPath = createTempDbPath("plugin-state-ids");
     const persistence = new AppPersistence(dbPath);
-    persistence.pluginState.set("gloomberb-cloud", "session", { sessionToken: "token" }, 1);
+    persistence.pluginState.set("surge-cloud", "session", { sessionToken: "token" }, 1);
     persistence.pluginState.set("ai", "provider", "openai", 1);
 
-    expect(persistence.pluginState.pluginIds()).toEqual(["ai", "gloomberb-cloud"]);
+    expect(persistence.pluginState.pluginIds()).toEqual(["ai", "surge-cloud"]);
     persistence.close();
   });
 

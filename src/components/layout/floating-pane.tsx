@@ -150,7 +150,7 @@ export function FloatingPaneWrapper({
           right={0}
           width={2}
           height={1}
-          data-gloom-role="resize-handle"
+          data-surge-role="resize-handle"
           onMouseDown={onResizeMouseDown}
           onMouseDrag={onResizeMouseDrag}
           onMouseDragEnd={onResizeMouseDragEnd}

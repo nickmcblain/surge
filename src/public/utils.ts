@@ -1,5 +1,5 @@
 /**
- * Public utility surface for external plugins (`gloomberb/utils`).
+ * Public utility surface for external plugins (`surge/utils`).
  *
  * Everything re-exported here is a compatibility commitment: plugins in other
  * repositories import it, so removing or changing a signature is a breaking

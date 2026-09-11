@@ -69,8 +69,8 @@ export function InlineQuickAddRow({
         }
         onFocusRequest();
       }}
-      data-gloom-role="inline-quick-add"
-      data-gloom-interactive="true"
+      data-surge-role="inline-quick-add"
+      data-surge-interactive="true"
     >
       <Text fg={active ? colors.text : colors.textDim}>+</Text>
       <Box width={1} />

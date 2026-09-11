@@ -103,7 +103,7 @@ describe("import boundaries", () => {
     expect(violations).toEqual([]);
   });
 
-  test("shared runtime code uses Gloom UI components instead of OpenTUI intrinsic tags", async () => {
+  test("shared runtime code uses Surge UI components instead of OpenTUI intrinsic tags", async () => {
     const files = await collectSourceFiles(SOURCE_ROOT);
     const violations: Array<{ file: string; tag: string }> = [];
 

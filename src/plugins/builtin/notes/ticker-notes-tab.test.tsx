@@ -46,7 +46,7 @@ function createMockNotesFiles(options?: {
 }
 
 function createNotesHarnessConfig(symbol: string) {
-  return createTestPaneConfig("/tmp/gloomberb-notes-tab", {
+  return createTestPaneConfig("/tmp/surge-notes-tab", {
     instanceId: TEST_PANE_ID,
     paneId: "ticker-detail",
     binding: { kind: "fixed", symbol },

@@ -54,7 +54,7 @@ function Harness({
   preference: ChartRendererPreference;
   initialCrosshair?: TestCrosshair;
 }) {
-  const config = createDefaultConfig(`/tmp/gloomberb-chart-surface-${preference}`);
+  const config = createDefaultConfig(`/tmp/surge-chart-surface-${preference}`);
   config.chartPreferences.renderer = preference;
   const [crosshair, setCrosshair] = useState<TestCrosshair>(initialCrosshair);
   setHarnessCrosshair = setCrosshair;

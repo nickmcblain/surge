@@ -61,7 +61,7 @@ export function ShellActionMenuOverlay({
               onClose();
               item.action();
             }}
-            data-gloom-interactive="true"
+            data-surge-interactive="true"
           >
             <Text fg={hovered ? colors.selectedText : colors.text}>
               {line}

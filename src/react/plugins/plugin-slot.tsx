@@ -1,13 +1,13 @@
 import { getSharedRegistry } from "../../plugins/registry";
-import type { GloomSlots } from "../../types/plugin";
+import type { SurgeSlots } from "../../types/plugin";
 
-export function PluginSlot<K extends keyof GloomSlots>({
+export function PluginSlot<K extends keyof SurgeSlots>({
   name,
   props,
 }: {
   name: K;
-  props?: GloomSlots[K];
+  props?: SurgeSlots[K];
 }) {
   const registry = getSharedRegistry();
-  return registry?.renderSlot(name, props ?? ({} as GloomSlots[K])) ?? null;
+  return registry?.renderSlot(name, props ?? ({} as SurgeSlots[K])) ?? null;
 }

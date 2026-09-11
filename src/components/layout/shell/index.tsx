@@ -593,7 +593,7 @@ export function Shell({
         justifyContent="center"
       >
         <Box flexDirection="column" alignItems="center">
-          <AsciiText text="Gloomberb" font="wordmark" color={colors.textMuted} />
+          <AsciiText text="Surge" font="wordmark" color={colors.textMuted} />
           <Box height={1} />
           <Text fg={colors.textDim}>
             {tf("{shortcut} to get started.", { shortcut: formatCommandBarShortcut(shortcutDisplayMode) })}

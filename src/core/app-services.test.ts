@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { newsProvider } from "../capabilities";
 import type { NewsArticle } from "../news/types";
 import { createDefaultConfig } from "../types/config";
-import type { GloomPlugin } from "../types/plugin";
+import type { SurgePlugin } from "../types/plugin";
 import { createAppServices, type AppServices } from "./app-services";
 
 let services: AppServices | null = null;
@@ -19,7 +19,7 @@ afterEach(async () => {
 });
 
 test("the router does not re-enter the aggregate news facade", async () => {
-  dataDir = await mkdtemp(join(tmpdir(), "gloomberb-news-composition-"));
+  dataDir = await mkdtemp(join(tmpdir(), "surge-news-composition-"));
   let fetchCount = 0;
   const article: NewsArticle = {
     id: "composition-story",
@@ -37,7 +37,7 @@ test("the router does not re-enter the aggregate news facade", async () => {
     isBreaking: false,
     isDeveloping: false,
   };
-  const plugin: GloomPlugin = {
+  const plugin: SurgePlugin = {
     id: "composition-news",
     name: "Composition News",
     version: "1.0.0",

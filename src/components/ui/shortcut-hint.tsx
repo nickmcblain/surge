@@ -14,7 +14,7 @@ export interface ShortcutHintProps {
   label: string;
   prefix?: string;
   disabled?: boolean;
-  dataGloomRole?: string;
+  dataSurgeRole?: string;
   onPress?: (event?: ShortcutHintMouseEvent) => void;
 }
 
@@ -32,7 +32,7 @@ export function ShortcutHint({
   label,
   prefix = "",
   disabled = false,
-  dataGloomRole,
+  dataSurgeRole,
   onPress,
 }: ShortcutHintProps) {
   const interactive = !!onPress && !disabled;
@@ -63,7 +63,7 @@ export function ShortcutHint({
       attributes={interactive ? TextAttributes.BOLD : 0}
       onMouseDown={interactive ? startPress : undefined}
       onMouseUp={interactive ? finishPress : undefined}
-      {...(dataGloomRole ? { "data-gloom-role": dataGloomRole } : {})}
+      {...(dataSurgeRole ? { "data-surge-role": dataSurgeRole } : {})}
     />
   );
 }

@@ -7,7 +7,7 @@ import { AssetDataRouter } from "../sources/provider-router";
 import { createAppServices } from "../core/app-services";
 import type { PluginCapability } from "../capabilities";
 import type { AppConfig } from "../types/config";
-import type { GloomPlugin } from "../types/plugin";
+import type { SurgePlugin } from "../types/plugin";
 import { getLoadablePlugins } from "../plugins/catalog";
 import type { PluginRegistry } from "../plugins/registry";
 import type { LoadedExternalPlugin } from "../plugins/loader";
@@ -17,7 +17,7 @@ import type { ConfigContext, MarketContext } from "./types";
 export { withCliServices, withConfigData, withMarketData } from "./scoped-context";
 
 interface CliContextOptions {
-  plugins?: GloomPlugin[];
+  plugins?: SurgePlugin[];
 }
 
 interface CliServicesOptions {
@@ -36,7 +36,7 @@ export async function ensureCliServicesReady<T extends { ready: Promise<unknown>
   }
 }
 
-function resolveCliCapabilities(config: AppConfig, plugins: GloomPlugin[]): PluginCapability[] {
+function resolveCliCapabilities(config: AppConfig, plugins: SurgePlugin[]): PluginCapability[] {
   const disabledPlugins = new Set(config.disabledPlugins ?? []);
   const disabledSources = new Set(config.disabledSources ?? []);
   return plugins
@@ -62,11 +62,11 @@ export async function loadCliConfigIfAvailable(): Promise<AppConfig | null> {
 export async function initConfigData(): Promise<ConfigContext> {
   const dataDir = await getDataDir();
   if (!dataDir || !existsSync(dataDir)) {
-    fail("No data directory configured.", "Run gloomberb once to initialize your local data.");
+    fail("No data directory configured.", "Run surge once to initialize your local data.");
   }
 
   const config = await loadConfig(dataDir);
-  const persistence = new AppPersistence(join(dataDir, ".gloomberb-cache.db"));
+  const persistence = new AppPersistence(join(dataDir, ".surge-cache.db"));
   const store = new TickerRepository(persistence.tickers);
   return { config, persistence, store, dataDir };
 }
@@ -88,7 +88,7 @@ export async function initMarketData(options: CliContextOptions = {}): Promise<M
 export async function initCliServices(options: CliServicesOptions = {}) {
   const dataDir = await getDataDir();
   if (!dataDir || !existsSync(dataDir)) {
-    fail("No data directory configured.", "Run gloomberb once to initialize your local data.");
+    fail("No data directory configured.", "Run surge once to initialize your local data.");
   }
 
   const config = await loadConfig(dataDir);

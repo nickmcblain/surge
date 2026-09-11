@@ -1,5 +1,5 @@
 import { Fragment, createElement, type ReactNode } from "react";
-import type { GloomPlugin, GloomSlots } from "../../types/plugin";
+import type { SurgePlugin, SurgeSlots } from "../../types/plugin";
 import { PluginRenderProvider, type PluginRuntimeAccess } from "../runtime";
 
 type SlotEntry = {
@@ -12,7 +12,7 @@ export class RegistrySlots {
   private entries = new Map<string, SlotEntry[]>();
   private unregisterFns = new Map<string, () => void>();
 
-  register(plugin: GloomPlugin, runtime: PluginRuntimeAccess): void {
+  register(plugin: SurgePlugin, runtime: PluginRuntimeAccess): void {
     if (!plugin.slots) return;
     const registeredSlotNames: string[] = [];
     for (const [slotName, renderer] of Object.entries(plugin.slots)) {
@@ -54,7 +54,7 @@ export class RegistrySlots {
     this.unregisterFns.delete(pluginId);
   }
 
-  render<K extends keyof GloomSlots>(name: K, props: GloomSlots[K]): ReactNode {
+  render<K extends keyof SurgeSlots>(name: K, props: SurgeSlots[K]): ReactNode {
     const entries = this.entries.get(name as string) ?? [];
     if (entries.length === 0) return null;
     return createElement(

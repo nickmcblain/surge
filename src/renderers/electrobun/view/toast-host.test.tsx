@@ -26,15 +26,15 @@ test("DOM notifications show context and open from the whole card", async () => 
   );
   await act(async () => {
     toastHost?.info("@bob mentioned you", {
-      title: "Gloomberb chat",
+      title: "Surge chat",
       subtitle: "#everyone",
       duration: 0,
       action: { label: "Open", onClick: () => opened++ },
     });
   });
 
-  const toast = container.querySelector(".gloom-toast") as unknown as HTMLElement;
-  expect(toast.textContent).toContain("Gloomberb chat");
+  const toast = container.querySelector(".surge-toast") as unknown as HTMLElement;
+  expect(toast.textContent).toContain("Surge chat");
   expect(toast.textContent).toContain("#everyone");
   expect(toast.getAttribute("data-actionable")).toBe("true");
 
@@ -42,7 +42,7 @@ test("DOM notifications show context and open from the whole card", async () => 
     toast.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   });
   expect(opened).toBe(1);
-  expect(container.querySelector(".gloom-toast")).toBeNull();
+  expect(container.querySelector(".surge-toast")).toBeNull();
 
   await act(async () => {
     toastHost?.info("Another message", {
@@ -50,12 +50,12 @@ test("DOM notifications show context and open from the whole card", async () => 
       action: { label: "Open", onClick: () => opened++ },
     });
   });
-  const dismiss = container.querySelector(".gloom-toast-dismiss") as unknown as HTMLElement;
+  const dismiss = container.querySelector(".surge-toast-dismiss") as unknown as HTMLElement;
   await act(async () => {
     dismiss.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   });
   expect(opened).toBe(1);
-  expect(container.querySelector(".gloom-toast")).toBeNull();
+  expect(container.querySelector(".surge-toast")).toBeNull();
 
   toastHost = null;
 });

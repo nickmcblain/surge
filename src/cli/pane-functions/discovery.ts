@@ -4,8 +4,8 @@ import type { AppConfig } from "../../types/config";
 import type { DataProvider } from "../../types/data-provider";
 import type { PersistedResourceValue } from "../../types/persistence";
 import type {
-  GloomPlugin,
-  GloomPluginContext,
+  SurgePlugin,
+  SurgePluginContext,
   PaneDef,
   PaneTemplateDef,
   PluginPersistence,
@@ -33,10 +33,10 @@ function unavailable<T>(name: string): T {
 /**
  * Context that collects `setup()`-registered panes and templates without
  * booting the real plugin runtime or its polling engines. Keep this object
- * exhaustively typed so additions to GloomPluginContext fail at compile time
- * instead of crashing `gloomberb catalog` at runtime.
+ * exhaustively typed so additions to SurgePluginContext fail at compile time
+ * instead of crashing `surge catalog` at runtime.
  */
-export function createPaneDiscoveryContext(options: PaneDiscoveryOptions): GloomPluginContext & {
+export function createPaneDiscoveryContext(options: PaneDiscoveryOptions): SurgePluginContext & {
   panes: Map<string, PaneDef>;
   paneTemplates: Map<string, PaneTemplateDef>;
 } {
@@ -70,9 +70,9 @@ function buildDiscoveryContext({
   marketData: DataProvider;
   tickerRepository: TickerRepository;
   connectionHealth: ConnectionHealthRegistry;
-}): GloomPluginContext {
+}): SurgePluginContext {
   const fakePersistence = createDiscoveryPluginPersistence();
-  const discoveryContext: GloomPluginContext = {
+  const discoveryContext: SurgePluginContext = {
     registerPane: (pane: PaneDef) => panes.set(pane.id, pane),
     registerPaneTemplate: (template: PaneTemplateDef) => paneTemplates.set(template.id, template),
     registerCommand: () => {},
@@ -142,8 +142,8 @@ function buildDiscoveryContext({
   return discoveryContext;
 }
 
-export async function createPaneCatalog(context: MarketContext, plugins: GloomPlugin[]): Promise<PaneFunctionCatalog> {
-  const setupPlugins: GloomPlugin[] = [];
+export async function createPaneCatalog(context: MarketContext, plugins: SurgePlugin[]): Promise<PaneFunctionCatalog> {
+  const setupPlugins: SurgePlugin[] = [];
   const { panes, paneTemplates, ...discoveryContext } = createPaneDiscoveryContext({
     getConfig: () => context.config,
     marketData: context.dataProvider,

@@ -258,9 +258,9 @@ export const WebScrollBox = forwardRef<ScrollBoxRenderable, Record<string, unkno
       <div
         {...cleanDomProps(props)}
         ref={elementRef}
-        data-gloom-scrollbar-x={props.scrollX === true ? (horizontalScrollBarVisible ? "visible" : "hidden") : undefined}
-        data-gloom-scrollbar-y={scrollYEnabled ? (verticalScrollBarVisible ? "visible" : "hidden") : undefined}
-        data-gloom-scrollbar-active={scrollbarActive ? "true" : undefined}
+        data-surge-scrollbar-x={props.scrollX === true ? (horizontalScrollBarVisible ? "visible" : "hidden") : undefined}
+        data-surge-scrollbar-y={scrollYEnabled ? (verticalScrollBarVisible ? "visible" : "hidden") : undefined}
+        data-surge-scrollbar-active={scrollbarActive ? "true" : undefined}
         onMouseDown={(event) => callMouseHandler(props.onMouseDown, event, "down")}
         onMouseMove={(event) => callMouseHandler(props.onMouseMove, event, "move")}
         onMouseUp={(event) => callMouseHandler(props.onMouseUp, event, "up")}

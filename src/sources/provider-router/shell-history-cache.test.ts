@@ -14,7 +14,7 @@ const good: PricePoint[] = [{ date: new Date("2005-07-25"), close: 17.47 }, { da
 const equal = (actual: unknown, expected: unknown) => expect(JSON.stringify(actual)).toBe(JSON.stringify(expected));
 
 test("saved Shell source caches recover across range, broader and detailed paths and a new router", async () => {
-  for (const [id, origin] of [["yahoo", "yahoo"], ["gloomberb-cloud", "yahoo"], ["gloomberb-cloud", "twelvedata"]] as const) for (const ticker of ["SHEL", "SHEL:XLON"]) {
+  for (const [id, origin] of [["yahoo", "yahoo"], ["surge-cloud", "yahoo"], ["surge-cloud", "twelvedata"]] as const) for (const ticker of ["SHEL", "SHEL:XLON"]) {
     const store = new AppPersistence(createTempDbPath("shell-lineage"));
     // 242 cloud records included unrestricted Twelve provenance. They must not
     // bypass the same recovery merely because a provider was already recorded.
@@ -49,15 +49,15 @@ test("an unavailable or legacy provider response cannot revive poisoned cache; v
   const store = new AppPersistence(createTempDbPath("shell-lineage-fallback"));
   try {
     const key = { namespace: "market", kind: "price-history", entityKey: "SHEL", variantKey: "exchange=LSE;range=ALL;resolution=1wk;version=4;unit=GBP" };
-    store.resources.set({ ...key, sourceKey: "provider:gloomberb-cloud" }, bad, { cachePolicy: policy });
+    store.resources.set({ ...key, sourceKey: "provider:surge-cloud" }, bad, { cachePolicy: policy });
     for (const [index, load] of [async () => [], async () => bad, async () => { throw Error("controlled offline source"); }].entries()) {
-      const router = new AssetDataRouter({ ...fallbackProvider, id: "gloomberb-cloud", getPriceHistoryForResolution: load }, [], store.resources);
+      const router = new AssetDataRouter({ ...fallbackProvider, id: "surge-cloud", getPriceHistoryForResolution: load }, [], store.resources);
       if (index === 0) expect(await router.getPriceHistoryForResolution("SHEL", "LSE", "ALL", "1wk")).toEqual([]);
       else await expect(router.getPriceHistoryForResolution("SHEL", "LSE", "ALL", "1wk")).rejects.toThrow("No resolution-aware history provider");
     }
     const independent = bad;
     store.resources.set({ ...key, sourceKey: "provider:independent" }, independent, { cachePolicy: policy });
-    const router = new AssetDataRouter({ ...fallbackProvider, id: "gloomberb-cloud", async getPriceHistoryForResolution() { return []; } },
+    const router = new AssetDataRouter({ ...fallbackProvider, id: "surge-cloud", async getPriceHistoryForResolution() { return []; } },
       [{ ...fallbackProvider, id: "independent", async getPriceHistoryForResolution() { throw Error("should reuse independent cache"); } }], store.resources);
     equal(await router.getPriceHistoryForResolution("SHEL", "LSE", "ALL", "1wk"), independent);
   } finally { store.close(); }
@@ -83,7 +83,7 @@ test("modern London, US and Amsterdam histories and broker history are not retir
 });
 
 test("legacy financial snapshots lose affected history while valid accounts and broker contributions survive", async () => {
-  for (const [id, origin] of [["yahoo", "yahoo"], ["gloomberb-cloud", "yahoo"], ["gloomberb-cloud", "twelvedata"]] as const) {
+  for (const [id, origin] of [["yahoo", "yahoo"], ["surge-cloud", "yahoo"], ["surge-cloud", "twelvedata"]] as const) {
     const store = new AppPersistence(createTempDbPath("shell-financial-history"));
     try {
       const legacy = origin === "twelvedata" ? bad.map((point) => ({ ...point, historySource: { provider: origin, symbol: "SHEL" as const, exchange: "LSE" as const, currency: "GBP" as const } })) : bad;
@@ -116,9 +116,9 @@ test("cadence-verified filtered caches recover missing disclosure only for reque
     const corrected = good.map((point) => ({ ...point, historySource: { ...point.historySource!, provider: origin } }));
     try {
       store.resources.set({ namespace: "market", kind: "price-history", entityKey: "SHEL",
-        variantKey: "exchange=LSE;range=ALL;resolution=1wk;version=4;granularity=1;unit=GBP", sourceKey: "provider:gloomberb-cloud" }, legacy, { cachePolicy: policy });
+        variantKey: "exchange=LSE;range=ALL;resolution=1wk;version=4;granularity=1;unit=GBP", sourceKey: "provider:surge-cloud" }, legacy, { cachePolicy: policy });
       let calls = 0;
-      const provider = { ...fallbackProvider, id: "gloomberb-cloud", async getPriceHistoryForResolution() { calls++; return corrected; } };
+      const provider = { ...fallbackProvider, id: "surge-cloud", async getPriceHistoryForResolution() { calls++; return corrected; } };
       const router = new AssetDataRouter(provider, [], store.resources);
       equal(await router.getPriceHistoryForResolution("SHEL", "LSE", "1Y", "1wk"), [legacy[1]]);
       expect(calls).toBe(0);

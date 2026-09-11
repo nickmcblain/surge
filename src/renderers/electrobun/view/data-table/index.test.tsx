@@ -20,7 +20,7 @@ test("controlled centering keeps following late quotes until the user scrolls", 
   let controlledScrolls = 0;
   let paginationChecks = 0;
   const ranges: DataTableVisibleRange[] = [];
-  const state = createInitialState(createDefaultConfig("/tmp/gloom-table-test"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-table-test"));
 
   function Harness() {
     const headerScrollRef = useRef<ScrollBoxRenderable | null>(null);
@@ -73,7 +73,7 @@ test("controlled centering keeps following late quotes until the user scrolls", 
   }
 
   const container = await render(<Harness />);
-  const body = container.querySelector('[data-gloom-role="data-table-body-scroll"]') as HTMLElement;
+  const body = container.querySelector('[data-surge-role="data-table-body-scroll"]') as HTMLElement;
   Object.defineProperty(body, "clientHeight", { configurable: true, value: WEB_CELL_HEIGHT * 11 });
   const settle = () => new Promise((resolve) => setTimeout(resolve, 25));
   const emitScroll = () => body.dispatchEvent(new testWindow.Event("scroll") as unknown as Event);

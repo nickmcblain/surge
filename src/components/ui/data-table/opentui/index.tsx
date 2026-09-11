@@ -135,7 +135,7 @@ function OpenTuiDataTableRowInner<
       paddingX={horizontalPadding}
       backgroundColor={rowBg}
       hoverBackgroundColor={rowHoverBg}
-      data-gloom-context-menu-surface={rowContextMenuSurface ? "true" : undefined}
+      data-surge-context-menu-surface={rowContextMenuSurface ? "true" : undefined}
       onMouseDown={(event: any) => {
         focusPane();
         onTableMouseDown?.(event);

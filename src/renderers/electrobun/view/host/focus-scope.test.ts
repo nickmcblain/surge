@@ -25,7 +25,7 @@ describe("focus scope release", () => {
   });
 
   test("leaves a press inside a dialog alone, which owns the pointer itself", () => {
-    const inDialog = { tagName: "INPUT", closest: (selector: string) => selector === ".gloom-dialog" ? {} : null };
+    const inDialog = { tagName: "INPUT", closest: (selector: string) => selector === ".surge-dialog" ? {} : null };
     expect(shouldReleaseFocus(field(), inDialog)).toBe(false);
   });
 

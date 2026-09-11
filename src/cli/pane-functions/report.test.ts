@@ -90,7 +90,7 @@ test("chart composer reports accept capability-backed series", async () => {
     capability: { id: "chart-composer", reportReadiness: "ready" },
   } as unknown as ResolvedPaneFunction;
   const context = {
-    config: createDefaultConfig("/tmp/gloomberb-chart-report"),
+    config: createDefaultConfig("/tmp/surge-chart-report"),
     dataProvider: createTestDataProvider(),
     store: { loadTicker: async () => null },
   } as unknown as MarketContext;

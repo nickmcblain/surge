@@ -131,7 +131,7 @@ export function createDomUiHost(
           color,
           display: "inline-block",
           width: "1ch",
-          animation: "gloom-spin 0.9s steps(8) infinite",
+          animation: "surge-spin 0.9s steps(8) infinite",
           ...(props.style as CSSProperties | undefined),
         }}
       >

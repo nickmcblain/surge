@@ -4,7 +4,7 @@
  *
  * Usage:
  *   bun run scripts/mock-scanner-server.ts &
- *   GLOOMBERB_API_URL=http://localhost:8791 bun run dev
+ *   SURGE_API_URL=http://localhost:8791 bun run dev
  *
  * Pass --freeze to send one snapshot and stop, which keeps rows stable while
  * checking interactions, --delayed for the free-tier 15m HILO instance (FLOW is

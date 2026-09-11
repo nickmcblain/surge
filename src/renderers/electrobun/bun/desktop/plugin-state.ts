@@ -27,7 +27,7 @@ function normalizePluginStateSetEntry(entry: unknown): DesktopPluginStateSetEntr
 }
 
 function syncBackendCloudAuthState(pluginId: string, key: string, value: unknown): void {
-  if (pluginId !== "gloomberb-cloud" || (key !== "session" && key !== "resume:session")) return;
+  if (pluginId !== "surge-cloud" || (key !== "session" && key !== "resume:session")) return;
 
   const session = value && typeof value === "object" ? value as PersistedCloudSession : null;
   const token = typeof session?.sessionToken === "string" && session.sessionToken.length > 0
@@ -79,7 +79,7 @@ export function handleDesktopPluginStateRequest(
 function pluginStateIds(registry: PluginRegistry): string[] {
   const store = registry.persistence.pluginState as { pluginIds?: () => string[] };
   const storedIds = typeof store.pluginIds === "function" ? store.pluginIds() : [];
-  return [...new Set(["gloomberb-cloud", ...registry.allPlugins.keys(), ...storedIds])];
+  return [...new Set(["surge-cloud", ...registry.allPlugins.keys(), ...storedIds])];
 }
 
 export function loadDesktopPluginState(registry: PluginRegistry): Record<string, Record<string, unknown>> {

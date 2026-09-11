@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
 
-REPO="gloom-sh/gloomberb"
-INSTALL_DIR="${GLOOMBERB_INSTALL_DIR:-$HOME/.local/bin}"
-APP_DIR="${GLOOMBERB_APP_DIR:-/Applications}"
+REPO="nickmc-lumion/surge"
+INSTALL_DIR="${SURGE_INSTALL_DIR:-$HOME/.local/bin}"
+APP_DIR="${SURGE_APP_DIR:-/Applications}"
 
 # Detect platform
 OS="$(uname -s)"
@@ -78,13 +78,13 @@ install_symlink() {
 }
 
 install_macos_app() {
-  ASSET="stable-macos-arm64-Gloomberb.app.zip"
+  ASSET="stable-macos-arm64-Surge.app.zip"
   DOWNLOAD_URL="https://github.com/${REPO}/releases/latest/download/${ASSET}"
   TMP_DIR="$(mktemp -d)"
   ZIP_PATH="${TMP_DIR}/${ASSET}"
-  APP_PATH="${TMP_DIR}/Gloomberb.app"
-  DEST_APP="${APP_DIR}/Gloomberb.app"
-  DEST_CLI="${INSTALL_DIR}/gloomberb"
+  APP_PATH="${TMP_DIR}/Surge.app"
+  DEST_APP="${APP_DIR}/Surge.app"
+  DEST_CLI="${INSTALL_DIR}/surge"
 
   echo "Fetching latest macOS release..."
   echo "Downloading ${ASSET}..."
@@ -104,11 +104,11 @@ install_macos_app() {
   fi
 
   if [ ! -d "$APP_PATH" ]; then
-    echo "Error: ${ASSET} did not contain Gloomberb.app" >&2
+    echo "Error: ${ASSET} did not contain Surge.app" >&2
     exit 1
   fi
 
-  echo "Installing Gloomberb.app to ${APP_DIR}..."
+  echo "Installing Surge.app to ${APP_DIR}..."
   mkdir -p "$APP_DIR" 2>/dev/null || true
   if [ -w "$APP_DIR" ]; then
     rm -rf "$DEST_APP"
@@ -119,21 +119,21 @@ install_macos_app() {
     sudo mv "$APP_PATH" "$DEST_APP"
   fi
 
-  APP_CLI="${DEST_APP}/Contents/Resources/gloomberb"
+  APP_CLI="${DEST_APP}/Contents/Resources/surge"
   if [ ! -x "$APP_CLI" ]; then
-    echo "Error: installed app is missing the gloomberb terminal shim" >&2
+    echo "Error: installed app is missing the surge terminal shim" >&2
     exit 1
   fi
 
   install_symlink "$APP_CLI" "$DEST_CLI"
   rm -rf "$TMP_DIR"
 
-  echo "Installed Gloomberb.app to ${DEST_APP}"
+  echo "Installed Surge.app to ${DEST_APP}"
   echo "Installed terminal command to ${DEST_CLI}"
 }
 
 install_standalone_cli() {
-  ASSET="gloomberb-${os}-${arch}.gz"
+  ASSET="surge-${os}-${arch}.gz"
 
   # Get latest release download URL
   echo "Fetching latest release..."
@@ -147,8 +147,8 @@ install_standalone_cli() {
     echo "Error: ${ASSET} is not available in the latest release." >&2
     if [ "$os" = "darwin" ] && [ "$arch" = "x64" ]; then
       echo "Intel Macs need a release that ships ${ASSET}." >&2
-      echo "Run Gloomberb in the browser meanwhile: https://term.gloom.sh" >&2
-      echo "Intel support: https://github.com/gloom-sh/gloomberb/issues/539" >&2
+      echo "Run Surge in the browser meanwhile: https://term.gloom.sh" >&2
+      echo "Intel support: https://github.com/nickmc-lumion/surge/issues/539" >&2
     fi
     exit 1
   fi
@@ -158,16 +158,16 @@ install_standalone_cli() {
   mv "$TMP" "$TMP.gz"
   gunzip "$TMP.gz"
   chmod +x "$TMP"
-  install_file "$TMP" "$INSTALL_DIR/gloomberb"
+  install_file "$TMP" "$INSTALL_DIR/surge"
 
-  echo "Installed gloomberb to ${INSTALL_DIR}/gloomberb"
+  echo "Installed surge to ${INSTALL_DIR}/surge"
 }
 
 if [ "$os" = "darwin" ] && [ "$arch" = "arm64" ]; then
   install_macos_app
 else
   if [ "$os" = "darwin" ]; then
-    echo "Intel Mac detected. Gloomberb.app is Apple Silicon only, so this installs"
+    echo "Intel Mac detected. Surge.app is Apple Silicon only, so this installs"
     echo "the terminal app instead."
   fi
   install_standalone_cli
@@ -179,4 +179,4 @@ case ":$PATH:" in
      echo "  export PATH=\"$INSTALL_DIR:\$PATH\"" ;;
 esac
 
-echo "Run 'gloomberb' to start."
+echo "Run 'surge' to start."

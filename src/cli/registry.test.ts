@@ -3,7 +3,7 @@ import { mkdtemp, rm } from "fs/promises";
 import { join } from "path";
 import { tmpdir } from "os";
 import { createDefaultConfig } from "../types/config";
-import type { GloomPlugin } from "../types/plugin";
+import type { SurgePlugin } from "../types/plugin";
 import {
   buildCliCommandRegistry,
   createCliCommandContext,
@@ -59,7 +59,7 @@ async function captureConsole<T>(fn: () => Promise<T> | T): Promise<{ result: T;
   }
 }
 
-function createSyntheticPlugin(commandName = "example"): GloomPlugin {
+function createSyntheticPlugin(commandName = "example"): SurgePlugin {
   return {
     id: "synthetic-cli",
     name: "Synthetic CLI",
@@ -123,7 +123,7 @@ describe("CLI registry", () => {
   });
 
   test("omits disabled plugin commands from help and dispatch lookup", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-cli-disabled");
+    const config = createDefaultConfig("/tmp/surge-cli-disabled");
     config.disabledPlugins = ["synthetic-cli"];
 
     const registry = buildCliCommandRegistry({
@@ -172,7 +172,7 @@ describe("CLI registry", () => {
 
 describe("CLI dispatch", () => {
   test("dispatches a synthetic plugin command without main CLI changes", async () => {
-    process.env.HOME = await createTempHome("gloomberb-cli-registry-home-");
+    process.env.HOME = await createTempHome("surge-cli-registry-home-");
 
     const { result, stdout } = await captureConsole(() => dispatchCli(
       ["example", "hello", "world"],
@@ -189,7 +189,7 @@ describe("CLI dispatch", () => {
   });
 
   test("renders plugin command failures through structured output", async () => {
-    process.env.HOME = await createTempHome("gloomberb-cli-registry-failure-home-");
+    process.env.HOME = await createTempHome("surge-cli-registry-failure-home-");
     const originalExitCode = process.exitCode;
     process.exitCode = undefined;
     try {

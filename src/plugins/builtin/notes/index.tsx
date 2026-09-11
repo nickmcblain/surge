@@ -1,9 +1,9 @@
-import type { GloomPlugin } from "../../../types/plugin";
+import type { SurgePlugin } from "../../../types/plugin";
 import { NotesFiles } from "./files";
 import { createQuickNotesPane } from "./quick-notes-pane";
 import { createNotesTab } from "./ticker-notes-tab";
 
-export const notesPlugin: GloomPlugin = {
+export const notesPlugin: SurgePlugin = {
   id: "notes",
   name: "Notes",
   version: "1.0.0",

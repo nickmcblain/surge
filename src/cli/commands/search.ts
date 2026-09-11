@@ -132,7 +132,7 @@ export async function search(query: string, dependencies: SearchCommandDependenc
   const failCommand = dependencies.fail ?? fail;
   const initMarketDataFn = dependencies.initMarketData ?? initMarketData;
   if (!trimmedQuery) {
-    failCommand("Usage: gloomberb search <query>");
+    failCommand("Usage: surge search <query>");
   }
 
   await withMarketData(initMarketDataFn, async ({ store, dataProvider }) => {

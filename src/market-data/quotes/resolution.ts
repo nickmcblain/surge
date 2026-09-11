@@ -78,7 +78,7 @@ function isBrokerProvider(providerId?: string): boolean {
 
 function providerKindRank(providerId?: string): number {
   switch (providerId) {
-    case "gloomberb-cloud":
+    case "surge-cloud":
       return 0;
     case "yahoo":
       return 1;
@@ -93,7 +93,7 @@ function dailyReferenceRank(providerId?: string): number {
   switch (providerId) {
     case "yahoo":
       return 0;
-    case "gloomberb-cloud":
+    case "surge-cloud":
       return 1;
     case "ibkr":
       return 2;
@@ -109,7 +109,7 @@ function priceRank(quote: QuoteContribution): number {
 
 function priceProviderTieRank(providerId?: string): number {
   switch (providerId) {
-    case "gloomberb-cloud":
+    case "surge-cloud":
       return 0;
     case "yahoo":
       return 1;

@@ -72,7 +72,7 @@ export function WebDataTableHeader<C extends DataTableColumn>({
 }) {
   return (
     <div
-      data-gloom-role="data-table-header-row"
+      data-surge-role="data-table-header-row"
       style={{
         position: "sticky",
         top: 0,
@@ -99,8 +99,8 @@ export function WebDataTableHeader<C extends DataTableColumn>({
         return (
           <div
             key={column.id}
-            data-gloom-role="data-table-header-cell"
-            data-gloom-interactive="true"
+            data-surge-role="data-table-header-cell"
+            data-surge-interactive="true"
             style={{
               minWidth: 0,
               height: WEB_CELL_HEIGHT,
@@ -204,7 +204,7 @@ function WebDataTableRowInner<
     return (
       <div
         key={itemKey}
-        data-gloom-role="data-table-section-header"
+        data-surge-role="data-table-section-header"
         style={{
           ...baseRowStyle,
           backgroundColor: sectionHeader.backgroundColor ?? CSS_BG,
@@ -244,8 +244,8 @@ function WebDataTableRowInner<
   return (
     <div
       key={itemKey}
-      data-gloom-role="data-table-row"
-      data-gloom-context-menu-surface={rowContextMenuSurface ? "true" : undefined}
+      data-surge-role="data-table-row"
+      data-surge-context-menu-surface={rowContextMenuSurface ? "true" : undefined}
       data-selected={selected ? "true" : undefined}
       style={{
         ...baseRowStyle,
@@ -276,7 +276,7 @@ function WebDataTableRowInner<
         return (
           <div
             key={column.id}
-            data-gloom-role="data-table-cell"
+            data-surge-role="data-table-cell"
             style={{
               minWidth: 0,
               height: WEB_CELL_HEIGHT,

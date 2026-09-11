@@ -5,7 +5,7 @@ import type { DesktopSharedStateSnapshot } from "../../../../../types/desktop-wi
 import { detachedSnapshotKey } from "./snapshot";
 
 function createSnapshot(): DesktopSharedStateSnapshot {
-  const config = createResearchTestConfig("/tmp/gloomberb-test");
+  const config = createResearchTestConfig("/tmp/surge-test");
   config.layout.detached = [{ instanceId: "ticker-detail:main", x: 20, y: 20, width: 640, height: 420 }];
   return {
     config,

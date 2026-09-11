@@ -128,7 +128,7 @@ export function resolveDesktopShotApiProxy(
  * another provider contributes: analyst rating price targets came back empty
  * and corporate actions vanished whenever the cloud leg failed. Quotes are
  * here for board panes that list symbols the payload was never built for.
- * These run on the Bun side through the same router `gloomberb fn` uses.
+ * These run on the Bun side through the same router `surge fn` uses.
  */
 const SHOT_BRIDGE_MARKET_OPERATIONS = new Set([
   "getAnalystResearch",
@@ -336,7 +336,7 @@ export interface PaneScreenshotResult {
 
 export function defaultScreenshotPath(resolved: ResolvedPaneFunction, rawArg: string): string {
   const suffix = slugifyName([resolved.token, rawArg].filter(Boolean).join("-"), "pane");
-  return resolve(process.cwd(), `gloomberb-${suffix}.png`);
+  return resolve(process.cwd(), `surge-${suffix}.png`);
 }
 
 export async function buildDesktopShotPayload(

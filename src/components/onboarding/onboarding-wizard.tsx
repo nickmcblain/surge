@@ -132,7 +132,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         <OnboardingHeader onDismiss={() => { void finish(); }} dismissing={isFinishing} />
         <OnboardingTitle
           step={t("WELCOME")}
-          title={t("Make Gloomberb yours")}
+          title={t("Make Surge yours")}
           description={t("Open panes from the command bar, arrange them into a layout, and save it for next time.")}
         />
         {errorText}

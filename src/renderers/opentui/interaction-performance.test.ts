@@ -42,7 +42,7 @@ test("summarizes key-to-frame latency with nearest-rank percentiles", () => {
 });
 
 test("waits for the key's React commit before attributing a renderer frame", () => {
-  const directory = mkdtempSync(join(tmpdir(), "gloomberb-interaction-performance-"));
+  const directory = mkdtempSync(join(tmpdir(), "surge-interaction-performance-"));
   temporaryDirectories.push(directory);
   const output = join(directory, "report.json");
   const rendererEvents = new EventEmitter();

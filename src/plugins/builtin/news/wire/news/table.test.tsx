@@ -49,7 +49,7 @@ function makeArticle(overrides: Partial<MarketNewsItem> & { id: string; title: s
 
 function Harness() {
   const state = createInitialState(
-    createDefaultConfig("/tmp/gloomberb-news-table-test"),
+    createDefaultConfig("/tmp/surge-news-table-test"),
   );
 
   return (
@@ -110,7 +110,7 @@ describe("NewsArticleStackView", () => {
 
   test("keeps the last column and human labels inside the pane width", async () => {
     const state = createInitialState(
-      createDefaultConfig("/tmp/gloomberb-news-table-layout-test"),
+      createDefaultConfig("/tmp/surge-news-table-layout-test"),
     );
 
     testSetup = await testRender(
@@ -164,7 +164,7 @@ describe("NewsArticleStackView", () => {
 
   test("dedupes exchange-qualified ticker aliases in table cells", async () => {
     const state = createInitialState(
-      createDefaultConfig("/tmp/gloomberb-news-table-ticker-dedupe-test"),
+      createDefaultConfig("/tmp/surge-news-table-ticker-dedupe-test"),
     );
 
     testSetup = await testRender(

@@ -6,7 +6,7 @@ function safeFilename(name: string): string {
   const safe = basename(name.replace(/\\/g, "/"))
     .replace(/[<>:"|?*\u0000-\u001f]/g, "-")
     .replace(/[. ]+$/g, "");
-  return !safe || safe === "." || safe === ".." ? "gloomberb-export.txt" : safe;
+  return !safe || safe === "." || safe === ".." ? "surge-export.txt" : safe;
 }
 
 export async function saveTextFileToDirectory(

@@ -45,8 +45,8 @@ function normalizeLanguageTag(tag: string): AppLanguage | null {
 
 function getEnvironmentLanguageOverride(): AppLanguage | null {
   try {
-    return typeof process !== "undefined" && process.env?.GLOOMBERB_LANG
-      ? normalizeLanguageTag(process.env.GLOOMBERB_LANG)
+    return typeof process !== "undefined" && process.env?.SURGE_LANG
+      ? normalizeLanguageTag(process.env.SURGE_LANG)
       : null;
   } catch {
     return null;
@@ -103,7 +103,7 @@ export function subscribeLanguage(listener: () => void): () => void {
 
 /**
  * Applies the persisted `language` config field once the app config is
- * available. An explicit GLOOMBERB_LANG env var still wins so a single run
+ * available. An explicit SURGE_LANG env var still wins so a single run
  * can be forced into another language without touching the config.
  */
 export function applyLanguageFromConfig(config: { language?: string } | null | undefined): void {

@@ -15,7 +15,7 @@ afterEach(async () => {
 });
 
 test("rebuilds translated columns when the app language changes", async () => {
-  const state = createInitialState(createDefaultConfig("/tmp/gloomberb-feed-table-language"));
+  const state = createInitialState(createDefaultConfig("/tmp/surge-feed-table-language"));
   const items = [{ id: "story", eyebrow: "Wire", title: "Story", timestamp: "2026-01-01" }];
   testSetup = await testRender(
     <AppContext value={{ state, dispatch: () => {} }}>

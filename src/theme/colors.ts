@@ -31,24 +31,24 @@ let cssThemeId: string | null = null;
 let cssThemeDocument: unknown = null;
 
 const THEME_CSS_VARIABLES: Array<[ColorKey, string]> = [
-  ["bg", "--gloom-bg"],
-  ["panel", "--gloom-panel"],
-  ["border", "--gloom-border"],
-  ["borderFocused", "--gloom-border-focused"],
-  ["text", "--gloom-text"],
-  ["textDim", "--gloom-text-dim"],
-  ["textBright", "--gloom-text-bright"],
-  ["textMuted", "--gloom-text-muted"],
-  ["positive", "--gloom-positive"],
-  ["negative", "--gloom-negative"],
-  ["neutral", "--gloom-neutral"],
-  ["warning", "--gloom-warning"],
-  ["header", "--gloom-header"],
-  ["headerText", "--gloom-header-text"],
-  ["selected", "--gloom-selected"],
-  ["selectedText", "--gloom-selected-text"],
-  ["commandBg", "--gloom-command-bg"],
-  ["commandBorder", "--gloom-command-border"],
+  ["bg", "--surge-bg"],
+  ["panel", "--surge-panel"],
+  ["border", "--surge-border"],
+  ["borderFocused", "--surge-border-focused"],
+  ["text", "--surge-text"],
+  ["textDim", "--surge-text-dim"],
+  ["textBright", "--surge-text-bright"],
+  ["textMuted", "--surge-text-muted"],
+  ["positive", "--surge-positive"],
+  ["negative", "--surge-negative"],
+  ["neutral", "--surge-neutral"],
+  ["warning", "--surge-warning"],
+  ["header", "--surge-header"],
+  ["headerText", "--surge-header-text"],
+  ["selected", "--surge-selected"],
+  ["selectedText", "--surge-selected-text"],
+  ["commandBg", "--surge-command-bg"],
+  ["commandBorder", "--surge-command-border"],
 ];
 
 export function getCurrentThemeId(): string {
@@ -128,7 +128,7 @@ function syncThemeCssVariables(): void {
   for (const [key, name] of THEME_CSS_VARIABLES) {
     style.setProperty(name, currentColors[key]);
   }
-  style.setProperty("--gloom-hover-bg", hoverBg());
+  style.setProperty("--surge-hover-bg", hoverBg());
 }
 
 export function commandBarBg(palette: ThemeColors = colors): string {

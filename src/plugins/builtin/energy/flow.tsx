@@ -3,7 +3,7 @@ import { usePaneSettingValue } from "../../../state/app/context";
 import { colors } from "../../../theme/colors";
 import type { EnergyPoint, EnergySeriesBundle, FlowSeries } from "../../../types/energy";
 import type { PaneProps, PaneTemplateCreateOptions, PaneTemplateInstanceConfig } from "../../../types/plugin";
-import { Box, Text } from "../../../ui";
+import { Box, Span, Text } from "../../../ui";
 import { getCachedFlow, loadFlow } from "../entsoe/data";
 import { currentPoint, latestValue } from "../entsoe/stats";
 import type { DayWindow } from "../entsoe/time";
@@ -108,7 +108,7 @@ function FlowPane({ focused, width, height }: PaneProps) {
               {netValue == null ? "--" : `${netValue >= 0 ? "export" : "import"} ${formatMw(Math.abs(netValue))}`}
             </Text>
           </Text>
-          <Text fg={colors.textDim}>Day avg <Text fg={colors.text}>{hours ? formatMw(total / hours) : "--"}</Text></Text>
+          <Text fg={colors.textDim}>Day avg <Span fg={colors.text}>{hours ? formatMw(total / hours) : "--"}</Span></Text>
         </Box>
         <DaySelector value={offset} onChange={setOffset} />
       </Box>

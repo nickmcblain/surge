@@ -133,8 +133,11 @@ function renderCell(row: BoardRow, column: DataTableColumn): DataTableCell {
   }
 }
 
+// Stable fallback: a fresh array per render would re-derive `zones`, re-create the loader and refetch forever.
+const BOARD_ZONES_FALLBACK: string[] = [...DEFAULT_BOARD_ZONES];
+
 function useBoardZones(): BiddingZone[] {
-  const [codes] = usePluginConfigState<string[]>(BOARD_ZONES_KEY, [...DEFAULT_BOARD_ZONES]);
+  const [codes] = usePluginConfigState<string[]>(BOARD_ZONES_KEY, BOARD_ZONES_FALLBACK);
   return useMemo(() => codes.map((code) => resolveZone(code)).filter((zone): zone is BiddingZone => zone != null), [codes]);
 }
 

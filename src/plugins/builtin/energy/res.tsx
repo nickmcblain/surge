@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { colors } from "../../../theme/colors";
 import type { EnergyPoint, EnergySeriesBundle, GenerationMix } from "../../../types/energy";
 import type { PaneProps } from "../../../types/plugin";
-import { Box, Text } from "../../../ui";
+import { Box, Span, Text } from "../../../ui";
 import { getCachedGeneration, getCachedResForecast, loadGeneration, loadResForecast } from "../entsoe/data";
 import { currentPoint, sumPoints } from "../entsoe/stats";
 import type { DayWindow } from "../entsoe/time";
@@ -94,8 +94,8 @@ function ResPane({ focused, width, height }: PaneProps) {
     <Box flexDirection="column" width={width} height={height}>
       <Box flexDirection="row" height={1} paddingX={1} justifyContent="space-between" overflow="hidden">
         <Box flexDirection="row" gap={2} overflow="hidden">
-          <Text fg={colors.textDim}>Wind <Text fg={colors.textBright}>{formatMw(windActual?.value ?? windNow?.value)}</Text>{windActual ? <Text fg={colors.textMuted}> / fcst {formatMw(windNow?.value)}</Text> : null}</Text>
-          <Text fg={colors.textDim}>Solar <Text fg={colors.textBright}>{formatMw(solarActual?.value ?? solarNow?.value)}</Text>{solarActual ? <Text fg={colors.textMuted}> / fcst {formatMw(solarNow?.value)}</Text> : null}</Text>
+          <Text fg={colors.textDim}>Wind <Span fg={colors.textBright}>{formatMw(windActual?.value ?? windNow?.value)}</Span>{windActual ? <Span fg={colors.textMuted}> / fcst {formatMw(windNow?.value)}</Span> : null}</Text>
+          <Text fg={colors.textDim}>Solar <Span fg={colors.textBright}>{formatMw(solarActual?.value ?? solarNow?.value)}</Span>{solarActual ? <Span fg={colors.textMuted}> / fcst {formatMw(solarNow?.value)}</Span> : null}</Text>
         </Box>
         <DaySelector value={offset} onChange={setOffset} />
       </Box>

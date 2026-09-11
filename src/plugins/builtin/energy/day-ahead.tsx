@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { colors } from "../../../theme/colors";
 import type { EnergyPoint } from "../../../types/energy";
 import type { PaneProps } from "../../../types/plugin";
-import { Box, Text } from "../../../ui";
+import { Box, Span, Text } from "../../../ui";
 import { getCachedDayAhead, loadDayAhead, zoneDay } from "../entsoe/data";
 import { priceStats } from "../entsoe/stats";
 import { formatLocalTime } from "../entsoe/time";
@@ -71,14 +71,14 @@ function DayAheadPane({ focused, width, height }: PaneProps) {
     <Box flexDirection="column" width={width} height={height}>
       <Box flexDirection="row" height={1} paddingX={1} justifyContent="space-between" overflow="hidden">
         <Box flexDirection="row" gap={2} overflow="hidden">
-          <Text fg={colors.textDim}>Base <Text fg={colors.textBright}>{formatPrice(stats?.baseload)}</Text></Text>
-          <Text fg={colors.textDim}>Peak <Text fg={colors.text}>{formatPrice(stats?.peak)}</Text></Text>
-          <Text fg={colors.textDim}>Off <Text fg={colors.text}>{formatPrice(stats?.offPeak)}</Text></Text>
+          <Text fg={colors.textDim}>Base <Span fg={colors.textBright}>{formatPrice(stats?.baseload)}</Span></Text>
+          <Text fg={colors.textDim}>Peak <Span fg={colors.text}>{formatPrice(stats?.peak)}</Span></Text>
+          <Text fg={colors.textDim}>Off <Span fg={colors.text}>{formatPrice(stats?.offPeak)}</Span></Text>
           {stats?.min ? (
-            <Text fg={colors.textDim}>Min <Text fg={colors.positive}>{formatPrice(stats.min.value)}</Text> {formatLocalTime(stats.min.ts, zone.timeZone)}</Text>
+            <Text fg={colors.textDim}>Min <Span fg={colors.positive}>{formatPrice(stats.min.value)}</Span> {formatLocalTime(stats.min.ts, zone.timeZone)}</Text>
           ) : null}
           {stats?.max ? (
-            <Text fg={colors.textDim}>Max <Text fg={colors.negative}>{formatPrice(stats.max.value)}</Text> {formatLocalTime(stats.max.ts, zone.timeZone)}</Text>
+            <Text fg={colors.textDim}>Max <Span fg={colors.negative}>{formatPrice(stats.max.value)}</Span> {formatLocalTime(stats.max.ts, zone.timeZone)}</Text>
           ) : null}
           <Text fg={colors.textMuted}>{unit}</Text>
         </Box>

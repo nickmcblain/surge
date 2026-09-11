@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { colors } from "../../../theme/colors";
 import type { EnergySeriesBundle, LoadSeries } from "../../../types/energy";
 import type { PaneProps } from "../../../types/plugin";
-import { Box, Text } from "../../../ui";
+import { Box, Span, Text } from "../../../ui";
 import { getCachedLoad, loadLoad } from "../entsoe/data";
 import { currentPoint, latestValue } from "../entsoe/stats";
 import type { DayWindow } from "../entsoe/time";
@@ -86,10 +86,10 @@ function LoadPane({ focused, width, height }: PaneProps) {
     <Box flexDirection="column" width={width} height={height}>
       <Box flexDirection="row" height={1} paddingX={1} justifyContent="space-between" overflow="hidden">
         <Box flexDirection="row" gap={2} overflow="hidden">
-          <Text fg={colors.textDim}>Actual <Text fg={colors.textBright}>{formatMw(latest?.value ?? now?.value)}</Text></Text>
-          <Text fg={colors.textDim}>Fcst <Text fg={colors.text}>{formatMw(forecastNow?.value)}</Text></Text>
-          <Text fg={colors.textDim}>Dev <Text fg={deviation == null ? colors.neutral : deviation > 0 ? colors.negative : colors.positive}>{deviation == null ? "--" : `${deviation > 0 ? "+" : ""}${formatMw(deviation)}`}</Text></Text>
-          <Text fg={colors.textDim}>Peak fcst <Text fg={colors.text}>{formatMw(peakForecast)}</Text></Text>
+          <Text fg={colors.textDim}>Actual <Span fg={colors.textBright}>{formatMw(latest?.value ?? now?.value)}</Span></Text>
+          <Text fg={colors.textDim}>Fcst <Span fg={colors.text}>{formatMw(forecastNow?.value)}</Span></Text>
+          <Text fg={colors.textDim}>Dev <Span fg={deviation == null ? colors.neutral : deviation > 0 ? colors.negative : colors.positive}>{deviation == null ? "--" : `${deviation > 0 ? "+" : ""}${formatMw(deviation)}`}</Span></Text>
+          <Text fg={colors.textDim}>Peak fcst <Span fg={colors.text}>{formatMw(peakForecast)}</Span></Text>
         </Box>
         <DaySelector value={offset} onChange={setOffset} />
       </Box>

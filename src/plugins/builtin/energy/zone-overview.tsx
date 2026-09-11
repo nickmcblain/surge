@@ -2,7 +2,7 @@ import { useCallback, type ReactNode } from "react";
 import { colors } from "../../../theme/colors";
 import type { EnergyPoint, EnergySeriesBundle, GenerationMix, LoadSeries, PsrType, ZonePriceSeries } from "../../../types/energy";
 import type { PaneProps } from "../../../types/plugin";
-import { Box, Text, TextAttributes } from "../../../ui";
+import { Box, Span, Text, TextAttributes } from "../../../ui";
 import { getCachedDayAhead, getCachedGeneration, getCachedLoad, getCachedResForecast, loadDayAhead, loadGeneration, loadLoad, loadResForecast, zoneDay } from "../entsoe/data";
 import { psrDef } from "../entsoe/psr";
 import { currentPoint, latestValue, priceStats, sumPoints, type PriceStats } from "../entsoe/stats";
@@ -86,7 +86,7 @@ function Row({ label, value, color = colors.text, suffix }: { label: string; val
   return (
     <Box flexDirection="row" justifyContent="space-between" height={1}>
       <Text fg={colors.textDim}>{label}</Text>
-      <Text fg={color}>{value}{suffix ? <Text fg={colors.textMuted}> {suffix}</Text> : null}</Text>
+      <Text fg={color}>{value}{suffix ? <Span fg={colors.textMuted}> {suffix}</Span> : null}</Text>
     </Box>
   );
 }
@@ -145,7 +145,7 @@ function ZoneOverviewPane({ focused, width, height }: PaneProps) {
   return (
     <Box flexDirection="column" width={width} height={height} paddingX={1} overflow="hidden">
       <Box flexDirection="row" justifyContent="space-between" height={1} marginBottom={1}>
-        <Text fg={colors.textBright} attributes={TextAttributes.BOLD}>{zone.code} <Text fg={colors.textDim}>{zone.name}</Text></Text>
+        <Text fg={colors.textBright} attributes={TextAttributes.BOLD}>{zone.code} <Span fg={colors.textDim}>{zone.name}</Span></Text>
         <Text fg={colors.textMuted}>{day.dateKey} {zone.timeZone}</Text>
       </Box>
       <Section title={`Day-ahead ${today?.unit ?? ""}`}>

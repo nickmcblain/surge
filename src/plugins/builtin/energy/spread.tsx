@@ -3,7 +3,7 @@ import { usePaneSettingValue } from "../../../state/app/context";
 import { colors } from "../../../theme/colors";
 import type { EnergyPoint, EnergySeriesBundle, ZonePriceSeries } from "../../../types/energy";
 import type { PaneProps, PaneTemplateCreateOptions, PaneTemplateInstanceConfig } from "../../../types/plugin";
-import { Box, Text } from "../../../ui";
+import { Box, Span, Text } from "../../../ui";
 import { getCachedDayAhead, loadDayAhead } from "../entsoe/data";
 import { averageValue, currentPoint } from "../entsoe/stats";
 import type { DayWindow } from "../entsoe/time";
@@ -91,8 +91,8 @@ function SpreadPane({ focused, width, height }: PaneProps) {
     <Box flexDirection="column" width={width} height={height}>
       <Box flexDirection="row" height={1} paddingX={1} justifyContent="space-between" overflow="hidden">
         <Box flexDirection="row" gap={2} overflow="hidden">
-          <Text fg={colors.textDim}>Now <Text fg={signedColor(now?.value)}>{formatPrice(now?.value)}</Text></Text>
-          <Text fg={colors.textDim}>Avg <Text fg={signedColor(avg)}>{formatPrice(avg)}</Text></Text>
+          <Text fg={colors.textDim}>Now <Span fg={signedColor(now?.value)}>{formatPrice(now?.value)}</Span></Text>
+          <Text fg={colors.textDim}>Avg <Span fg={signedColor(avg)}>{formatPrice(avg)}</Span></Text>
           <Text fg={colors.textMuted}>{bundle.data.a.unit}</Text>
           {mixedCurrency ? <Text fg={colors.warning}>mixed currencies</Text> : null}
         </Box>

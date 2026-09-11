@@ -12,9 +12,9 @@ import { getPaneDisplayTitle } from "../pane/title";
 import { tickerLinkMenuItems } from "./ticker-link-menu";
 
 const panes = new Map<string, PaneDef>([
-  ["portfolio-list", {
-    id: "portfolio-list",
-    name: "Portfolio",
+  ["futures", {
+    id: "futures",
+    name: "Futures",
     component: () => null,
     defaultPosition: "left",
     tickerSource: true,
@@ -29,13 +29,31 @@ const panes = new Map<string, PaneDef>([
 
 describe("tickerLinkMenuItems", () => {
   test("pins the current ticker when unlinking and can link back to the source", () => {
-    const state = createInitialState(createDefaultConfig("/tmp/gloomberb-link-menu-test"));
-    state.paneState["portfolio-list:main"] = { collectionId: "main", cursorSymbol: "AAPL" };
+    const source = createPaneInstance("futures", { instanceId: "futures:main", binding: { kind: "none" } });
+    const follower = createPaneInstance(TICKER_RESEARCH_PANE_ID, {
+      instanceId: "ticker-detail:main",
+      binding: { kind: "follow", sourceInstanceId: "futures:main" },
+    });
+    const config = createDefaultConfig("/tmp/gloomberb-link-menu-test");
+    config.layout = {
+      dockRoot: {
+        kind: "split",
+        axis: "horizontal",
+        ratio: 0.5,
+        first: { kind: "pane", instanceId: source.instanceId },
+        second: { kind: "pane", instanceId: follower.instanceId },
+      },
+      instances: [source, follower],
+      floating: [],
+      detached: [],
+    };
+    const state = createInitialState(config);
+    state.paneState["futures:main"] = { cursorSymbol: "AAPL" };
     const target = findPaneInstance(state.config.layout, "ticker-detail:main")!;
     let layout: LayoutConfig = state.config.layout;
 
     expect(getPaneDisplayTitle(state, target, panes.get(TICKER_RESEARCH_PANE_ID)!, panes)).toBe(
-      "AAPL  ⧉ Linked to Main Portfolio",
+      "AAPL  ⧉ Linked to Futures",
     );
 
     tickerLinkMenuItems({
@@ -44,14 +62,14 @@ describe("tickerLinkMenuItems", () => {
       panes,
       state,
       persistLayout: (nextLayout) => { layout = nextLayout; },
-    }).find((item) => item.id === "unlink:portfolio-list:main")?.onSelect?.();
+    }).find((item) => item.id === "unlink:futures:main")?.onSelect?.();
 
     const pinned = findPaneInstance(layout, target.instanceId)!;
     expect(pinned.binding).toEqual({ kind: "fixed", symbol: "AAPL" });
 
     const previousFollower = createPaneInstance(TICKER_RESEARCH_PANE_ID, {
       instanceId: "ticker-detail:previous",
-      binding: { kind: "follow", sourceInstanceId: "portfolio-list:main" },
+      binding: { kind: "follow", sourceInstanceId: "futures:main" },
     });
     layout = {
       ...layout,
@@ -68,11 +86,11 @@ describe("tickerLinkMenuItems", () => {
       panes,
       state: pinnedState,
       persistLayout: (nextLayout) => { layout = nextLayout; },
-    }).find((item) => item.id === "link:portfolio-list:main")?.onSelect?.();
+    }).find((item) => item.id === "link:futures:main")?.onSelect?.();
 
     expect(findPaneInstance(layout, target.instanceId)?.binding).toEqual({
       kind: "follow",
-      sourceInstanceId: "portfolio-list:main",
+      sourceInstanceId: "futures:main",
     });
     expect(findPaneInstance(layout, previousFollower.instanceId)?.binding).toEqual({
       kind: "fixed",

@@ -6,11 +6,7 @@ import { TickerRepository } from "../../data/ticker-repository";
 import { createDefaultConfig } from "../../types/config";
 import type { DataProvider } from "../../types/data-provider";
 import type { GloomPlugin, GloomPluginContext } from "../../types/plugin";
-import {
-  applicationPlugin,
-  macroPlugin,
-  portfolioPlugin,
-} from "../builtin/composite-plugins";
+import { applicationPlugin, marketOverviewPlugin } from "../builtin/composite-plugins";
 import { composeBuiltinPlugin } from "../builtin/plugin-module";
 import { useMarketData, usePluginAppActions } from "../runtime";
 import { PluginRegistry } from "./index";
@@ -136,32 +132,23 @@ describe("PluginRegistry lifecycle", () => {
 describe("built-in composite plugin ownership", () => {
   test("registers modules through their one top-level owner", async () => {
     const registry = createRegistry();
-    await registry.register(portfolioPlugin);
     await registry.register(applicationPlugin);
-    await registry.register(macroPlugin);
+    await registry.register(marketOverviewPlugin);
 
-    expect(registry.getPluginPaneIds("portfolio")).toEqual(expect.arrayContaining([
-      "portfolio-list",
-      "analytics",
-      "kelly-sizer",
-    ]));
     expect(registry.getPluginPaneIds("application")).toEqual(expect.arrayContaining([
       "help",
       "changelog",
       "connections",
     ]));
-    expect(registry.getPluginPaneIds("macro")).toEqual(expect.arrayContaining([
-      "econ-calendar",
-      "yield-curve",
-      "earnings-calendar",
+    expect(registry.getPluginPaneIds("market-overview")).toEqual(expect.arrayContaining([
+      "fx-matrix",
+      "futures",
     ]));
-    expect(registry.getPanePluginId("analytics")).toBe("portfolio");
     expect(registry.getPanePluginId("help")).toBe("application");
     expect(registry.getPanePluginId("connections")).toBe("application");
-    expect(registry.getCommandPluginId("earnings-monitor-shortcut")).toBe("macro");
+    expect(registry.getPanePluginId("futures")).toBe("market-overview");
     expect(registry.getCommandPluginId("gridlock-all")).toBe("application");
-    expect(registry.allPlugins.has("analytics")).toBe(false);
-    expect(registry.allPlugins.has("kelly-sizer")).toBe(false);
+    expect(registry.allPlugins.has("futures")).toBe(false);
     expect(registry.allPlugins.has("changelog")).toBe(false);
   });
 });

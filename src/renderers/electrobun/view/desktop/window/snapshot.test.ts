@@ -1,10 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { createDefaultConfig } from "../../../../../types/config";
+import { createResearchTestConfig } from "../../../../../test-support/research-layout";
 import type { DesktopSharedStateSnapshot } from "../../../../../types/desktop-window";
 import { detachedSnapshotKey } from "./snapshot";
 
 function createSnapshot(): DesktopSharedStateSnapshot {
-  const config = createDefaultConfig("/tmp/gloomberb-test");
+  const config = createResearchTestConfig("/tmp/gloomberb-test");
   config.layout.detached = [{ instanceId: "ticker-detail:main", x: 20, y: 20, width: 640, height: 420 }];
   return {
     config,

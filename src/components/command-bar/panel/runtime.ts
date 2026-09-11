@@ -60,7 +60,6 @@ interface CommandBarPanelRuntimeOptions {
   persistConfig: (nextConfig: AppState["config"]) => void;
   pluginRegistry: PluginRegistry;
   popRoute: () => void;
-  resetAssist: () => boolean;
   rootGhostSuffix: string | null;
   rootModeKind: string;
   rootShortcutFeedback: string | null;
@@ -113,7 +112,6 @@ export function useCommandBarPanelRuntime({
   persistConfig,
   pluginRegistry,
   popRoute,
-  resetAssist,
   rootGhostSuffix,
   rootModeKind,
   rootShortcutFeedback,
@@ -190,7 +188,6 @@ export function useCommandBarPanelRuntime({
     nativePaneChrome,
     openWorkflowFieldPicker,
     popRoute,
-    resetAssist,
     rootModeKind,
     setActiveListQuery,
     submitWorkflowRoute,

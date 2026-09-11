@@ -3,7 +3,7 @@ const BUILTIN_PLUGIN_OWNER_ALIASES: Record<string, string> = {
   "broker-manager": "broker",
   changelog: "application",
   "company-research": "ticker-research",
-  "chart-composer": "ticker-research",
+  "chart-composer": "market-overview",
   "comparison-chart": "ticker-research",
   correlation: "market-overview",
   "earnings-calendar": "macro",

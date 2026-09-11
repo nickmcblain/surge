@@ -3,84 +3,10 @@ import { expect, test } from "bun:test";
 import { act } from "react";
 import { testRender } from "../../renderers/opentui/test-utils";
 import { createTestDataProvider } from "../../test-support/data-provider";
-import { createBrowserResearchLayout, BROWSER_RESEARCH_PANE_ID } from "../../renderers/browser/config-host";
 import { createInitialState, type AppAction } from "../../state/app/context";
 import { createDefaultConfig, createPaneInstance, TICKER_RESEARCH_PANE_ID } from "../../types/config";
 import type { TickerRecord } from "../../types/ticker";
 import { useAppTickerOpenRuntime } from "./ticker-open-runtime";
-import { researchEntryFromSearch } from "../../renderers/browser/research-entry";
-
-test("a slow linked ticker applies its tab to the reused or new pane after hydration", async () => {
-  for (const { savedListing, savedExchange, reusePane } of [
-    { savedListing: "VOD:XLON", savedExchange: "JSE", reusePane: true },
-    { savedListing: "VOD", savedExchange: "LSE", reusePane: true },
-    { savedListing: "VOD", savedExchange: "JSE", reusePane: false },
-  ]) {
-    const config = createDefaultConfig(":memory:");
-    config.layout = createBrowserResearchLayout(savedListing);
-    const stateRef = { current: createInitialState(config) };
-    // A saved same-spelling issuer on another venue must not satisfy the link.
-    stateRef.current.tickers.set("VOD", { metadata: {
-      ticker: "VOD", exchange: savedExchange,
-      currency: savedExchange === "LSE" ? "GBP" : "ZAR", name: savedExchange === "LSE" ? "Vodafone" : "Vodacom",
-      portfolios: [], watchlists: [], positions: [], custom: {}, tags: [],
-    } });
-    const actions: AppAction[] = [];
-    const focused: string[] = [];
-    let layouts = 0;
-    let releaseSearch!: () => void;
-    const pendingSearch = new Promise<void>((resolve) => { releaseSearch = resolve; });
-    let runtime!: ReturnType<typeof useAppTickerOpenRuntime>;
-    function Harness() {
-      runtime = useAppTickerOpenRuntime({
-        stateRef,
-        dataProvider: createTestDataProvider({ search: async () => {
-          await pendingSearch;
-          return [{ providerId: "cloud", symbol: "VOD", name: "Vodafone", exchange: "LSE", currency: "GBP", type: "EQUITY" }];
-        } }),
-        tickerRepository: {
-          loadTicker: async () => null,
-          createTicker: async (metadata: TickerRecord["metadata"]) => ({ metadata }),
-        } as any,
-        dispatch: (action) => { actions.push(action); },
-        pluginRegistry: {
-          panes: new Map([[TICKER_RESEARCH_PANE_ID, { id: TICKER_RESEARCH_PANE_ID }]]),
-          events: { emit() {} }, notify() {}, getTermSizeFn: () => ({ width: 120, height: 40 }),
-        } as any,
-        buildPaneInstance: (paneId, options) => createPaneInstance(paneId, { ...options, instanceId: "ticker-detail:linked" }),
-        persistLayout: (layout) => { layouts++; stateRef.current.config.layout = layout; },
-        activatePane: (paneId) => { focused.push(paneId); },
-        focusVisiblePane: (paneId) => { focused.push(paneId); },
-      });
-      return <text>Research</text>;
-    }
-    const rendered = await testRender(<Harness />, { width: 20, height: 2 });
-    try {
-      await act(async () => { await rendered.renderOnce(); });
-      const entry = researchEntryFromSearch("?ticker=VOD&exchange=LSE&tab=financials")!;
-      const opening = runtime.openPinnedTicker(entry.symbol, { tabId: entry.tab, floating: true });
-      // Focus may change while the provider is still resolving the linked listing.
-      stateRef.current.focusedPaneId = "world-indices:main";
-      // Explicit exact local matches may resolve without the deferred provider.
-      if (savedExchange !== "LSE") expect(actions).toEqual([]);
-      releaseSearch();
-      await act(async () => { await opening; });
-      const paneId = reusePane ? BROWSER_RESEARCH_PANE_ID : "ticker-detail:linked";
-      expect(actions).toContainEqual({ type: "UPDATE_PANE_STATE", paneId, patch: { activeTabId: "financials" } });
-      expect(actions.filter((action) => action.type === "UPDATE_PANE_STATE")).toHaveLength(1);
-      expect(actions.find((action) => action.type === "UPDATE_TICKER")).toMatchObject({ ticker: { metadata: { ticker: "VOD:XLON", exchange: "LSE" } } });
-      expect(stateRef.current.config.layout.instances.find((pane) => pane.instanceId === paneId)?.binding)
-        .toEqual({ kind: "fixed", symbol: "VOD:XLON" });
-      expect(focused).toEqual([paneId]);
-      expect(layouts).toBe(savedListing === "VOD:XLON" ? 0 : 1);
-      expect(stateRef.current.config.layout.instances.filter((pane) => pane.paneId === TICKER_RESEARCH_PANE_ID))
-        .toHaveLength(reusePane ? 1 : 2);
-    } finally {
-      await act(async () => { rendered.renderer.destroy(); });
-    }
-  }
-});
-
 
 test("ambiguous deep links open the listing picker without publishing an arbitrary ticker", async () => {
   const actions: AppAction[] = [];

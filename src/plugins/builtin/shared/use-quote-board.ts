@@ -193,3 +193,29 @@ export function marketStatusDot(state: MarketState | undefined): { char: string;
       return { char: "●", color: colors.negative };
   }
 }
+
+const ERROR_MESSAGE_MAX_LENGTH = 48;
+
+/** The reason a board is empty, taken from the per-symbol errors the board records. */
+export function boardErrorMessage(quotes: BoardQuoteMap): string | null {
+  let total = 0;
+  let unavailable = 0;
+  let message: string | null = null;
+  for (const state of quotes.values()) {
+    total += 1;
+    if (state.quote || state.loading) continue;
+    unavailable += 1;
+    message ??= state.error;
+  }
+  if (total === 0 || unavailable < total || !message) return null;
+  return message.length > ERROR_MESSAGE_MAX_LENGTH
+    ? `${message.slice(0, ERROR_MESSAGE_MAX_LENGTH - 1)}…`
+    : message;
+}
+
+/** 24-hour so the cell stays 5 wide in every locale and never clips. */
+export function formatQuoteTime(lastUpdated: number | undefined): string {
+  if (!lastUpdated) return "—";
+  const date = new Date(lastUpdated);
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}

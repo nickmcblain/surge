@@ -40,14 +40,12 @@ import type {
   HolderData,
   PricePoint,
   Quote,
+  TickerFinancials,
 } from "../../../types/financials";
 import { setHttpFetchTransport } from "../../../utils/http-transport";
 import type { AppState } from "../../../core/state/app/state";
 import { canonicalTickerKey, parsePublicTickerKey } from "../../../utils/exchanges";
-import { hydrateValuationSeries } from "../../../plugins/builtin/market-valuation/cache";
-import { statsCache } from "../../../plugins/builtin/econ-statistics/cache";
 import { apiClient, setCloudApiFetchTransport } from "../../../api-client";
-import { createGloomberbCloudProvider } from "../../../sources/gloomberb-cloud";
 
 declare global {
   interface Window {
@@ -325,8 +323,12 @@ function waitForShotReadiness(): () => void {
 }
 
 function createShotDataProvider(payload: DesktopPaneShotPayload): DataProvider {
-  const cloudProvider = createGloomberbCloudProvider();
-  const bridge: Partial<DataProvider> = {
+  // Every request goes to the Bun process that owns this page, which runs it
+  // through the real provider router.
+  const fallback: DataProvider = {
+    id: "cli-shot-bridge",
+    name: "CLI Screenshot Bridge",
+    getTickerFinancials: (symbol, exchange, context) => requestShotMarketData<TickerFinancials>("getTickerFinancials", [symbol, exchange, context]),
     getQuote: (symbol, exchange) => requestShotMarketData<Quote>("getQuote", [symbol, exchange]),
     getQuotesBatch: (targets) => requestShotMarketData<QuoteBatchResult[]>("getQuotesBatch", [targets])
       .catch(() => targets.map((target) => ({ target, quote: null }))),
@@ -358,12 +360,6 @@ function createShotDataProvider(payload: DesktopPaneShotPayload): DataProvider {
     getEarningsCalendar: (symbols) => requestShotMarketData<EarningsEvent[]>("getEarningsCalendar", [symbols]).then(reviveEarningsEvents),
     subscribeQuotes: () => () => {},
   };
-  const fallback = new Proxy(cloudProvider, {
-    get(target, property) {
-      const value = Reflect.get(bridge, property) ?? Reflect.get(target, property, target);
-      return typeof value === "function" ? value.bind(target) : value;
-    },
-  });
   const provider = createSnapshotDataProvider(payload, fallback);
   return new Proxy(provider, {
     get(target, property) {
@@ -502,8 +498,6 @@ async function render() {
   installShotFetchTracker();
   installShotCloudApiTransport();
   installShotHttpFetchTransport();
-  hydrateValuationSeries(payload.valuationSeries ?? []);
-  statsCache.hydrate(payload.statSeries ?? []);
   const services = createShotAppServices(payload);
   window.addEventListener("pagehide", () => services.destroy(), { once: true });
   // Panes contributed from an async setup() only exist once every plugin has

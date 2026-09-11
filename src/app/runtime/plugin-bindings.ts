@@ -1,8 +1,4 @@
 import type { Dispatch } from "react";
-import {
-  clearPersistedBrokerAccounts,
-  getBrokerAccountCacheSourceKey,
-} from "../../brokers/account-cache";
 import type { AppTickerRepositoryPort } from "../../core/app-service-ports";
 import type { MarketDataCoordinator } from "../../market-data/coordinator";
 import { instrumentFromTicker } from "../../market-data/request-types";
@@ -20,7 +16,6 @@ import {
 export function bindPluginRegistryRuntimeAccess({
   dataProvider,
   dispatch,
-  importBrokerPositions,
   marketData,
   pluginRegistry,
   stateRef,
@@ -28,7 +23,6 @@ export function bindPluginRegistryRuntimeAccess({
 }: {
   dataProvider: DataProvider;
   dispatch: Dispatch<AppAction>;
-  importBrokerPositions: (instanceId: string) => Promise<unknown>;
   marketData: MarketDataCoordinator;
   pluginRegistry: PluginRegistry;
   stateRef: { current: AppState };
@@ -159,15 +153,6 @@ export function bindPluginRegistryRuntimeAccess({
         })()
         : instance,
     );
-    const nextInstance = nextInstances.find((instance) => instance.id === instanceId);
-    const broker = currentInstance ? pluginRegistry.brokers.get(currentInstance.brokerType) : null;
-    const shouldClearBrokerAccounts = currentInstance
-      && nextInstance
-      && currentInstance.brokerType === nextInstance.brokerType
-      && getBrokerAccountCacheSourceKey(currentInstance, broker) !== getBrokerAccountCacheSourceKey(nextInstance, broker);
-    if (shouldClearBrokerAccounts) {
-      clearPersistedBrokerAccounts(pluginRegistry.persistence.resources, currentInstance);
-    }
     const nextConfig = {
       ...stateRef.current.config,
       brokerInstances: nextInstances,
@@ -177,15 +162,9 @@ export function bindPluginRegistryRuntimeAccess({
     pluginRegistry.events.emit("config:changed", { config: nextConfig });
   };
 
-  pluginRegistry.syncBrokerInstanceFn = async (instanceId) => {
-    await importBrokerPositions(instanceId);
-  };
-
   pluginRegistry.removeBrokerInstanceFn = async (instanceId) => {
     const instance = getBrokerInstance(stateRef.current.config.brokerInstances, instanceId);
     if (!instance) return;
-
-    clearPersistedBrokerAccounts(pluginRegistry.persistence.resources, instance);
 
     const broker = pluginRegistry.brokers.get(instance.brokerType);
     await broker?.disconnect?.(instance).catch(() => {});

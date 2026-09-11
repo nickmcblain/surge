@@ -4,7 +4,6 @@ import { AppPersistence } from "../data/app-persistence";
 import { TickerRepository } from "../data/ticker-repository";
 import { AssetDataRouter } from "../sources/provider-router";
 import { assetDataProvider, newsProvider } from "../capabilities";
-import { getPluginResourceStore, setPluginResourceStore } from "../public/broker";
 import type { AppServicesFactoryOptions } from "./app-service-ports";
 import { createAppRuntime } from "./app-runtime";
 
@@ -32,12 +31,7 @@ export function createAppServices({ config, plugins }: AppServicesFactoryOptions
         // The router must not rediscover its own aggregate facade as a source.
         sourceId: providerRouter.id,
       });
-      setPluginResourceStore(persistence.resources);
-      const disposeCloudSources = registerGloomCloudConnectionSources(connectionHealth);
-      return () => {
-        if (getPluginResourceStore() === persistence.resources) setPluginResourceStore(null);
-        disposeCloudSources();
-      };
+      return registerGloomCloudConnectionSources(connectionHealth);
     },
   });
   return { ...runtime, persistence, tickerRepository, providerRouter };

@@ -44,8 +44,6 @@ interface CommandBarKeyboardShortcutArgs {
     field: CommandBarWorkflowField,
   ) => void;
   popRoute: () => void;
-  /** Clears an AI assist request; returns true when Esc was spent on it. */
-  resetAssist: () => boolean;
   rootModeKind: string;
   setActiveListQuery: (query: string) => void;
   submitWorkflowRoute: (route: CommandBarWorkflowRoute) => void | Promise<void>;
@@ -72,7 +70,6 @@ export function useCommandBarKeyboardShortcuts({
   nativePaneChrome,
   openWorkflowFieldPicker,
   popRoute,
-  resetAssist,
   rootModeKind,
   setActiveListQuery,
   submitWorkflowRoute,
@@ -86,8 +83,6 @@ export function useCommandBarKeyboardShortcuts({
     if (event.name === "escape" || event.name === "`") {
       event.stopPropagation();
       event.preventDefault();
-      // Esc first backs out of an AI answer, leaving the query and bar intact.
-      if (event.name === "escape" && !currentRoute && resetAssist()) return;
       dismissCommandBar();
       return;
     }

@@ -36,25 +36,13 @@ const EDITORIAL: Record<
   string,
   { categories: string[]; featured?: true; icon?: string }
 > = {
-  "gloomberb-cloud": {
-    categories: ["data", "cloud"],
-    featured: true,
-    icon: "plugin-icons/gloomberb-cloud.svg",
-  },
-  ai: { categories: ["ai"] },
   alerts: { categories: ["alerts"] },
   application: { categories: ["core"] },
-  broker: { categories: ["broker"] },
   debug: { categories: ["developer"] },
-  macro: { categories: ["macro"] },
+  energy: { categories: ["markets", "data"], featured: true },
   "market-overview": { categories: ["markets"] },
   news: { categories: ["news"] },
   notes: { categories: ["productivity"] },
-  polls: { categories: ["data"] },
-  portfolio: { categories: ["portfolio"] },
-  "prediction-markets": { categories: ["markets"] },
-  "research-search": { categories: ["research", "news"] },
-  "ticker-research": { categories: ["research"] },
   yahoo: { categories: ["data"] },
 };
 

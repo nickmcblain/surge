@@ -72,21 +72,13 @@ describe("chart composer series catalog", () => {
     });
   });
 
-  test("suggests futures contracts and Treasury maturities from the board catalogs", () => {
-    expect(buildSeriesCatalogSuggestions("e-mini s&p", AAPL)[0]).toMatchObject({
-      label: "FUT:ES · E-Mini S&P 500",
+  test("suggests futures contracts from the board catalog", () => {
+    expect(buildSeriesCatalogSuggestions("brent crude", AAPL)[0]).toMatchObject({
+      label: "FUT:BZ · Brent Crude Oil",
       expression: {
         kind: "security",
-        symbol: "ES=F",
+        symbol: "BZ=F",
         fieldId: "market.ohlcv",
-      },
-    });
-    expect(buildSeriesCatalogSuggestions("UST:10Y", AAPL)[0]).toMatchObject({
-      label: "10Y Treasury Yield",
-      expression: {
-        kind: "economic",
-        provider: "fred",
-        seriesId: "DGS10",
       },
     });
   });

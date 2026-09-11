@@ -33,11 +33,7 @@ export const SHARED_SPECIFIERS = [
   "gloomberb/utils",
   "gloomberb/react",
   // Modules below hold state or reach the host's services, so a bundled copy
-  // is worse than a missing one. `gloomberb/broker` is the clearest case: it
-  // owns the remote broker client the desktop view sets at startup, and a
-  // plugin carrying its own copy reads an empty one and reports that the
-  // broker host is unavailable.
-  "gloomberb/broker",
+  // is worse than a missing one.
   "gloomberb/dialog",
   "gloomberb/market-data",
   "gloomberb/time-series",

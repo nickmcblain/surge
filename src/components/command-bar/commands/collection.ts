@@ -4,7 +4,7 @@ import {
   addTickerToPortfolio,
   isManualPortfolio,
   removeTickerFromPortfolio,
-} from "../../../plugins/builtin/portfolio-list/mutations";
+} from "../../../tickers/collection-mutations";
 import {
   applyCollectionMembershipChange,
   getCollectionTargetOptions,

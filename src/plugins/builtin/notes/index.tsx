@@ -1,7 +1,6 @@
 import type { GloomPlugin } from "../../../types/plugin";
 import { NotesFiles } from "./files";
 import { createQuickNotesPane } from "./quick-notes-pane";
-import { createNotesSyncContributor } from "./sync";
 import { createNotesTab } from "./ticker-notes-tab";
 
 export const notesPlugin: GloomPlugin = {
@@ -23,7 +22,6 @@ export const notesPlugin: GloomPlugin = {
       });
     });
 
-    ctx.registerSyncContributor(createNotesSyncContributor(notesFiles));
 
     ctx.registerTickerResearchTab({
       id: "notes",

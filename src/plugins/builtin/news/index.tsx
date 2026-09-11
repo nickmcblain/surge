@@ -17,7 +17,6 @@ import { useNewsArticleFooter } from "./wire/news/footer";
 import { usePersistedNewsArticles } from "./wire/persisted-articles";
 import { useNewsReadState } from "./wire/read-state";
 import { createTickerSurfacePaneTemplate } from "../shared/ticker-surface";
-import { tickerNewsHeadless } from "./headless";
 
 const NEWS_ITEM_LIMIT = 50;
 const DEFAULT_SORT: NewsSortPreference = { columnId: "time", direction: "desc" };
@@ -151,7 +150,6 @@ export const tickerNewsModule: PluginModule = {
         shortcut: "CN",
         publicShare: true,
       }),
-      headless: tickerNewsHeadless,
     },
   ],
 

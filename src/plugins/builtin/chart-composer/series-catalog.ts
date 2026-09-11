@@ -11,7 +11,6 @@ import {
   FUTURES_CONTRACTS,
   FUTURES_SECTOR_LABELS,
 } from "../futures/contracts";
-import { TREASURY_MATURITIES } from "../yield-curve/treasury-data";
 import {
   canonicalExchange,
   parsePublicTickerKey,
@@ -297,27 +296,7 @@ function coreAliasSuggestions(query: string): SeriesCatalogSuggestion[] {
         label: contract.name,
       },
     }));
-  const treasuries = TREASURY_MATURITIES
-    .filter((treasury) => matchesAliasQuery(
-      query,
-      `UST:${treasury.maturity}`,
-      treasury.maturity,
-      treasury.seriesId,
-      `${treasury.maturity.replace("M", " month").replace("Y", " year")} US Treasury yield`,
-    ))
-    .map((treasury): SeriesCatalogSuggestion => ({
-      id: `fred:${treasury.seriesId}`,
-      label: `UST:${treasury.maturity} · Treasury Yield`,
-      description: `U.S. Treasury ${treasury.maturity} yield · FRED ${treasury.seriesId}`,
-      detail: "Treasury",
-      expression: {
-        kind: "economic",
-        provider: "fred",
-        seriesId: treasury.seriesId,
-        label: `${treasury.maturity} Treasury Yield`,
-      },
-    }));
-  return [...futures, ...treasuries];
+  return futures;
 }
 
 export function buildCapabilitySeriesSuggestions(

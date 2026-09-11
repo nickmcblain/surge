@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { cloneLayout, createDefaultConfig, findPaneInstance, type LayoutConfig } from "../../../types/config";
+import { createResearchTestConfig } from "../../../test-support/research-layout";
 import { createInitialState } from "../../../state/app/context";
 import { createTestDataProvider } from "../../../test-support/data-provider";
 import { applyPaneSettingFieldValue, createPaneTemplateOrThrow, resolveTickerInput, resolveTickerInputOrThrow } from "./ops";
@@ -20,7 +21,7 @@ function makeTickerRepository() {
 }
 
 test("command ticker resolution persists the verified future without switching to a saved equity", async () => {
-  const state = createInitialState(createDefaultConfig(":memory:"));
+  const state = createInitialState(createResearchTestConfig(":memory:"));
   const equity: TickerRecord = { metadata: {
     ticker: "ESF", name: "Eurotech", exchange: "MTA", currency: "EUR",
     portfolios: ["long-term"], watchlists: [], positions: [], custom: {}, tags: [],
@@ -55,7 +56,7 @@ test("command ticker resolution persists the verified future without switching t
 
 describe("createPaneTemplateOrThrow", () => {
   test("treats createInstance null as cancellation and does not create a pane", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
     const state = createInitialState(config);
     const buildCalls: unknown[] = [];
     const placeCalls: unknown[] = [];
@@ -104,7 +105,7 @@ describe("createPaneTemplateOrThrow", () => {
   });
 
   test("uses an explicit shared symbol instead of the recipient's active ticker", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
     const state = createInitialState(config);
     const msft: TickerRecord = {
       metadata: {
@@ -157,7 +158,7 @@ describe("createPaneTemplateOrThrow", () => {
   });
 
   test("passes pane template instance ids through to pane creation", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
     const state = createInitialState(config);
     const buildCalls: unknown[] = [];
 
@@ -220,7 +221,7 @@ describe("createPaneTemplateOrThrow pane reuse", () => {
     createdWith: Record<string, unknown> | null;
     layouts: LayoutConfig[];
   }> {
-    const config = createDefaultConfig("/tmp/gloomberb-workflow-ops-reuse");
+    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-reuse");
     const layout = cloneLayout(config.layout);
     layout.instances = existing as never;
     const state = createInitialState({ ...config, layout });
@@ -348,7 +349,7 @@ describe("createPaneTemplateOrThrow pane reuse", () => {
 
 describe("applyPaneSettingFieldValue", () => {
   test("lets a pane map derived setting fields back to its canonical settings object", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
     const layout = cloneLayout(config.layout);
     const pane = findPaneInstance(layout, "portfolio-list:main");
     if (!pane) throw new Error("missing test pane");
@@ -410,7 +411,7 @@ describe("applyPaneSettingFieldValue", () => {
   });
 
   test("atomically clears dependent plugin settings when a selector changes", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
     config.pluginConfig.ai = { defaultProviderId: "claude", defaultModelId: "opus" };
     const state = createInitialState(config);
     const updates: unknown[] = [];
@@ -462,13 +463,13 @@ describe("applyPaneSettingFieldValue", () => {
   });
 
   test("clears a pane model override in the same layout update as its provider", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-workflow-ops-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-workflow-ops-test");
     const state = createInitialState(config);
-    const pane = findPaneInstance(state.config.layout, "chat:main")!;
+    const pane = findPaneInstance(state.config.layout, "ticker-detail:main")!;
     pane.settings = { providerId: "claude", modelId: "opus" };
     const persisted: LayoutConfig[] = [];
 
-    await applyPaneSettingFieldValue("chat:main", {
+    await applyPaneSettingFieldValue("ticker-detail:main", {
       key: "providerId",
       label: "Provider",
       type: "select",
@@ -482,7 +483,7 @@ describe("applyPaneSettingFieldValue", () => {
       persistLayout: (layout) => { persisted.push(layout); },
       pluginRegistry: {
         resolvePaneSettings: () => ({
-          paneId: "chat:main",
+          paneId: "ticker-detail:main",
           pane,
           paneDef: { id: "chat", name: "Chat", component: () => null, defaultPosition: "right" },
           settingsDef: { fields: [] },
@@ -490,7 +491,7 @@ describe("applyPaneSettingFieldValue", () => {
           context: {
             config: state.config,
             layout: state.config.layout,
-            paneId: "chat:main",
+            paneId: "ticker-detail:main",
             paneType: "chat",
             pane,
             settings: pane.settings ?? {},
@@ -502,88 +503,17 @@ describe("applyPaneSettingFieldValue", () => {
       } as any,
     });
 
-    expect(findPaneInstance(persisted[0]!, "chat:main")?.settings).toMatchObject({
+    expect(findPaneInstance(persisted[0]!, "ticker-detail:main")?.settings).toMatchObject({
       providerId: "codex",
       modelId: "",
     });
   });
 
-  test("keeps portfolio panes on their displayed collection when switching back to all collections", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-workflow-ops-test");
-    const layout = cloneLayout(config.layout);
-    const portfolioPane = findPaneInstance(layout, "portfolio-list:main");
-    if (!portfolioPane) throw new Error("missing portfolio pane");
-    portfolioPane.settings = {
-      ...(portfolioPane.settings ?? {}),
-      collectionScope: "watchlists",
-      visibleCollectionIds: ["watchlist"],
-      hideTabs: true,
-      lockedCollectionId: "watchlist",
-    };
-
-    const state = createInitialState({ ...config, layout });
-    state.paneState["portfolio-list:main"] = {
-      collectionId: "main",
-      cursorSymbol: null,
-    };
-
-    const persisted: LayoutConfig[] = [];
-    const actions: unknown[] = [];
-
-    await applyPaneSettingFieldValue("portfolio-list:main", {
-      key: "collectionScope",
-      label: "Collections",
-      type: "select",
-      options: [],
-    }, "all", {
-      dataProvider: makeDataProvider() as any,
-      tickerRepository: makeTickerRepository() as any,
-      dispatch: (action) => { actions.push(action); },
-      getState: () => state,
-      persistLayout: (nextLayout) => { persisted.push(nextLayout); },
-      pluginRegistry: {
-        resolvePaneSettings: () => ({
-          paneId: "portfolio-list:main",
-          pane: portfolioPane,
-          paneDef: {
-            id: "portfolio-list",
-            name: "Portfolio",
-            component: () => null,
-            defaultPosition: "left",
-          },
-          settingsDef: { title: "Portfolio Pane Settings", fields: [] },
-          context: {
-            config: state.config,
-            layout: state.config.layout,
-            paneId: "portfolio-list:main",
-            paneType: "portfolio-list",
-            pane: portfolioPane,
-            settings: portfolioPane.settings ?? {},
-            paneState: state.paneState["portfolio-list:main"] ?? {},
-            activeTicker: null,
-            activeCollectionId: "main",
-          },
-        }),
-      } as any,
-    });
-
-    const nextPane = findPaneInstance(persisted[0]!, "portfolio-list:main");
-    expect(nextPane?.settings).toMatchObject({ collectionScope: "all" });
-    expect("visibleCollectionIds" in (nextPane?.settings ?? {})).toBe(false);
-    expect("hideTabs" in (nextPane?.settings ?? {})).toBe(false);
-    expect("lockedCollectionId" in (nextPane?.settings ?? {})).toBe(false);
-    expect(nextPane?.params?.collectionId).toBe("watchlist");
-    expect(actions).toContainEqual({
-      type: "UPDATE_PANE_STATE",
-      paneId: "portfolio-list:main",
-      patch: { collectionId: "watchlist" },
-    });
-  });
 });
 
 
 test("interactive ambiguous ticker input returns to the picker without mutating research or holdings", async () => {
-  const state = createInitialState(createDefaultConfig(":memory:"));
+  const state = createInitialState(createResearchTestConfig(":memory:"));
   let writes = 0;
   const resolved = await resolveTickerInput("GLD", null, null, {
     getState: () => state, dispatch: () => { writes++; }, pluginRegistry: {} as any,
@@ -595,7 +525,7 @@ test("interactive ambiguous ticker input returns to the picker without mutating 
 });
 
 test("form ticker resolution preserves competing listing identities instead of claiming no match", async () => {
-  const state = createInitialState(createDefaultConfig(":memory:"));
+  const state = createInitialState(createResearchTestConfig(":memory:"));
   let writes = 0;
   const deps = {
     getState: () => state, dispatch: () => { writes++; }, pluginRegistry: {} as any,

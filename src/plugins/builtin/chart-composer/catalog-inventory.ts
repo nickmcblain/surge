@@ -5,14 +5,10 @@ import {
   listTimeSeriesFields,
 } from "../../../time-series/field-catalog";
 import { parseOptionSymbol } from "../../../utils/options";
-import { listFredCatalogSeries } from "../econ/fred-series-map";
 import {
   FUTURES_CONTRACTS,
   FUTURES_SECTOR_LABELS,
 } from "../futures/contracts";
-import { INDICATORS as VALUATION_INDICATORS } from "../market-valuation/indicators";
-import { MARKET_VALUATION_CAPABILITY_ID } from "../market-valuation/chart-series";
-import { TREASURY_MATURITIES } from "../yield-curve/treasury-data";
 import { fieldCategory, type SeriesCatalogInstrument } from "./series-catalog";
 
 export const CHART_COMPOSER_TEMPLATE_ID = "chart-composer-pane";
@@ -23,19 +19,14 @@ export type CatalogSourceId =
   | "security"
   | "option"
   | "crypto"
-  | "fred"
-  | "futures"
-  | "treasury"
-  | "valuation";
+  | "futures";
 
 export type CatalogFilterId =
   | "all"
   | "securities"
   | "options"
   | "crypto"
-  | "fred"
-  | "futures"
-  | "valuation";
+  | "futures";
 
 export interface CatalogSeriesRow {
   id: string;
@@ -55,9 +46,7 @@ export const CATALOG_FILTERS: ReadonlyArray<{ id: CatalogFilterId; label: string
   { id: "securities", label: "Securities" },
   { id: "options", label: "Options" },
   { id: "crypto", label: "Crypto" },
-  { id: "fred", label: "FRED" },
   { id: "futures", label: "Futures" },
-  { id: "valuation", label: "Valuation" },
 ];
 
 const FILTER_SOURCES: Record<CatalogFilterId, ReadonlySet<CatalogSourceId> | null> = {
@@ -65,9 +54,7 @@ const FILTER_SOURCES: Record<CatalogFilterId, ReadonlySet<CatalogSourceId> | nul
   securities: new Set(["security"]),
   options: new Set(["option"]),
   crypto: new Set(["crypto"]),
-  fred: new Set(["fred", "treasury"]),
   futures: new Set(["futures"]),
-  valuation: new Set(["valuation"]),
 };
 
 const CRYPTO_CATALOG: ReadonlyArray<{ symbol: string; name: string }> = [
@@ -309,32 +296,6 @@ function cryptoRows(instruments: readonly SeriesCatalogInstrument[]): CatalogSer
 const STATIC_CATALOG_INVENTORY: readonly CatalogSeriesRow[] = [
   ...securityFieldRows(),
   ...optionFieldRows(),
-  ...listFredCatalogSeries().map((entry) => row({
-    id: `fred:${entry.seriesId}`,
-    label: entry.label,
-    source: "FRED",
-    sourceId: "fred",
-    kind: "Economic",
-    expression: `FRED:${entry.seriesId}`,
-    url: `https://fred.stlouisfed.org/series/${entry.seriesId}`,
-  })),
-  ...TREASURY_MATURITIES.map((entry) => row({
-    id: `ust:${entry.maturity}`,
-    label: `${entry.maturity} Treasury Yield`,
-    source: "FRED",
-    sourceId: "treasury",
-    kind: "Treasury",
-    expression: `UST:${entry.maturity}`,
-    url: `https://fred.stlouisfed.org/series/${entry.seriesId}`,
-  })),
-  ...VALUATION_INDICATORS.map((entry) => row({
-    id: `valuation:${entry.id}`,
-    label: entry.label,
-    source: "Gloom Cloud",
-    sourceId: "valuation",
-    kind: "Valuation",
-    expression: `CAP:${MARKET_VALUATION_CAPABILITY_ID}:${entry.id}`,
-  })),
   ...FUTURES_CONTRACTS.map((entry) => row({
     id: `fut:${entry.code}`,
     label: `${entry.name} (${entry.code})`,

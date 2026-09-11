@@ -14,6 +14,7 @@ import {
 import { createTestDataProvider } from "../../../test-support/data-provider";
 import { ThemeProvider, useThemeId } from "../../../theme/theme-context";
 import { TICKER_RESEARCH_PANE_ID, cloneLayout, createDefaultConfig, type AppConfig } from "../../../types/config";
+import { createResearchTestConfig } from "../../../test-support/research-layout";
 import type { DataProvider } from "../../../types/data-provider";
 import type { PaneSettingField } from "../../../types/plugin";
 import type { TickerRecord } from "../../../types/ticker";
@@ -189,7 +190,7 @@ function makePluginRegistry(hasPaneSettings: (paneId: string) => boolean = () =>
     createBrokerInstanceFn: async () => { throw new Error("unused"); },
     syncBrokerInstanceFn: async () => {},
     removeBrokerInstanceFn: async () => {},
-    getConfigFn: () => createDefaultConfig("/tmp/gloomberb-test"),
+    getConfigFn: () => createResearchTestConfig("/tmp/gloomberb-test"),
   } as unknown as PluginRegistry;
 }
 
@@ -198,7 +199,7 @@ export function makeQuoteMonitorPaneSettingsDescriptor(
   fields: PaneSettingField[],
   settings: Record<string, unknown> = {},
 ) {
-  const config = createDefaultConfig("/tmp/gloomberb-test");
+  const config = createResearchTestConfig("/tmp/gloomberb-test");
   const pane = {
     instanceId: "quote-monitor:main",
     paneId: "quote-monitor",
@@ -274,7 +275,7 @@ export function CommandBarHarness({
   onUnhandledEnter?: () => void;
 }) {
   let config = {
-    ...createDefaultConfig("/tmp/gloomberb-test"),
+    ...createResearchTestConfig("/tmp/gloomberb-test"),
     recentTickers: ["AAPL", "MSFT"],
     disabledPlugins,
   };

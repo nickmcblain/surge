@@ -38,7 +38,7 @@ describe("news feed config", () => {
       { url: "https://example.com/rss.xml", name: "Example", authority: 120 },
       { url: "ftp://example.com/invalid.xml", name: "Invalid" },
     ]));
-    config.values.set("disabledDefaultFeeds", JSON.stringify(["CNBC", "missing"]));
+    config.values.set("disabledDefaultFeeds", JSON.stringify(["ACER", "missing"]));
 
     const settings = loadNewsFeedSettings(config);
 
@@ -46,7 +46,7 @@ describe("news feed config", () => {
     expect(settings.userFeeds).toHaveLength(1);
     expect(settings.userFeeds[0]!.id).toMatch(/^user-/);
     expect(settings.userFeeds[0]!.authority).toBe(100);
-    expect(settings.disabledDefaultFeedIds).toEqual(["default-cnbc-top"]);
+    expect(settings.disabledDefaultFeedIds).toEqual(["default-acer"]);
 
     await saveNewsFeedSettings(config, settings);
     expect(loadNewsFeedSettings(config).needsMigration).toBe(false);
@@ -87,7 +87,7 @@ describe("news feed config", () => {
     const config = new MemoryConfigState();
 
     const bundledIds = getEnabledNewsFeeds(loadNewsFeedSettings(config)).map((feed) => feed.id);
-    expect(bundledIds).toContain("default-cnbc-top");
+    expect(bundledIds).toContain("default-acer");
 
     const added = await addUserNewsFeed(config, {
       url: "https://example.com/feed",
@@ -96,9 +96,9 @@ describe("news feed config", () => {
     expect(getEnabledNewsFeeds(loadNewsFeedSettings(config)).map((feed) => feed.id))
       .toEqual([...bundledIds, added.id]);
 
-    expect(await setDefaultNewsFeedEnabled(config, "default-cnbc-top", false)).toBe(true);
+    expect(await setDefaultNewsFeedEnabled(config, "default-acer", false)).toBe(true);
     expect(getEnabledNewsFeeds(loadNewsFeedSettings(config)).map((feed) => feed.id))
-      .not.toContain("default-cnbc-top");
+      .not.toContain("default-acer");
     expect(await setDefaultNewsFeedEnabled(config, "missing-default-feed", false)).toBe(false);
   });
 

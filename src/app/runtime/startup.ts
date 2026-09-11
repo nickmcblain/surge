@@ -1,10 +1,8 @@
 import { useEffect, type Dispatch } from "react";
-import { loadPersistedBrokerAccountMap } from "../../brokers/account-cache";
 import type { AppSessionSnapshot } from "../../core/state/session-persistence";
 import type { AppTickerRepositoryPort } from "../../core/app-service-ports";
 import type { MarketDataCoordinator } from "../../market-data/coordinator";
 import { instrumentFromTicker } from "../../market-data/request-types";
-import { chatController } from "../../plugins/builtin/chat/controller";
 import type { PluginRegistry } from "../../plugins/registry";
 import type {
   AppAction,
@@ -15,7 +13,6 @@ import {
   type InitializeAppStateArgs,
 } from "../../state/app/bootstrap";
 import type { DataProvider } from "../../types/data-provider";
-import type { BrokerAccount } from "../../types/trading";
 import { debugLog } from "../../utils/debug-log";
 import { measurePerfAsync } from "../../utils/perf-marks";
 
@@ -23,7 +20,6 @@ const appLog = debugLog.createLogger("app");
 
 interface UseAppStartupRuntimeOptions {
   appActive: boolean;
-  autoImportBrokerPositions: InitializeAppStateArgs["autoImportBrokerPositions"];
   dataProvider: DataProvider;
   dispatch: Dispatch<AppAction>;
   focusedTickerSymbol: string | null;
@@ -41,7 +37,6 @@ interface UseAppStartupRuntimeOptions {
 
 export function useAppStartupRuntime({
   appActive,
-  autoImportBrokerPositions,
   dataProvider,
   dispatch,
   focusedTickerSymbol,
@@ -57,7 +52,6 @@ export function useAppStartupRuntime({
   tickerRepository,
 }: UseAppStartupRuntimeOptions): void {
   useEffect(() => {
-    chatController.setAppActive(appActive);
     appLog.info("app activity propagated", { active: appActive });
   }, [appActive]);
 
@@ -66,20 +60,6 @@ export function useAppStartupRuntime({
     (globalThis as any).__gloomInitStarted = true;
     (async () => {
       try {
-        let persistedBrokerAccounts: Record<string, BrokerAccount[]> = {};
-        try {
-          persistedBrokerAccounts = loadPersistedBrokerAccountMap(
-            pluginRegistry.persistence.resources,
-            state.config.brokerInstances,
-            pluginRegistry.brokers,
-          );
-        } catch (error) {
-          console.error("[startup] Failed to load persisted broker accounts:", error);
-          pluginRegistry.notify({
-            body: "Failed to load saved broker account data. Check local storage permissions.",
-            type: "error",
-          });
-        }
         await measurePerfAsync("startup.app.initialize-state", () => initializeAppState({
           config: state.config,
           tickerRepository,
@@ -91,8 +71,6 @@ export function useAppStartupRuntime({
           refreshQuote,
           refreshTickersBatch,
           refreshQuotesBatch,
-          autoImportBrokerPositions,
-          persistedBrokerAccounts,
         }), {
           brokerInstanceCount: state.config.brokerInstances.length,
           layoutPaneCount: state.config.layout.instances.length,
@@ -103,11 +81,8 @@ export function useAppStartupRuntime({
       }
     })();
   }, [
-    autoImportBrokerPositions,
     dataProvider,
     dispatch,
-    pluginRegistry.brokers,
-    pluginRegistry.persistence.resources,
     primeCachedFinancials,
     refreshQuote,
     refreshQuotesBatch,

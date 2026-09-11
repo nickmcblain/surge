@@ -33,7 +33,7 @@ describe("buildFuturesRows search", () => {
     expect(rowIds(buildFuturesRows(contractsBySector, DEFAULT_FUTURES_SORT, EMPTY_QUOTES, { query: "gc" })))
       .toEqual(["header:metals", "GC=F"]);
     expect(rowIds(buildFuturesRows(contractsBySector, DEFAULT_FUTURES_SORT, EMPTY_QUOTES, { query: "crude" })))
-      .toEqual(["header:energy", "CL=F", "BZ=F"]);
+      .toEqual(["header:energy", "BZ=F", "CL=F"]);
     expect(rowIds(buildFuturesRows(contractsBySector, DEFAULT_FUTURES_SORT, EMPTY_QUOTES, { query: "6J=f" })))
       .toEqual(["header:currencies", "6J=F"]);
   });
@@ -78,19 +78,23 @@ describe("buildFuturesRows collapse", () => {
 describe("futures sorting", () => {
   test("sorts within a sector, never across sectors", () => {
     const quotes = quoteMap({
-      "ES=F": { price: 7731 },
-      "NQ=F": { price: 29670 },
-      "YM=F": { price: 53499 },
-      "RTY=F": { price: 3046 },
       "GC=F": { price: 4451 },
+      "SI=F": { price: 78 },
+      "HG=F": { price: 5.4 },
+      "PL=F": { price: 1650 },
+      "PA=F": { price: 1400 },
+      "BZ=F": { price: 71 },
     });
     const rows = buildFuturesRows(
       contractsBySector,
       { columnId: "price", direction: "desc" },
       quotes,
-      { query: "e-mini" },
+      { query: "=f" },
     );
-    expect(rowIds(rows)).toEqual(["header:equity-index", "YM=F", "NQ=F", "ES=F", "RTY=F"]);
+    const ids = rowIds(rows);
+    expect(ids.indexOf("header:energy")).toBeLessThan(ids.indexOf("header:metals"));
+    expect(ids.slice(ids.indexOf("header:metals") + 1, ids.indexOf("header:metals") + 6))
+      .toEqual(["GC=F", "PL=F", "PA=F", "SI=F", "HG=F"]);
   });
 
   test("header clicks walk ascending, descending, then back to catalog order", () => {

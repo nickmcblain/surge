@@ -11,9 +11,7 @@ import {
   initElectrobunBackend,
   setElectrobunRemoteRequestHandler,
 } from "./backend-rpc";
-import { installElectrobunAiHost } from "./ai-host";
 import { installFocusScopeRelease } from "./host/focus-scope";
-import { installElectrobunBrokerRemoteClient } from "./broker-remote-client";
 import { installElectrobunConfigStoreHost } from "./config-host";
 import { WebDialogHostProvider } from "./dialog-host";
 import {
@@ -96,12 +94,10 @@ async function boot() {
   void backendInitPromise.catch(() => {});
 
   installElectrobunConfigStoreHost();
-  installElectrobunBrokerRemoteClient();
   installElectrobunHttpFetchTransport();
   installElectrobunCloudApiFetchTransport();
   installElectrobunUpdateHost();
   const init = await measurePerfAsync("startup.electrobun.backend-init", () => backendInitPromise);
-  installElectrobunAiHost();
   installFocusScopeRelease();
   installElectrobunWindowFullscreenTracking();
   const desktopSnapshot = init.windowKind === "detached" && init.paneId && init.desktopSnapshot

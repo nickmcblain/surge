@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { PluginRegistry } from "../../../plugins/registry";
 import { createDefaultConfig, TICKER_RESEARCH_PANE_ID } from "../../../types/config";
+import { createResearchTestConfig } from "../../../test-support/research-layout";
 import { getVisiblePaneCycleOrder } from "./cycle-order";
 
 function createRegistry(options: {
@@ -15,7 +16,7 @@ function createRegistry(options: {
 
 describe("getVisiblePaneCycleOrder", () => {
   test("skips disabled and unregistered panes when cycling focus", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-pane-cycle-order");
+    const config = createResearchTestConfig("/tmp/gloomberb-pane-cycle-order");
     const registry = createRegistry({
       paneIds: ["portfolio-list", "chat", TICKER_RESEARCH_PANE_ID],
       disabledPaneIds: { chat: ["chat"] },

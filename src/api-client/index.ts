@@ -1,38 +1,15 @@
-import {
-  isMarketplaceLayoutId,
-  parseMarketplaceLayoutEntry,
-  parseMarketplaceLayoutList,
-  type LayoutMarketplaceEntry,
-  type LayoutMarketplacePayload,
-} from "../layout-marketplace/payload";
-import type { SyncSettings, SyncSnapshot } from "../sync/types";
-import { withDeadline } from "../utils/async-deadline";
-import { CloudASKGApi } from "./askg";
 import { CloudAuthApi } from "./auth";
 import { CloudChatApi } from "./chat";
 import { CloudDataApi } from "./data";
-import { ApiRequestError } from "./errors";
 import { CloudApiRequestTransport } from "./request";
 import { CloudApiSocket } from "./socket";
 import type {
-  AssistCommandDescriptor,
-  AssistCommandResponse,
   AuthUser,
-  CloudRoundupPreviewResponse,
-  CloudSyncPushResponse,
-  CloudSyncSnapshotResponse,
   PersistedAuthUser
 } from "./types";
 
-export { ASKGTransportError } from "./askg";
-export type { ASKGToolResultOutcome, ASKGTransport } from "./askg";
 export { setCloudApiFetchTransport } from "./request";
 export type * from "./types";
-
-/** Server-side caps for `/assist/command`; enforced here so a 422 is never sent. */
-const ASSIST_QUERY_MAX_LENGTH = 200;
-const ASSIST_COMMAND_LIMIT = 150;
-const ASSIST_REQUEST_TIMEOUT_MS = 6_000;
 
 class GloomApiClient {
   private currentUser: AuthUser | null = null;
@@ -76,11 +53,6 @@ class GloomApiClient {
     socket: this.socket,
   });
   private readonly data: CloudDataApi = new CloudDataApi((path, options) => this.request(path, options));
-  readonly askg: CloudASKGApi = new CloudASKGApi({
-    request: (path, options) => this.request(path, options),
-    openStream: (path, options) => this.transport.openStream(path, options),
-    isStreamingSupported: () => this.transport.isStreamingSupported(),
-  });
 
   getSessionToken(): string | null {
     return this.transport.getSessionToken();
@@ -283,14 +255,6 @@ class GloomApiClient {
     await this.request("/activity/research", { method: "POST", body: JSON.stringify(payload) });
   }
 
-  /** Stores a verified user's public terminal snapshot or pane handoff. */
-  async createTerminalShare(payload: unknown): Promise<{ id: string; expiresAt: string }> {
-    return this.request<{ id: string; expiresAt: string }>("/shares", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  }
-
   /** Stripe billing portal for an account that already has a subscription. */
   async createBillingPortal(): Promise<{ url: string }> {
     return this.request<{ url: string }>("/stripe/portal", { method: "POST", body: JSON.stringify({}) });
@@ -302,127 +266,8 @@ class GloomApiClient {
   getBuildoutToken = this.auth.getBuildoutToken.bind(this.auth);
   updateAccountProfile = this.auth.updateAccountProfile.bind(this.auth);
 
-  async getSyncSnapshot(): Promise<CloudSyncSnapshotResponse> {
-    return this.request<CloudSyncSnapshotResponse>("/sync/snapshot", { method: "GET" });
-  }
-
-  async putSyncSnapshot(snapshot: SyncSnapshot, options?: { baseRevision?: number | null }): Promise<CloudSyncPushResponse> {
-    return this.request<CloudSyncPushResponse>("/sync/snapshot", {
-      method: "PUT",
-      body: JSON.stringify({
-        snapshot,
-        baseRevision: options?.baseRevision ?? null,
-      }),
-    });
-  }
-
-  async getMarketplaceLayout(
-    id: string,
-    options?: { signal?: AbortSignal },
-  ): Promise<LayoutMarketplaceEntry | null> {
-    if (!isMarketplaceLayoutId(id)) return null;
-    try {
-      return parseMarketplaceLayoutEntry(await this.request<unknown>(`/layouts/${encodeURIComponent(id)}`, {
-        method: "GET",
-        signal: options?.signal,
-      }));
-    } catch (error) {
-      if (error instanceof ApiRequestError && error.status === 404) return null;
-      throw error;
-    }
-  }
-
-  async listMarketplaceLayouts(options?: { signal?: AbortSignal }): Promise<LayoutMarketplaceEntry[]> {
-    const items = parseMarketplaceLayoutList(await this.request<unknown>("/layouts", {
-      method: "GET",
-      signal: options?.signal,
-    }));
-    if (!items) throw new Error("The layout marketplace returned invalid data.");
-    return items;
-  }
-
-  async publishMarketplaceLayout(
-    name: string,
-    payload: LayoutMarketplacePayload,
-    options?: { signal?: AbortSignal },
-  ): Promise<LayoutMarketplaceEntry> {
-    const item = parseMarketplaceLayoutEntry(await this.request<unknown>("/layouts", {
-      method: "POST",
-      body: JSON.stringify({ name: name.trim(), ...payload }),
-      signal: options?.signal,
-    }));
-    if (!item) throw new Error("The layout marketplace returned invalid data.");
-    return item;
-  }
-
-  async updateSyncSettings(update: Partial<SyncSettings>): Promise<SyncSettings> {
-    const result = await this.request<{ settings: SyncSettings }>("/sync/settings", {
-      method: "PATCH",
-      body: JSON.stringify(update),
-    });
-    if (this.currentUser) {
-      this.currentUser = {
-        ...this.currentUser,
-        syncEnabled: result.settings.syncEnabled,
-        weeklyRoundupEnabled: result.settings.weeklyRoundupEnabled,
-        positionAlertsEnabled: result.settings.positionAlertsEnabled,
-        lastSyncAt: result.settings.lastSyncAt ?? this.currentUser.lastSyncAt,
-        lastRoundupEmailAt: result.settings.lastRoundupEmailAt ?? this.currentUser.lastRoundupEmailAt,
-      };
-    }
-    return result.settings;
-  }
-
-  async getRoundupPreview(): Promise<CloudRoundupPreviewResponse> {
-    return this.request<CloudRoundupPreviewResponse>("/sync/roundup/preview", { method: "POST", body: JSON.stringify({}) });
-  }
-
-  async sendRoundupTestEmail(): Promise<CloudRoundupPreviewResponse> {
-    return this.request<CloudRoundupPreviewResponse>("/sync/roundup/test-email", { method: "POST", body: JSON.stringify({}) });
-  }
-
   changePassword = this.auth.changePassword.bind(this.auth);
   deleteAccount = this.auth.deleteAccount.bind(this.auth);
-
-  /**
-   * Resolves a natural-language command-bar query into runnable command-bar
-   * inputs. Requires a verified session; free accounts are included. The
-   * request is bounded client-side so a stalled upstream cannot hold the
-   * command bar in its loading state.
-   */
-  async assistCommand(
-    query: string,
-    commands: AssistCommandDescriptor[],
-    options?: { signal?: AbortSignal },
-  ): Promise<AssistCommandResponse> {
-    const controller = new AbortController();
-    const callerSignal = options?.signal;
-    const abortFromCaller = () => controller.abort(callerSignal?.reason);
-    if (callerSignal?.aborted) {
-      abortFromCaller();
-    } else {
-      callerSignal?.addEventListener("abort", abortFromCaller, { once: true });
-    }
-
-    try {
-      const request = this.request<AssistCommandResponse>("/assist/command", {
-        method: "POST",
-        body: JSON.stringify({
-          query: query.trim().slice(0, ASSIST_QUERY_MAX_LENGTH),
-          commands: commands.slice(0, ASSIST_COMMAND_LIMIT),
-        }),
-        signal: controller.signal,
-      });
-      return await withDeadline(
-        request,
-        ASSIST_REQUEST_TIMEOUT_MS,
-        `Assist request timed out after ${ASSIST_REQUEST_TIMEOUT_MS}ms`,
-        (error) => controller.abort(error),
-      );
-    } finally {
-      callerSignal?.removeEventListener("abort", abortFromCaller);
-    }
-  }
 
   getChannels = this.chat.getChannels.bind(this.chat);
   getChatPresence = this.chat.getPresence.bind(this.chat);

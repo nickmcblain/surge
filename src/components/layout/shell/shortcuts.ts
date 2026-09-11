@@ -7,10 +7,8 @@ export const PANE_MANAGEMENT_ACCELERATORS = {
   popOut: "CmdOrCtrl+Shift+O",
   copyScreenshot: "CmdOrCtrl+Shift+C",
   exportCsv: "CmdOrCtrl+Shift+E",
-  share: "CmdOrCtrl+Shift+S",
   close: "CmdOrCtrl+W",
   closeAllFloating: "CmdOrCtrl+Alt+W",
-  layoutGallery: "CmdOrCtrl+Shift+L",
   gridlockAll: "CmdOrCtrl+Shift+G",
   windowMode: "CmdOrCtrl+Shift+M",
   windowResizeMode: "CmdOrCtrl+Shift+R",
@@ -23,10 +21,8 @@ export type PaneManagementShortcut =
   | "pop-out"
   | "copy-screenshot"
   | "export-csv"
-  | "share"
   | "close"
   | "close-all-floating"
-  | "layout-gallery"
   | "gridlock-all"
   | "window-mode"
   | "window-resize-mode";
@@ -44,11 +40,9 @@ export function resolvePaneManagementShortcut(
   if (!shifted || event.alt) return null;
   if (name === "c") return "copy-screenshot";
   if (name === "e") return "export-csv";
-  if (name === "s") return "share";
   if (name === "d") return "toggle-floating";
   if (name === "f") return "toggle-fullscreen";
   if (name === "o") return "pop-out";
-  if (name === "l") return "layout-gallery";
   if (name === "g") return "gridlock-all";
   if (name === "m") return "window-mode";
   if (name === "r") return "window-resize-mode";

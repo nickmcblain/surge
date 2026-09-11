@@ -2,16 +2,8 @@ import { type LayoutConfig, type PaneBinding, type PaneInstanceConfig } from "..
 import type { PaneSettingField, PaneTemplateContext, PaneTemplateCreateOptions, PaneTemplateInstanceConfig, PaneTemplateDef } from "../../../types/plugin";
 import { getFocusedCollectionId, getFocusedTickerSymbol } from "../../../state/app/context";
 import type { PluginRegistry } from "../../../plugins/registry";
-import { formatTickerListInput } from "../../../tickers/list";
 import { updatePaneInstance, setPaneSettings } from "../../../pane-settings";
 import { TICKER_RESEARCH_PANE_ID } from "../../../types/config";
-import { cleanPortfolioPaneSettings, resolvePortfolioPaneCollectionId } from "../../../plugins/builtin/portfolio-list/settings";
-import {
-  DEFAULT_RELATIONSHIP_SECOND_SYMBOL,
-  RELATIONSHIP_GRAPH_PANE_ID,
-  buildRelationshipGraphPaneTitle,
-} from "../../../plugins/builtin/correlation/relationship/model";
-import { buildQuoteMonitorPaneTitle } from "../../../plugins/builtin/ticker-detail/settings";
 import { getPaneTemplateDisplayLabel } from "../pane-templates/items";
 import {
   resolveTickerInputOrThrow,
@@ -52,30 +44,6 @@ interface CreatePaneTemplateDeps extends SharedWorkflowDeps {
 
 interface ApplyPaneSettingDeps extends SharedWorkflowDeps {
   persistLayout: (layout: LayoutConfig, options?: { pushHistory?: boolean }) => void;
-}
-
-function updateTickerListPane(
-  layout: LayoutConfig,
-  targetId: string,
-  options: {
-    title: string;
-    symbols: readonly string[];
-    primarySymbol?: string;
-    settings?: Record<string, unknown>;
-  },
-): LayoutConfig {
-  const symbols = [...options.symbols];
-  return updatePaneInstance(layout, targetId, (instance) => ({
-    ...instance,
-    title: options.title,
-    ...(options.primarySymbol ? { binding: { kind: "fixed", symbol: options.primarySymbol } as PaneBinding } : {}),
-    settings: {
-      ...(instance.settings ?? {}),
-      symbols,
-      symbolsText: formatTickerListInput(symbols),
-      ...(options.settings ?? {}),
-    },
-  }));
 }
 
 /** Key order in stored settings is not guaranteed, so compare on sorted keys. */
@@ -279,45 +247,11 @@ export async function applyPaneSettingFieldValue(
     return;
   }
 
-  if (descriptor.pane.paneId === "quote-monitor" && (field.key === "symbol" || field.key === "symbolsText")) {
-    const rawQuery = typeof value === "string" ? value.trim() : "";
-    const symbols = await resolveTickerListInput(rawQuery, null, deps);
-    const primarySymbol = symbols[0]!;
-    const nextLayout = updateTickerListPane(state.config.layout, targetId, {
-      title: buildQuoteMonitorPaneTitle(symbols),
-      symbols,
-      primarySymbol,
-      settings: { symbol: primarySymbol },
-    });
-    deps.persistLayout(nextLayout, { pushHistory: shouldPushHistory });
-    return;
-  }
-
-  if (descriptor.pane.paneId === RELATIONSHIP_GRAPH_PANE_ID && field.key === "symbolsText") {
-    const rawInput = typeof value === "string" ? value : "";
-    const symbols = await resolveTickerListInput(
-      rawInput,
-      descriptor.context.activeCollectionId,
-      deps,
-    );
-    if (symbols.length > 2) {
-      throw new Error("Enter one or two tickers.");
-    }
-    const pair: [string, string] = [symbols[0]!, symbols[1] ?? DEFAULT_RELATIONSHIP_SECOND_SYMBOL];
-    const nextLayout = updateTickerListPane(state.config.layout, targetId, {
-      title: buildRelationshipGraphPaneTitle(pair),
-      symbols: pair,
-      primarySymbol: pair[0],
-    });
-    deps.persistLayout(nextLayout, { pushHistory: shouldPushHistory });
-    return;
-  }
-
   const currentSettings = {
     ...(descriptor.rawSettings ?? descriptor.context.settings),
     ...clearOnChange,
   };
-  let nextSettings: Record<string, unknown> = descriptor.settingsDef.applyValue
+  const nextSettings: Record<string, unknown> = descriptor.settingsDef.applyValue
     ? await descriptor.settingsDef.applyValue(
       currentSettings,
       field,
@@ -326,10 +260,6 @@ export async function applyPaneSettingFieldValue(
     )
     : { ...currentSettings, [field.key]: value };
 
-  if (descriptor.pane.paneId === "portfolio-list") {
-    nextSettings = cleanPortfolioPaneSettings(nextSettings);
-  }
-
   if (descriptor.pane.paneId === TICKER_RESEARCH_PANE_ID && field.key === "hideTabs" && value === true) {
     const lockedTabId = typeof descriptor.context.paneState.activeTabId === "string"
       ? descriptor.context.paneState.activeTabId
@@ -337,33 +267,6 @@ export async function applyPaneSettingFieldValue(
     nextSettings.lockedTabId = lockedTabId;
   }
 
-  let nextLayout = setPaneSettings(state.config.layout, targetId, nextSettings);
 
-  if (descriptor.pane.paneId === "portfolio-list") {
-    const currentCollectionId = typeof descriptor.context.paneState.collectionId === "string"
-      ? descriptor.context.paneState.collectionId
-      : (descriptor.context.activeCollectionId ?? "");
-    const displayedCollectionId = resolvePortfolioPaneCollectionId(
-      state.config,
-      descriptor.context.settings,
-      currentCollectionId,
-    );
-    const nextCollectionId = resolvePortfolioPaneCollectionId(
-      state.config,
-      nextSettings,
-      displayedCollectionId || currentCollectionId,
-    );
-    if (nextCollectionId) {
-      nextLayout = updatePaneInstance(nextLayout, targetId, (instance) => ({
-        ...instance,
-        params: {
-          ...(instance.params ?? {}),
-          collectionId: nextCollectionId,
-        },
-      }));
-      deps.dispatch({ type: "UPDATE_PANE_STATE", paneId: targetId, patch: { collectionId: nextCollectionId } });
-    }
-  }
-
-  deps.persistLayout(nextLayout, { pushHistory: shouldPushHistory });
+  deps.persistLayout(setPaneSettings(state.config.layout, targetId, nextSettings), { pushHistory: shouldPushHistory });
 }

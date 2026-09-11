@@ -271,9 +271,8 @@ describe("resolveChartSpecData", () => {
     expect(span("volume")).toEqual(span("price"));
   });
 
-  test("routes futures and Treasury aliases through the existing market and FRED pipelines", async () => {
+  test("routes futures aliases through the existing market pipeline", async () => {
     const marketRequests: string[] = [];
-    const fredRequests: string[] = [];
     const provider = createTestDataProvider({
       getTickerFinancials: async () => emptyFinancials(),
       getPriceHistoryForResolution: async (symbol) => {
@@ -283,25 +282,17 @@ describe("resolveChartSpecData", () => {
     });
 
     const result = await resolveChartSpecData(
-      buildCustomChartPreset("FUT:ES, UST:10Y"),
+      buildCustomChartPreset("FUT:BZ"),
       {
         dataProvider: provider,
         now: new Date("2026-03-01T00:00:00Z"),
-        loadFredSeries: async ({ seriesId }) => {
-          fredRequests.push(seriesId);
-          return fredLoad({
-            observations: [{ date: "2026-02-01", value: 4.25 }],
-            info: null,
-          });
-        },
       },
     );
 
     expect(result.errors).toEqual([]);
-    expect(marketRequests).toEqual(["ES=F"]);
-    expect(fredRequests).toEqual(["DGS10"]);
+    expect(marketRequests).toEqual(["BZ=F"]);
     expect(result.series.map((series) => series.points[0]?.value ?? series.points[0]?.close))
-      .toEqual([6_100, 4.25]);
+      .toEqual([6_100]);
   });
 
   test("keeps missing capability series visible with a useful error and resolves them through the injected boundary", async () => {

@@ -1,10 +1,6 @@
 import type { PaneTemplateCreateOptions, PaneTemplateDef } from "../../types/plugin";
 import { parseTickerListInput } from "../../tickers/list";
 import { normalizeTickerInput } from "../../tickers/search";
-import {
-  FINANCIAL_SUB_TABS,
-  resolveFinancialPeriodOption,
-} from "../../plugins/builtin/ticker-detail/financials/model";
 import type { PaneRuntimeState } from "../../core/state/app/state";
 import type { NormalizedPaneFunctionOptions } from "./capabilities";
 
@@ -242,18 +238,6 @@ export function buildCreateOptions(
   return createOptions;
 }
 
-function normalizeFinancialSubTabOption(value: string | undefined): string | undefined {
-  if (!value) return undefined;
-  const normalized = value.trim().toLowerCase().replace(/[\s_-]+/g, "");
-  if (!normalized) return undefined;
-  if (normalized === "cf" || normalized === "cashflows") return "cashflow";
-  if (normalized === "bs" || normalized === "balancesheet") return "balance";
-  return FINANCIAL_SUB_TABS.find((tab) => (
-    tab.key.toLowerCase() === normalized
-    || tab.name.toLowerCase().replace(/[\s_-]+/g, "") === normalized
-  ))?.key;
-}
-
 export function optionPaneState(options: PaneOptionValues | NormalizedPaneFunctionOptions): PaneRuntimeState {
   const state: PaneRuntimeState = {};
   const rawState = optionString(options, "state");
@@ -274,19 +258,7 @@ export function optionPaneState(options: PaneOptionValues | NormalizedPaneFuncti
   if (activeTab) state.activeTabId = activeTab;
 
   const tab = optionString(options, "tab");
-  const financialTab = normalizeFinancialSubTabOption(
-    optionString(options, "statement")
-      ?? optionString(options, "financialStatement")
-      ?? tab,
-  );
-  if (financialTab) {
-    state.financialSubTab = financialTab;
-  } else if (tab) {
-    state.activeTabId = tab;
-  }
-
-  const period = resolveFinancialPeriodOption(optionString(options, "period") ?? optionString(options, "financialPeriod"));
-  if (period) state.financialPeriod = period;
+  if (tab) state.activeTabId = tab;
 
   return state;
 }

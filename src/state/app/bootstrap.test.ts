@@ -4,7 +4,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { AppPersistence } from "../../data/app-persistence";
 import { TickerRepository } from "../../data/ticker-repository";
-import { createDefaultConfig, type BrokerInstanceConfig } from "../../types/config";
+import { createResearchTestConfig } from "../../test-support/research-layout";
 import type { AppAction } from "./context";
 import { initializeAppState } from "./bootstrap";
 
@@ -23,74 +23,11 @@ afterEach(() => {
 });
 
 describe("initializeAppState", () => {
-  test("hydrates persisted broker account snapshots into app state before broker sync", async () => {
-    const dbPath = createTempDbPath("app-bootstrap");
-    const persistence = new AppPersistence(dbPath);
-    const tickerRepository = new TickerRepository(persistence.tickers);
-    const brokerInstance: BrokerInstanceConfig = {
-      id: "ibkr-live",
-      brokerType: "ibkr",
-      label: "Interactive Brokers",
-      connectionMode: "gateway",
-      config: { connectionMode: "gateway", gateway: { host: "127.0.0.1", port: 4002, clientId: 1 } },
-      enabled: true,
-    };
-    const config = {
-      ...createDefaultConfig(dbPath),
-      brokerInstances: [brokerInstance],
-    };
-
-    const actions: AppAction[] = [];
-
-    await initializeAppState({
-      config,
-      tickerRepository,
-      dataProvider: {} as any,
-      sessionSnapshot: null,
-      dispatch: (action) => { actions.push(action); },
-      refreshTicker: () => {},
-      refreshQuote: () => {},
-      autoImportBrokerPositions: async () => {},
-      persistedBrokerAccounts: {
-        "ibkr-live": [{
-          accountId: "DU12345",
-          name: "DU12345",
-          currency: "USD",
-          source: "gateway",
-          updatedAt: 1_717_000_000_000,
-          totalCashValue: 125000,
-        }],
-      },
-    });
-
-    expect(actions).toContainEqual({
-      type: "SET_BROKER_ACCOUNTS",
-      instanceId: "ibkr-live",
-      accounts: [{
-        accountId: "DU12345",
-        name: "DU12345",
-        currency: "USD",
-        source: "gateway",
-        updatedAt: 1_717_000_000_000,
-        totalCashValue: 125000,
-      }],
-    });
-
-    const initializedIndex = actions.findIndex((action) => action.type === "SET_INITIALIZED");
-    const brokerAccountsIndex = actions.findIndex((action) =>
-      action.type === "SET_BROKER_ACCOUNTS" && action.instanceId === "ibkr-live"
-    );
-    expect(brokerAccountsIndex).toBeGreaterThan(-1);
-    expect(initializedIndex).toBeGreaterThan(brokerAccountsIndex);
-
-    persistence.close();
-  });
-
   test("uses quote warmup for quote-only collection panes and financial warmup for ticker panes", async () => {
     const dbPath = createTempDbPath("app-bootstrap-refresh-plan");
     const persistence = new AppPersistence(dbPath);
     const tickerRepository = new TickerRepository(persistence.tickers);
-    const defaultConfig = createDefaultConfig(dbPath);
+    const defaultConfig = createResearchTestConfig(dbPath);
     const quoteOnlyConfig = {
       ...defaultConfig,
       layout: {
@@ -148,7 +85,6 @@ describe("initializeAppState", () => {
       dispatch: () => {},
       refreshTicker: (symbol) => { financialRefreshes.push(symbol); },
       refreshQuote: (symbol) => { quoteRefreshes.push(symbol); },
-      autoImportBrokerPositions: async () => {},
     });
 
     expect(quoteRefreshes).toEqual(["AAPL"]);
@@ -165,7 +101,6 @@ describe("initializeAppState", () => {
       dispatch: () => {},
       refreshTicker: (symbol) => { financialRefreshes.push(symbol); },
       refreshQuote: (symbol) => { quoteRefreshes.push(symbol); },
-      autoImportBrokerPositions: async () => {},
     });
 
     expect(financialRefreshes).toEqual(["AAPL"]);
@@ -178,7 +113,7 @@ describe("initializeAppState", () => {
     const dbPath = createTempDbPath("app-bootstrap-financial-collection");
     const persistence = new AppPersistence(dbPath);
     const tickerRepository = new TickerRepository(persistence.tickers);
-    const defaultConfig = createDefaultConfig(dbPath);
+    const defaultConfig = createResearchTestConfig(dbPath);
     const financialCollectionConfig = {
       ...defaultConfig,
       layout: {
@@ -236,7 +171,6 @@ describe("initializeAppState", () => {
       dispatch: () => {},
       refreshTicker: (symbol) => { financialRefreshes.push(symbol); },
       refreshQuote: (symbol) => { quoteRefreshes.push(symbol); },
-      autoImportBrokerPositions: async () => {},
     });
 
     expect(financialRefreshes).toEqual(["AAPL"]);
@@ -249,7 +183,7 @@ describe("initializeAppState", () => {
     const dbPath = createTempDbPath("app-bootstrap-hydration-targets");
     const persistence = new AppPersistence(dbPath);
     const tickerRepository = new TickerRepository(persistence.tickers);
-    const defaultConfig = createDefaultConfig(dbPath);
+    const defaultConfig = createResearchTestConfig(dbPath);
     const quoteOnlyConfig = {
       ...defaultConfig,
       layout: {
@@ -337,7 +271,6 @@ describe("initializeAppState", () => {
       dispatch: () => {},
       refreshTicker: (symbol) => { financialRefreshes.push(symbol); },
       refreshQuote: (symbol) => { quoteRefreshes.push(symbol); },
-      autoImportBrokerPositions: async () => {},
     });
 
     expect(quoteRefreshes).toEqual(["NVDA"]);
@@ -350,7 +283,7 @@ describe("initializeAppState", () => {
     const dbPath = createTempDbPath("app-bootstrap-prime-cached-financials");
     const persistence = new AppPersistence(dbPath);
     const tickerRepository = new TickerRepository(persistence.tickers);
-    const defaultConfig = createDefaultConfig(dbPath);
+    const defaultConfig = createResearchTestConfig(dbPath);
     const quoteOnlyConfig = {
       ...defaultConfig,
       layout: {
@@ -483,7 +416,6 @@ describe("initializeAppState", () => {
       },
       refreshTicker: (symbol) => { financialRefreshes.push(symbol); },
       refreshQuote: () => {},
-      autoImportBrokerPositions: async () => {},
     });
 
     const primeEvent = events.find((event) => event.startsWith("prime:"));

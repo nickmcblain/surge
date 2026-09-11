@@ -5,6 +5,7 @@ import { MarketDataCoordinator, setSharedMarketDataCoordinator } from "../../mar
 import { createTestDataProvider } from "../../test-support/data-provider";
 import { AppProvider, PaneInstanceProvider } from "../../state/app/context";
 import { createDefaultConfig } from "../../types/config";
+import { createResearchTestConfig } from "../../test-support/research-layout";
 import { useLiveStreamingSetting } from "../../plugins/builtin/shared/live-streaming";
 import { useLiveQuoteEntries, useQuoteStreaming, useQuoteUpdates } from "./quote-streaming";
 
@@ -250,7 +251,7 @@ describe("useQuoteStreaming", () => {
   test("inherits disabled streaming from a followed portfolio pane", async () => {
     let subscribeCalls = 0;
     let loadCalls = 0;
-    const config = createDefaultConfig("/tmp/gloomberb-live-streaming-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-live-streaming-test");
     const portfolioPane = config.layout.instances.find((pane) => pane.instanceId === "portfolio-list:main");
     if (!portfolioPane) throw new Error("expected default portfolio pane");
     portfolioPane.settings = { ...portfolioPane.settings, liveStreaming: false };

@@ -2,36 +2,20 @@ import type { GloomPlugin } from "../types/plugin";
 import type { LoadedExternalPlugin } from "./loader";
 import { newsPlugin } from "./builtin/news";
 import { notesPlugin } from "./builtin/notes";
-import { aiPlugin } from "./builtin/ai";
-import { gloomberbCloudPlugin } from "./builtin/cloud";
-import { predictionMarketsPlugin } from "./prediction-markets";
-import { pollsPlugin } from "./builtin/polls";
 import { alertsPlugin } from "./builtin/alerts";
-import { researchSearchPlugin } from "./builtin/research-search";
 import {
   applicationPlugin,
-  brokerPlugin,
-  macroPlugin,
+  energyPlugin,
   marketOverviewPlugin,
-  portfolioPlugin,
 } from "./builtin/composite-plugins";
-import { tickerResearchPlugin } from "./builtin/ticker-research-plugin";
 
 export const uiBuiltinPlugins: GloomPlugin[] = [
-  gloomberbCloudPlugin,
-  portfolioPlugin,
-  tickerResearchPlugin,
-  brokerPlugin,
   applicationPlugin,
+  energyPlugin,
   newsPlugin,
   notesPlugin,
-  aiPlugin,
-  predictionMarketsPlugin,
-  pollsPlugin,
   marketOverviewPlugin,
-  macroPlugin,
   alertsPlugin,
-  researchSearchPlugin,
 ];
 
 export function getRendererBuiltinPlugins(): GloomPlugin[] {

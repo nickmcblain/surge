@@ -224,48 +224,77 @@ export const DEFAULT_PORTFOLIO_COLUMN_IDS = [
   "pnl_pct",
 ];
 
+/**
+ * Three columns, two rows: zone board over generation mix, zone overview over
+ * the wire, day-ahead chart over the market schedule. DE-LU is the anchor zone.
+ */
 const DEFAULT_HOME_LAYOUT: LayoutConfig = {
   dockRoot: {
     kind: "split",
     axis: "horizontal",
-    ratio: 0.34,
+    ratio: 0.36,
     first: {
       kind: "split",
       axis: "vertical",
-      ratio: 0.6,
-      first: { kind: "pane", instanceId: "portfolio-list:main" },
-      second: { kind: "pane", instanceId: "chat:main" },
+      ratio: 0.55,
+      first: { kind: "pane", instanceId: "energy-zone-board:main" },
+      second: { kind: "pane", instanceId: "energy-generation:main" },
     },
-    second: { kind: "pane", instanceId: "ticker-detail:main" },
+    second: {
+      kind: "split",
+      axis: "horizontal",
+      ratio: 0.42,
+      first: {
+        kind: "split",
+        axis: "vertical",
+        ratio: 0.5,
+        first: { kind: "pane", instanceId: "energy-zone-overview:main" },
+        second: { kind: "pane", instanceId: "news-feed:main" },
+      },
+      second: {
+        kind: "split",
+        axis: "vertical",
+        ratio: 0.6,
+        first: { kind: "pane", instanceId: "energy-day-ahead:main" },
+        second: { kind: "pane", instanceId: "energy-calendar:main" },
+      },
+    },
   },
   instances: [
     {
-      instanceId: "portfolio-list:main",
-      paneId: "portfolio-list",
-      params: { collectionId: "main" },
-      settings: {
-        columnIds: [...DEFAULT_PORTFOLIO_COLUMN_IDS],
-        collectionScope: "all",
-        visibleCollectionIds: [],
-        viewMode: "table",
-      },
+      instanceId: "energy-zone-board:main",
+      paneId: "energy-zone-board",
       binding: { kind: "none" },
     },
     {
-      instanceId: "ticker-detail:main",
-      paneId: TICKER_RESEARCH_PANE_ID,
-      settings: {
-        hideTabs: false,
-        lockedTabId: "overview",
-      },
-      binding: { kind: "follow", sourceInstanceId: "portfolio-list:main" },
+      instanceId: "energy-generation:main",
+      paneId: "energy-generation",
+      title: "Generation: DE-LU",
+      binding: { kind: "none" },
+      settings: { zone: "DE-LU" },
     },
     {
-      instanceId: "chat:main",
-      paneId: "chat",
-      settings: {
-        hideTabs: false,
-      },
+      instanceId: "energy-zone-overview:main",
+      paneId: "energy-zone-overview",
+      title: "Zone: DE-LU",
+      binding: { kind: "none" },
+      settings: { zone: "DE-LU" },
+    },
+    {
+      instanceId: "news-feed:main",
+      paneId: "news-feed",
+      binding: { kind: "none" },
+    },
+    {
+      instanceId: "energy-day-ahead:main",
+      paneId: "energy-day-ahead",
+      title: "Day-Ahead: DE-LU",
+      binding: { kind: "none" },
+      settings: { zone: "DE-LU" },
+    },
+    {
+      instanceId: "energy-calendar:main",
+      paneId: "energy-calendar",
       binding: { kind: "none" },
     },
   ],
@@ -273,64 +302,24 @@ const DEFAULT_HOME_LAYOUT: LayoutConfig = {
   detached: [],
 };
 
-/**
- * One screen for "where are we": valuation and the economy in the wide slots,
- * with the faster sentiment, volatility and credit reads beside them. These stay
- * separate panes because each measures a different thing on a different horizon;
- * the layout is what puts them on one screen.
- */
+/** One screen for "where are we": cross rates beside the wire. */
 const DEFAULT_MACRO_LAYOUT: LayoutConfig = {
   dockRoot: {
     kind: "split",
-    axis: "vertical",
-    ratio: 0.54,
-    first: {
-      kind: "split",
-      axis: "horizontal",
-      ratio: 0.58,
-      first: { kind: "pane", instanceId: "market-valuation:macro" },
-      second: { kind: "pane", instanceId: "fear-greed:macro" },
-    },
-    second: {
-      kind: "split",
-      axis: "horizontal",
-      ratio: 0.58,
-      first: { kind: "pane", instanceId: "econ-statistics:macro" },
-      second: {
-        kind: "split",
-        axis: "vertical",
-        ratio: 0.5,
-        first: { kind: "pane", instanceId: "volatility-term-structure:macro" },
-        second: { kind: "pane", instanceId: "credit-conditions:macro" },
-      },
-    },
+    axis: "horizontal",
+    ratio: 0.5,
+    first: { kind: "pane", instanceId: "fx-matrix:macro" },
+    second: { kind: "pane", instanceId: "news-top:macro" },
   },
   instances: [
     {
-      instanceId: "market-valuation:macro",
-      paneId: "market-valuation",
-      binding: { kind: "none" },
-      settings: { indicator: "buffett", range: "25Y" },
-    },
-    {
-      instanceId: "econ-statistics:macro",
-      paneId: "econ-statistics",
-      binding: { kind: "none" },
-      settings: { stat: "cpi-yoy", range: "20Y" },
-    },
-    {
-      instanceId: "fear-greed:macro",
-      paneId: "fear-greed",
+      instanceId: "fx-matrix:macro",
+      paneId: "fx-matrix",
       binding: { kind: "none" },
     },
     {
-      instanceId: "volatility-term-structure:macro",
-      paneId: "volatility-term-structure",
-      binding: { kind: "none" },
-    },
-    {
-      instanceId: "credit-conditions:macro",
-      paneId: "credit-conditions",
+      instanceId: "news-top:macro",
+      paneId: "news-top",
       binding: { kind: "none" },
     },
   ],
@@ -342,41 +331,30 @@ const DEFAULT_MONITOR_LAYOUT: LayoutConfig = {
   dockRoot: {
     kind: "split",
     axis: "vertical",
-    ratio: 0.48,
-    first: {
-      kind: "split",
-      axis: "horizontal",
-      ratio: 0.42,
-      first: { kind: "pane", instanceId: "news-top:main" },
-      second: { kind: "pane", instanceId: "prediction-markets:main" },
-    },
+    ratio: 0.55,
+    first: { kind: "pane", instanceId: "futures:monitor" },
     second: {
       kind: "split",
       axis: "horizontal",
-      ratio: 0.42,
-      first: { kind: "pane", instanceId: "world-indices:main" },
-      second: { kind: "pane", instanceId: "econ-calendar:main" },
+      ratio: 0.5,
+      first: { kind: "pane", instanceId: "fx-matrix:monitor" },
+      second: { kind: "pane", instanceId: "news-feed:monitor" },
     },
   },
   instances: [
     {
-      instanceId: "news-top:main",
-      paneId: "news-top",
+      instanceId: "futures:monitor",
+      paneId: "futures",
       binding: { kind: "none" },
     },
     {
-      instanceId: "prediction-markets:main",
-      paneId: "prediction-markets",
+      instanceId: "fx-matrix:monitor",
+      paneId: "fx-matrix",
       binding: { kind: "none" },
     },
     {
-      instanceId: "world-indices:main",
-      paneId: "world-indices",
-      binding: { kind: "none" },
-    },
-    {
-      instanceId: "econ-calendar:main",
-      paneId: "econ-calendar",
+      instanceId: "news-feed:monitor",
+      paneId: "news-feed",
       binding: { kind: "none" },
     },
   ],

@@ -61,8 +61,6 @@ import {
   useShellResolvedPanes,
   useShellVisibleLayout,
 } from "./layout-state";
-import { AuthDialogHost } from "../../../plugins/builtin/cloud/auth-dialog";
-import { DeviceSignInDialogHost } from "../../../plugins/builtin/cloud/device-signin-dialog";
 import { useShellPaneActions } from "./pane/actions";
 import { resolvePaneFocusSourceLayout } from "./fullscreen";
 import { useTransientLayout } from "../transient-layout";
@@ -70,9 +68,6 @@ import {
   resolveShellCursorOcclusionRects,
   useShellCursorOcclusionGuard,
 } from "./cursor-occlusion";
-import { createShare, openLiveShareUrl } from "../../../shares/api";
-import { buildPaneSharePayload } from "../../../shares/pane";
-import type { SharePayload } from "../../../shares/payload";
 
 export { resolveAppHeaderHeightCells } from "./chrome";
 export { buildNativeWindowState } from "./native/window-state";
@@ -113,7 +108,7 @@ export function Shell({
   const { setTransientLayout } = useTransientLayout();
   const uiKind = useUiHost().kind;
   const shortcutDisplayMode = getShortcutDisplayMode(uiKind);
-  const { nativePaneChrome = false, nativeContextMenu, precisePointer, publicSharing, titleBarOverlay, cellHeightPx } = useUiCapabilities();
+  const { nativePaneChrome = false, nativeContextMenu, precisePointer, titleBarOverlay, cellHeightPx } = useUiCapabilities();
   const { showContextMenu } = useContextMenu();
   const { width, height } = useViewport();
   const shellRef = useRef<BoxRenderable | null>(null);
@@ -291,9 +286,6 @@ export function Shell({
     visibleLayout,
     width,
   });
-  const openLayoutGallery = useCallback(() => {
-    pluginRegistry.showPane("layout-marketplace");
-  }, [pluginRegistry]);
   const setTransientFocusLayout = useCallback((next: TransientFocusLayoutState | null) => {
     transientFocusLayoutStateRef.current = next;
     setTransientFocusLayoutState(next);
@@ -451,32 +443,6 @@ export function Shell({
       onMouseDown: (event) => handlePaneQuickSetting(paneId, setting.key, event),
     }))
   ), [config, handlePaneQuickSetting, pluginRegistry]);
-  const sharePane = useCallback(async (payload: Extract<SharePayload, { kind: "pane" }>) => {
-    try {
-      const { id } = await createShare(payload);
-      await rendererHost.copyText(openLiveShareUrl(id));
-      pluginRegistry.notify({ body: "Share link copied to clipboard", type: "success" });
-    } catch (error) {
-      pluginRegistry.notify({
-        body: error instanceof Error ? error.message : "Could not share this pane.",
-        type: "error",
-      });
-    }
-  }, [pluginRegistry, rendererHost]);
-  const shareFocusedPane = useCallback(() => {
-    if (!publicSharing || !focusedPaneId) return false;
-    const pane = paneMap.get(focusedPaneId);
-    if (!pane) return false;
-    const payload = buildPaneSharePayload(
-      pluginRegistry,
-      pane.instance,
-      paneState[focusedPaneId] ?? {},
-      resolveTickerForPane(titleState, focusedPaneId),
-    );
-    if (!payload) return false;
-    void sharePane(payload);
-    return true;
-  }, [focusedPaneId, paneMap, paneState, pluginRegistry, publicSharing, sharePane, titleState]);
 
   useShellPaneManagementShortcuts({
     cancelActiveDrag,
@@ -489,10 +455,8 @@ export function Shell({
     hasActiveDrag,
     inputCaptured,
     openFocusedPaneSettings,
-    openLayoutGallery,
     overlayOpen,
     popOutFocusedPane,
-    shareFocusedPane,
     startWindowMode,
     toggleFocusedPaneFullscreen,
     toggleFocusedPaneFloating,
@@ -509,14 +473,6 @@ export function Shell({
       title: getPaneTitle(pane),
       floating: !!pane.floating,
     };
-    const sharePayload = publicSharing
-      ? buildPaneSharePayload(
-          pluginRegistry,
-          pane.instance,
-          paneState[paneId] ?? {},
-          resolveTickerForPane(titleState, paneId),
-        )
-      : null;
     const items = menuForPane(
       pane,
       visibleLayout,
@@ -528,7 +484,6 @@ export function Shell({
       openPaneSettings,
       desktopWindowBridge,
       nativePaneChrome && rendererHost.copyPngImage ? copyPaneScreenshot : undefined,
-      sharePayload ? () => sharePane(sharePayload) : undefined,
       tickerLinkMenuItems({
         instance: pane.instance,
         layout: visibleLayout,
@@ -560,7 +515,7 @@ export function Shell({
         items: fallbackItems,
       });
     });
-  }, [canExportPaneCsv, contentHeight, copyPaneScreenshot, desktopWindowBridge, exportPaneCsv, focusPane, getPaneTitle, nativePaneChrome, openPaneSettings, paneMap, paneState, persistLayout, pluginRegistry, publicSharing, rendererHost.copyPngImage, sharePane, shortcutDisplayMode, showContextMenu, titleState, visibleLayout, width]);
+  }, [canExportPaneCsv, contentHeight, copyPaneScreenshot, desktopWindowBridge, exportPaneCsv, focusPane, getPaneTitle, nativePaneChrome, openPaneSettings, paneMap, persistLayout, pluginRegistry, rendererHost.copyPngImage, shortcutDisplayMode, showContextMenu, titleState, visibleLayout, width]);
 
   const {
     handleFloatingCloseMouseDown,
@@ -628,9 +583,6 @@ export function Shell({
         }
         : {})}
     >
-      {/* Render nothing; give the auth commands always-mounted components with dialog access. */}
-      <DeviceSignInDialogHost />
-      <AuthDialogHost />
       <Box
         position="absolute"
         left={0}

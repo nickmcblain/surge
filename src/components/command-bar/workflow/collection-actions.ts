@@ -6,7 +6,7 @@ import type { AppAction, AppState } from "../../../state/app/context";
 import {
   buildBrokerProfileConfig,
   validateBrokerProfileValues,
-} from "../../../brokers/profile-form";
+} from "./broker-profile-form";
 import {
   addTickerToPortfolio,
   createManualPortfolio as createManualPortfolioConfig,
@@ -14,7 +14,7 @@ import {
   isManualPortfolio,
   resolveManualPositionCurrency,
   setManualPortfolioPosition,
-} from "../../../plugins/builtin/portfolio-list/mutations";
+} from "../../../tickers/collection-mutations";
 import type { CommandBarFieldValue } from "./types";
 import type { WorkflowStringValues } from "./broker";
 import { coerceFieldString, slugifyName } from "../helpers";

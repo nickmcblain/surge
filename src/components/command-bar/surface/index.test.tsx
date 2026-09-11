@@ -107,8 +107,6 @@ describe("CommandBar", () => {
     expect(frame.split("\n").filter((line) => /^\s*\S+\s+MSFT\b/.test(line))).toHaveLength(1);
     expect(frame).toContain("Exact Match");
     expect(frame.indexOf("Exact Match")).toBeLessThan(frame.indexOf("Instruments"));
-    // Signed out, the AI section is a sign-up offer, which sits under the answers.
-    expect(frame.indexOf("Instruments")).toBeLessThan(frame.indexOf("Ask AI"));
   });
 
   test("keeps the row the user picked when an exact symbol lands above it", async () => {

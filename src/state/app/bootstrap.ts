@@ -3,7 +3,6 @@ import type { AppTickerRepositoryPort } from "../../core/app-service-ports";
 import { findPaneInstance, isTickerPaneId, type AppConfig } from "../../types/config";
 import type { CachedFinancialsTarget, DataProvider } from "../../types/data-provider";
 import type { TickerFinancials } from "../../types/financials";
-import type { BrokerAccount } from "../../types/trading";
 import type { TickerMetadata, TickerRecord } from "../../types/ticker";
 import type { AppAction, PaneRuntimeState } from "./context";
 import type { AppSessionSnapshot } from "../../core/state/session-persistence";
@@ -56,8 +55,6 @@ export interface InitializeAppStateArgs {
   refreshQuote: (symbol: string, exchange?: string, tickerOverride?: TickerRecord | null, priority?: number) => void;
   refreshTickersBatch?: (entries: Array<{ ticker: TickerRecord; priority: number }>) => void;
   refreshQuotesBatch?: (entries: Array<{ ticker: TickerRecord; priority: number }>) => void;
-  autoImportBrokerPositions: (tickerMap: Map<string, TickerRecord>) => Promise<void>;
-  persistedBrokerAccounts?: Record<string, BrokerAccount[]>;
 }
 
 function buildPaneStateSeed(
@@ -268,8 +265,6 @@ export async function initializeAppState({
   refreshQuote,
   refreshTickersBatch,
   refreshQuotesBatch,
-  autoImportBrokerPositions,
-  persistedBrokerAccounts = {},
 }: InitializeAppStateArgs): Promise<void> {
   startupLog.info("initialize start", {
     layoutPaneCount: config.layout.instances.length,
@@ -317,15 +312,6 @@ export async function initializeAppState({
   measurePerf("startup.dispatch-set-tickers", () => {
     dispatch({ type: "SET_TICKERS", tickers: tickerMap });
   }, { tickerCount: tickerMap.size });
-
-  measurePerf("startup.dispatch-broker-accounts", () => {
-    for (const [instanceId, accounts] of Object.entries(persistedBrokerAccounts)) {
-      dispatch({ type: "SET_BROKER_ACCOUNTS", instanceId, accounts });
-    }
-  }, {
-    instanceCount: Object.keys(persistedBrokerAccounts).length,
-    accountCount: Object.values(persistedBrokerAccounts).reduce((sum, accounts) => sum + accounts.length, 0),
-  });
 
   const paneStateSeed = measurePerf(
     "startup.build-pane-state-seed",
@@ -400,12 +386,5 @@ export async function initializeAppState({
     }
   }, { count: refreshPlan.length });
 
-  void measurePerfAsync("startup.auto-import-broker-positions", () => autoImportBrokerPositions(tickerMap), {
-    brokerInstanceCount: config.brokerInstances.length,
-  }).catch((error) => {
-    startupLog.warn("auto import broker positions failed", {
-      message: error instanceof Error ? error.message : String(error),
-    });
-  });
   startupLog.info("initialize complete");
 }

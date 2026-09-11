@@ -1,6 +1,5 @@
 import { describe, expect, test } from "bun:test";
 import { coalesceFinancialPeriodAliases, mergeFinancialStatementRows } from "./financial-statements";
-import { computeTTM } from "../plugins/builtin/ticker-detail/financials/aggregation";
 import type { FinancialStatement } from "../types/financials";
 
 test("period evidence follows the selected fiscal date without inventing field availability", () => {
@@ -193,13 +192,6 @@ test("filing-backed fiscal dates coalesce proven month-end aliases, including ol
   expect(merged).toMatchObject({ date: "2026-05-10", currency: "USD", availableAt: "2026-06-04" });
   expect(coalesceFinancialPeriodAliases([fiscal, provider])).toEqual([merged!]);
   expect(coalesceFinancialPeriodAliases([merged!, provider, fiscal])).toEqual([merged!]);
-  const quarters = coalesceFinancialPeriodAliases([
-    { date: "2025-08-31", currency: "USD", totalRevenue: 86_156_000_000 },
-    { date: "2025-11-23", currency: "USD", totalRevenue: 67_307_000_000 },
-    { date: "2026-02-15", currency: "USD", totalRevenue: 69_597_000_000 },
-    provider, fiscal,
-  ]);
-  expect(computeTTM(quarters)?.totalRevenue).toBe(293_587_000_000);
   for (const distinct of [
     { ...fiscal, netIncome: fiscal.netIncome + 1 },
     { ...fiscal, currency: "CAD" },

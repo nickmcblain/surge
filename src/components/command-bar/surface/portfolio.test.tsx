@@ -265,8 +265,6 @@ describe("CommandBar portfolio commands", () => {
 
     await testSetup.renderOnce();
     const frame = testSetup.captureCharFrame();
-    // Nothing local matches, so the AI fallback row is all that is offered.
-    expect(frame).toContain("Ask AI");
     expect(frame).not.toContain("Create or update a manual position in a portfolio");
   });
 

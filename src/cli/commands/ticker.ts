@@ -19,7 +19,6 @@ import type { SecFilingItem } from "../../types/data-provider";
 import type { NewsArticle } from "../../news/types";
 import type { TickerRecord } from "../../types/ticker";
 import type { CliCommandContext } from "../../types/plugin";
-import { getPortfolioPositionMetrics } from "../../plugins/builtin/portfolio-list/position-metrics";
 import { createBaseConverter } from "../base-converter";
 import { initMarketData, withMarketData } from "../context";
 import { fail } from "../errors";
@@ -339,35 +338,6 @@ export async function buildTickerReport({
     ],
     link: filing.filingUrl,
   })));
-
-  if (tickerFile && tickerFile.metadata.positions.length > 0) {
-    lines.push("");
-    lines.push(renderSection("Positions"));
-    for (const [index, position] of tickerFile.metadata.positions.entries()) {
-      const portfolioName = config.portfolios.find((portfolio) => portfolio.id === position.portfolio)?.name ?? position.portfolio;
-      const multiplier = position.multiplier ?? 1;
-      const positionCurrency = position.currency ?? quote.currency;
-      const metrics = getPortfolioPositionMetrics({ ...tickerFile, metadata: { ...tickerFile.metadata, positions: [position] } }, undefined, quote.currency);
-      const costBasisBase = await toBase(metrics.signedCost, positionCurrency);
-      const marketValueBase = await toBase(metrics.totalPriceUnits * quote.price, quote.currency);
-      const pnl = marketValueBase - costBasisBase;
-
-      lines.push(cliStyles.bold(`${portfolioName} (${position.broker})`));
-      lines.push(renderStat(
-        "Position",
-        `${formatMarketQuantity(metrics.totalShares, { assetCategory: tickerFile.metadata.assetCategory, multiplier: position.multiplier })} ${multiplier > 1 ? "contracts" : "shares"} @ ${formatMarketCostWithCurrency(position.avgCost, positionCurrency, { assetCategory: tickerFile.metadata.assetCategory, multiplier: position.multiplier })}`,
-      ));
-      lines.push(renderStat("Cost Basis", formatCurrency(costBasisBase, config.baseCurrency)));
-      lines.push(renderStat("Market Value", formatCurrency(marketValueBase, config.baseCurrency)));
-      lines.push(renderStat("P&L", colorBySign(formatSignedCurrency(pnl, config.baseCurrency), pnl)));
-      if (position.markPrice != null) {
-        lines.push(renderStat("Mark", formatMarketPriceWithCurrency(position.markPrice, positionCurrency, { assetCategory: tickerFile.metadata.assetCategory, multiplier: position.multiplier })));
-      }
-      if (index < tickerFile.metadata.positions.length - 1) {
-        lines.push(cliStyles.muted("-".repeat(24)));
-      }
-    }
-  }
 
   return lines.join("\n");
 }

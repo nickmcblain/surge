@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import { TOOL_NAME_PATTERN } from "../plugins/builtin/cloud/askg/protocol";
 import {
   REMOTE_OPERATIONS,
   remoteOperationDescriptors,
@@ -50,7 +49,7 @@ describe("remote operation schema", () => {
     expect(jsonRoundTrip(descriptors)).toEqual(descriptors);
     expect(descriptors).toHaveLength(REMOTE_OPERATIONS.length);
     expect(new Set(descriptors.map(({ name }) => name)).size).toBe(descriptors.length);
-    expect(descriptors.every(({ name }) => new RegExp(TOOL_NAME_PATTERN).test(name)))
+    expect(descriptors.every(({ name }) => /^[a-zA-Z0-9_.-]{1,128}$/.test(name)))
       .toBe(true);
     expect(remoteOperationToolName("commandBar.activateResult"))
       .toBe("command_bar.activate_result");

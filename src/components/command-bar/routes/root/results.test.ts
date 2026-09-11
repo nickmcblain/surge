@@ -9,7 +9,6 @@ function rootOptions(overrides: Partial<RootResultModelOptions>): RootResultMode
     activeCollectionId: null,
     activeTickerData: null,
     activeTickerSymbol: null,
-    assist: null,
     availableCommands: [],
     buildLayoutItems: empty,
     buildPaneSettingItems: empty,
@@ -114,28 +113,7 @@ describe("provider rows in the root result model", () => {
   });
 });
 
-describe("assist rows in the root result model", () => {
-  const assist = {
-    enabled: true,
-    auto: true,
-    state: { status: "idle" as const },
-    onAsk: () => {},
-    onSignUp: () => {},
-    onRunCandidate: () => {},
-  };
-
-  test("lead the list ahead of provider rows and keep the Thinking placeholder", () => {
-    const { items } = buildRootResultModel(rootOptions({
-      rootQuery: "margin",
-      assist,
-      paneShortcutItems: () => [paneRow],
-      providerResultItems: [documentRow],
-    }));
-
-    expect(orderListResults(items, { categoryPriorities: new Map([["Documents", 200]]) }).map((item) => item.id))
-      .toEqual(["assist:pending", paneRow.id, documentRow.id]);
-  });
-
+describe("root result model matching", () => {
   test("the local matcher no longer drags in panes whose keywords scatter the letters", () => {
     const optionsRow: ResultItem = {
       id: "pane-template:options-calculator",

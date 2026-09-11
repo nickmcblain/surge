@@ -88,7 +88,6 @@ function buildApplicationMenu(): ApplicationMenuItemConfig[] {
     {
       label: "Layout",
       submenu: [
-        commandItem("Layouts...", { type: "open-layout-gallery" }, { accelerator: "CmdOrCtrl+Shift+L" }),
         openCommandBar("Layout Actions...", "LMA "),
         { type: "divider" },
         commandItem("Undo Layout Change", { type: "layout-undo" }),

@@ -22,10 +22,8 @@ interface ShellPaneManagementShortcutOptions {
   hasActiveDrag(): boolean;
   inputCaptured: boolean;
   openFocusedPaneSettings(): boolean;
-  openLayoutGallery(): void;
   overlayOpen: boolean;
   popOutFocusedPane(): boolean;
-  shareFocusedPane(): boolean;
   startWindowMode(paneId?: string, mode?: WindowEditMode): void;
   toggleFocusedPaneFullscreen(): boolean;
   toggleFocusedPaneFloating(): boolean;
@@ -42,10 +40,8 @@ export function useShellPaneManagementShortcuts({
   hasActiveDrag,
   inputCaptured,
   openFocusedPaneSettings,
-  openLayoutGallery,
   overlayOpen,
   popOutFocusedPane,
-  shareFocusedPane,
   startWindowMode,
   toggleFocusedPaneFullscreen,
   toggleFocusedPaneFloating,
@@ -125,13 +121,6 @@ export function useShellPaneManagementShortcuts({
         break;
       case "export-csv":
         handled = exportFocusedPaneCsv();
-        break;
-      case "share":
-        handled = shareFocusedPane();
-        break;
-      case "layout-gallery":
-        openLayoutGallery();
-        handled = true;
         break;
       case "gridlock-all":
         handled = gridlockVisiblePanes();

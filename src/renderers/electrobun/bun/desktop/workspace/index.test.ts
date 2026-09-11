@@ -1,13 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { cloneLayout, createDefaultConfig } from "../../../../../types/config";
+import { createResearchTestConfig } from "../../../../../test-support/research-layout";
 import { createDesktopWorkspace } from "./index";
 
 describe("desktop workspace", () => {
   test("popping out a pane persists it into the active layout", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-desktop");
+    const config = createResearchTestConfig("/tmp/gloomberb-desktop");
     const workspace = createDesktopWorkspace(config, null);
 
-    const snapshot = workspace.popOutPane("chat:main", {
+    const snapshot = workspace.popOutPane("ticker-detail:main", {
       x: 100,
       y: 120,
       width: 800,
@@ -15,41 +16,41 @@ describe("desktop workspace", () => {
     });
 
     expect(snapshot.config.layout.detached).toEqual([
-      { instanceId: "chat:main", x: 100, y: 120, width: 800, height: 540 },
+      { instanceId: "ticker-detail:main", x: 100, y: 120, width: 800, height: 540 },
     ]);
     expect(snapshot.config.layouts[snapshot.config.activeLayoutIndex]?.layout.detached).toEqual([
-      { instanceId: "chat:main", x: 100, y: 120, width: 800, height: 540 },
+      { instanceId: "ticker-detail:main", x: 100, y: 120, width: 800, height: 540 },
     ]);
-    expect(snapshot.config.layout.floating.some((entry) => entry.instanceId === "chat:main")).toBe(false);
+    expect(snapshot.config.layout.floating.some((entry) => entry.instanceId === "ticker-detail:main")).toBe(false);
   });
 
   test("docking a detached pane onto a frame edge clears detached placement", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-desktop");
+    const config = createResearchTestConfig("/tmp/gloomberb-desktop");
     const workspace = createDesktopWorkspace(config, null);
-    workspace.popOutPane("chat:main", {
+    workspace.popOutPane("ticker-detail:main", {
       x: 100,
       y: 120,
       width: 800,
       height: 540,
     });
 
-    const snapshot = workspace.dockDetachedPane("chat:main", "left");
+    const snapshot = workspace.dockDetachedPane("ticker-detail:main", "left");
 
     expect(snapshot.config.layout.detached).toHaveLength(0);
     expect(snapshot.config.layout.dockRoot).not.toBeNull();
   });
 
   test("updating a detached frame rewrites the detached entry in-place", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-desktop");
+    const config = createResearchTestConfig("/tmp/gloomberb-desktop");
     const workspace = createDesktopWorkspace(config, null);
-    workspace.popOutPane("chat:main", {
+    workspace.popOutPane("ticker-detail:main", {
       x: 100,
       y: 120,
       width: 800,
       height: 540,
     });
 
-    const snapshot = workspace.updateDetachedFrame("chat:main", {
+    const snapshot = workspace.updateDetachedFrame("ticker-detail:main", {
       x: 220,
       y: 260,
       width: 640,
@@ -57,7 +58,7 @@ describe("desktop workspace", () => {
     });
 
     expect(snapshot.config.layout.detached).toEqual([
-      { instanceId: "chat:main", x: 220, y: 260, width: 640, height: 480 },
+      { instanceId: "ticker-detail:main", x: 220, y: 260, width: 640, height: 480 },
     ]);
   });
 

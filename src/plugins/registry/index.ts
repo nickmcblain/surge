@@ -11,14 +11,6 @@ import {
   type ConnectionHealthRegistry,
 } from "../../core/connection-health";
 import type { PaneRuntimeState } from "../../core/state/app/state";
-import type { LayoutMarketplacePayload } from "../../layout-marketplace/payload";
-import { cloudSyncController } from "../../sync/controller";
-import type {
-  RegisteredSyncContributor,
-  RegisteredSyncTransport,
-  SyncContributor,
-  SyncTransport,
-} from "../../sync/types";
 import type { BrokerAdapter } from "../../types/broker";
 import type { BrokerInstanceConfig, LayoutConfig } from "../../types/config";
 import { resolvePaneInstance } from "../../types/config";
@@ -132,7 +124,6 @@ export class PluginRegistry implements PluginRuntimeAccess {
   showPaneFn: ((paneId: string) => void) = () => {};
   createPaneFromTemplateFn: ((templateId: string, options?: PaneTemplateCreateOptions) => void) = () => {};
   createPaneFromTemplateAsyncFn: ((templateId: string, options?: PaneTemplateCreateOptions) => Promise<void>) = async () => {};
-  openPortablePaneShareAsyncFn: ((layout: LayoutMarketplacePayload) => Promise<void>) = async () => {};
   hidePaneFn: ((paneId: string) => void) = () => {};
   focusPaneFn: ((paneId: string) => void) = () => {};
   pinTickerFn: ((symbol: string, options?: PinTickerOptions) => void) = () => {};
@@ -264,28 +255,6 @@ export class PluginRegistry implements PluginRuntimeAccess {
   get shortcuts(): ReadonlyMap<string, KeyboardShortcut> { return this.contributions.shortcutsMap; }
   get tickerActions(): ReadonlyMap<string, TickerAction> { return this.contributions.tickerActionsMap; }
   get allPlugins(): ReadonlyMap<string, GloomPlugin> { return this.plugins; }
-
-  registerSyncContributorForPlugin(pluginId: string, contributor: SyncContributor): () => void {
-    return cloudSyncController.registerContributor(pluginId, contributor);
-  }
-
-  registerSyncTransportForPlugin(pluginId: string, transport: SyncTransport): () => void {
-    return cloudSyncController.registerTransport(pluginId, transport);
-  }
-
-  getEnabledSyncContributors(): RegisteredSyncContributor[] {
-    const disabledPlugins = new Set(this.getConfigFn().disabledPlugins ?? []);
-    return cloudSyncController
-      .getRegisteredContributors()
-      .filter((entry) => !disabledPlugins.has(entry.pluginId));
-  }
-
-  getActiveSyncTransport(): RegisteredSyncTransport | null {
-    const disabledPlugins = new Set(this.getConfigFn().disabledPlugins ?? []);
-    return cloudSyncController
-      .getRegisteredTransports()
-      .find((entry) => !disabledPlugins.has(entry.pluginId) && entry.transport.isAvailable()) ?? null;
-  }
 
   getContextMenuItems(context: ContextMenuContext): ContextMenuItem[] {
     return resolveRegistryContextMenuItems({
@@ -481,16 +450,6 @@ export class PluginRegistry implements PluginRuntimeAccess {
       registerShortcut: (shortcut) => contributions.registerShortcut(pluginId, shortcut),
       registerTickerAction: (action) => contributions.registerTickerAction(pluginId, action),
       registerContextMenuProvider: (provider) => contributions.registerContextMenuProvider(pluginId, provider),
-      registerSyncContributor: (contributor) => {
-        const dispose = this.registerSyncContributorForPlugin(pluginId, contributor);
-        items.eventDisposers.push(dispose);
-        return dispose;
-      },
-      registerSyncTransport: (transport) => {
-        const dispose = this.registerSyncTransportForPlugin(pluginId, transport);
-        items.eventDisposers.push(dispose);
-        return dispose;
-      },
       watchNewsQuery: (query, listener) => {
         const dispose = this.watchNewsQueryFn(query, listener);
         items.newsQueryWatchDisposers.push(dispose);

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { createInitialState, type AppAction, type AppState } from "../../../state/app/context";
 import { cloneLayout, createDefaultConfig, type LayoutConfig } from "../../../types/config";
+import { createResearchTestConfig } from "../../../test-support/research-layout";
 import type { PluginRegistry } from "../../../plugins/registry";
 import type { CommandBarRoute } from "../workflow/types";
 import type { LayoutItemsContext } from "./types";
@@ -9,7 +10,7 @@ import { buildCurrentLayoutItems } from "./current-layout";
 type InlineConfirmOptions = Parameters<LayoutItemsContext["openInlineConfirm"]>[0];
 
 function createFloatingLayoutFixture(): { layout: LayoutConfig; state: AppState } {
-  const config = createDefaultConfig("/tmp/gloomberb-layout-actions-test");
+  const config = createResearchTestConfig("/tmp/gloomberb-layout-actions-test");
   const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
   const firstDetailPane = config.layout.instances.find((instance) => instance.instanceId === "ticker-detail:main");
   if (!mainPane || !firstDetailPane) throw new Error("missing default panes");

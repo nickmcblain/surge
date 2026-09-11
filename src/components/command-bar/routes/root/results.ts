@@ -6,11 +6,6 @@ import type {
 } from "../../../../types/plugin";
 import type { TickerRecord } from "../../../../types/ticker";
 import { fuzzyFilter } from "../../../../utils/fuzzy-search";
-import {
-  buildAssistResultItems,
-  shouldShowAssistRow,
-  type AssistRowHandlers,
-} from "../../assist/model";
 import { matchPrefix, type Command } from "../../commands/registry";
 import { isCollectionCommand } from "../../helpers";
 import { dedupeById } from "../../view-model";
@@ -45,7 +40,6 @@ export interface RootResultModelOptions {
   activeTickerData: TickerRecord | null | undefined;
   activeTickerSymbol: string | null;
   /** Natural-language fallback rows; omit to build the list without an AI section. */
-  assist?: AssistRowHandlers | null;
   availableCommands: Command[];
   buildLayoutItems: (query: string, options?: { confirmDangerousActions?: boolean }) => ResultItem[];
   buildPaneSettingItems: (paneId: string | null, query: string) => ResultItem[];
@@ -79,30 +73,11 @@ export interface RootResultModelOptions {
   tickerActionItems: () => ResultItem[];
 }
 
-/** An in-flight or answered request keeps its rows even if the heuristic lapses. */
-function isAssistSectionVisible(
-  assist: AssistRowHandlers,
-  query: string,
-  resultCount: number,
-  hasShortcutIntent: boolean,
-): boolean {
-  if (!query.trim()) return false;
-  if (assist.state.status !== "idle" && assist.state.query === query.trim()) return true;
-  // A resolved shortcut is the user speaking the command language, so nothing is
-  // asked of the AI, and a sign-up offer must not outrank that exact match.
-  if (hasShortcutIntent) return false;
-  // Signed out there is nothing to wait for, so the older heuristic still picks
-  // the queries worth offering a sign-up row for.
-  if (!assist.enabled) return shouldShowAssistRow({ query, resultCount });
-  return assist.auto;
-}
-
 export function buildRootResultModel(options: RootResultModelOptions): RootResultModel {
   const {
     activeCollectionId,
     activeTickerData,
     activeTickerSymbol,
-    assist,
     availableCommands,
     buildLayoutItems,
     buildPaneSettingItems,
@@ -239,29 +214,11 @@ export function buildRootResultModel(options: RootResultModelOptions): RootResul
     items.push(...matchedItems);
   }
 
-  const shortcutClaimedQuery = rootShortcutIntent.kind !== "none";
-  // Counted before the provider rows: they arrive whenever the network answers,
-  // and an assist offer must not appear and vanish as they land.
-  const matchCount = items.length;
   // A resolved prefix means the user is speaking the command language, so
   // free-text providers stay out of the way.
-  if (!shortcutClaimedQuery) {
+  if (rootShortcutIntent.kind === "none") {
     items.push(...providerResultItems);
   }
 
-  // Built from the local matches, then placed above them: the AI turns the
-  // typed sentence into commands, so its answer leads the list. Its Thinking
-  // placeholder holds the rows from the start, and the root selection effect
-  // follows rows by identity when the answer renumbers what sits below.
-  const assistItems = assist
-    && isAssistSectionVisible(
-      assist,
-      rootQuery,
-      matchCount,
-      shortcutClaimedQuery,
-    )
-    ? buildAssistResultItems({ ...assist, query: rootQuery })
-    : [];
-
-  return { items: dedupeById([...assistItems, ...items]), initialIdx };
+  return { items: dedupeById(items), initialIdx };
 }

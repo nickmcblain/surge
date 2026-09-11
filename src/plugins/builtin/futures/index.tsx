@@ -17,11 +17,11 @@ import { cycleSortPreference } from "../../../utils/sort-values";
 import { useAssetData, usePluginTickerActions } from "../../runtime";
 import type { PluginModule } from "../plugin-module";
 import {
+  boardErrorMessage,
   quoteBoardFooterInfo,
   quoteBoardStatus,
   useQuoteBoard,
 } from "../shared/use-quote-board";
-import { boardErrorMessage } from "../world-indices/footer";
 import {
   FUTURES_CONTRACTS,
   FUTURES_SECTOR_LABELS,
@@ -244,7 +244,7 @@ export const futuresModule: PluginModule = {
   panes: [
     {
       id: FUTURES_PANE_ID,
-      name: "Futures",
+      name: "Energy Commodities",
       icon: "F",
       component: FuturesPane,
       defaultPosition: "right",
@@ -254,7 +254,7 @@ export const futuresModule: PluginModule = {
       // Resolved per open so the dialog shows the full default set until the
       // user saves a narrower selection.
       settings: (context) => ({
-        title: "Futures Settings",
+        title: "Energy Commodities Settings",
         values: {
           columnIds: resolveFuturesColumnIds(context.settings.columnIds as string[] | undefined),
         },
@@ -276,21 +276,23 @@ export const futuresModule: PluginModule = {
     {
       id: "futures-pane",
       paneId: FUTURES_PANE_ID,
-      label: "Futures Board",
+      label: "Energy Commodities",
       description:
-        "Front-month futures across equity index, rates, energy, metals, agriculture, and FX with last price, session change, search, and collapsible sectors.",
+        "Front-month Brent, WTI, TTF, Henry Hub, products, metals, FX and rates with last price, session change, search, and collapsible sectors.",
       keywords: [
         "futures",
         "commodities",
         "crude",
         "oil",
-        "gold",
-        "silver",
+        "brent",
+        "wti",
+        "ttf",
+        "gas",
+        "henry hub",
         "copper",
-        "corn",
-        "wheat",
-        "treasuries",
+        "gold",
         "contracts",
+        "ice",
         "cme",
       ],
       shortcut: { prefix: "FUT" },

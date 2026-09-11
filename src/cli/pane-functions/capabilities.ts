@@ -40,7 +40,6 @@ const NON_DATA_PANE_IDS = new Set([
   "debug",
   "help",
   "ibkr-trading",
-  "layout-marketplace",
   "local-agent-workspace",
   "macro-tv",
   "plugin-marketplace",

@@ -4,8 +4,7 @@ import { colors, priceColor } from "../../../theme/colors";
 import type { Quote } from "../../../types/financials";
 import { TextAttributes } from "../../../ui";
 import { formatCompact, formatNumber, formatPercentRaw } from "../../../utils/format";
-import { marketStatusDot, type BoardQuoteMap } from "../shared/use-quote-board";
-import { formatQuoteTime } from "../world-indices/table";
+import { formatQuoteTime, marketStatusDot, type BoardQuoteMap } from "../shared/use-quote-board";
 import { tickDecimals, type FuturesContract } from "./contracts";
 import type { FuturesColumnId, FuturesTableRow } from "./model";
 

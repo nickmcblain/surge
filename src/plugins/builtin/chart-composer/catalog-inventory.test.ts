@@ -55,19 +55,11 @@ describe("data catalog inventory", () => {
     expect(filterCatalogRows(rows, "securities", "").some((row) => row.sourceId === "crypto")).toBe(false);
   });
 
-  test("FRED tab includes mapped series and treasuries; futures stay on their own tab", () => {
+  test("futures stay on their own tab", () => {
     const rows = listStaticCatalogInventory([]);
-    const fred = filterCatalogRows(rows, "fred", "");
-    const seriesIds = fred.filter((row) => row.sourceId === "fred").map((row) => row.expression);
-    expect(new Set(seriesIds).size).toBe(seriesIds.length);
-    expect(fred.some((row) => row.expression === "FRED:CPIAUCSL")).toBe(true);
-    expect(fred.some((row) => row.expression === "UST:10Y" && row.kind === "Treasury")).toBe(true);
-    expect(fred.every((row) => row.sourceId === "fred" || row.sourceId === "treasury")).toBe(true);
-
     const futures = filterCatalogRows(rows, "futures", "");
-    expect(futures.some((row) => row.expression === "FUT:ES")).toBe(true);
+    expect(futures.some((row) => row.expression === "FUT:BZ")).toBe(true);
     expect(futures.every((row) => row.sourceId === "futures")).toBe(true);
-    expect(futures.some((row) => row.sourceId === "treasury")).toBe(false);
   });
 
   test("resolves a ticker query onto chartable rows without treating field names as tickers", () => {

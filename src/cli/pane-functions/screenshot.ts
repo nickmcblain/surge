@@ -5,7 +5,7 @@ import { dirname, resolve } from "path";
 import { mkdir } from "fs/promises";
 import type { PaneRuntimeState } from "../../core/state/app/state";
 import { CHART_COMPOSER_PANE_ID, type AppConfig } from "../../types/config";
-import type { OptionsChain, PricePoint, TickerFinancials } from "../../types/financials";
+import type { PricePoint, TickerFinancials } from "../../types/financials";
 import type { TickerRecord } from "../../types/ticker";
 import { slugifyName } from "../../utils/slugify";
 import { getTheme, getThemeIds } from "../../theme/themes";
@@ -33,10 +33,6 @@ import {
   metricDef,
 } from "../../time-series/reporting";
 import { getTimeSeriesField } from "../../time-series/field-catalog";
-import {
-  buildFinancialTableModel,
-  formatFinancialHeader,
-} from "../../plugins/builtin/ticker-detail/financials/model";
 import type {
   FundamentalPeriod,
   GraphKind,
@@ -50,13 +46,6 @@ import {
   getVisibleWindowForDateRange,
 } from "../../components/chart/core/date-window";
 import { parseChartSpec } from "../../plugins/builtin/chart-composer/chart-spec";
-import {
-  defaultValuationSeriesLoader,
-  requiredSeries as valuationRequiredSeries,
-} from "../../plugins/builtin/market-valuation/client";
-import type { DatedObservation } from "../../plugins/builtin/market-valuation/series";
-import { defaultStatLoader } from "../../plugins/builtin/econ-statistics/client";
-import { STATS } from "../../plugins/builtin/econ-statistics/stats";
 import { parsePublicTickerKey, publicTickerKey } from "../../utils/exchanges";
 import { getCloudApiBaseUrl } from "../../api-client/request";
 import type { ResolvedSeries } from "../../time-series/types";
@@ -71,9 +60,6 @@ import {
 
 const DESKTOP_CELL_WIDTH_PX = 8;
 const DESKTOP_CELL_HEIGHT_PX = 18;
-const OPTIONS_PANE_ID = "options";
-const MARKET_VALUATION_PANE_ID = "market-valuation";
-const ECON_STATISTICS_PANE_ID = "econ-statistics";
 const CREDENTIAL_FIELD_NAMES = new Set([
   "accesstoken",
   "accessurl",
@@ -153,6 +139,7 @@ const SHOT_BRIDGE_MARKET_OPERATIONS = new Set([
   "getQuote",
   "getQuotesBatch",
   "getSecFilings",
+  "getTickerFinancials",
 ]);
 
 const SHOT_BRIDGE_HTTP_TIMEOUT_MS = 20_000;
@@ -210,40 +197,6 @@ async function runDesktopShotHttpFetch(
     setCookie: response.headers.getSetCookie?.() ?? [],
     body: await response.text(),
   };
-}
-
-/** Same reason as the valuation legs: the renderer cannot fill its own cache. */
-async function collectShotStatSeries(
-  resolved: ResolvedPaneFunction,
-): Promise<Array<[string, DatedObservation[]]>> {
-  if (resolved.pane.id !== ECON_STATISTICS_PANE_ID) return [];
-  const loaded = await Promise.all(STATS.map(async (def) => {
-    try {
-      return [def.seriesId, await defaultStatLoader(def)] as [string, DatedObservation[]];
-    } catch {
-      return null;
-    }
-  }));
-  return loaded.filter((entry): entry is [string, DatedObservation[]] => !!entry);
-}
-
-/**
- * The pane reads its legs from a client cache the shot renderer cannot fill itself,
- * so fetch them here on the Bun side and hand them over with the payload.
- */
-async function collectShotValuationSeries(
-  resolved: ResolvedPaneFunction,
-): Promise<Array<[string, DatedObservation[]]>> {
-  if (resolved.pane.id !== MARKET_VALUATION_PANE_ID) return [];
-  const loaded = await Promise.all(valuationRequiredSeries().map(async (def) => {
-    try {
-      const series = await defaultValuationSeriesLoader(def);
-      return [def.key, series.observations] as [string, DatedObservation[]];
-    } catch {
-      return null;
-    }
-  }));
-  return loaded.filter((entry): entry is [string, DatedObservation[]] => !!entry);
 }
 
 export interface PaneScreenshotExpectedSelection {
@@ -324,27 +277,10 @@ export interface PaneScreenshotFundamentalSeriesEvidence {
   }>;
 }
 
-export interface PaneScreenshotFinancialStatementEvidence {
-  kind: "financial-statement";
-  symbol: string;
-  statement: string;
-  period: FundamentalPeriod;
-  latest: {
-    date: string;
-    metrics: Array<{
-      id: string;
-      key: string;
-      label: string;
-      value: number;
-    }>;
-  };
-}
-
 export type PaneScreenshotDataEvidence =
   | PaneScreenshotPriceSeriesEvidence
   | PaneScreenshotPriceComparisonEvidence
-  | PaneScreenshotFundamentalSeriesEvidence
-  | PaneScreenshotFinancialStatementEvidence;
+  | PaneScreenshotFundamentalSeriesEvidence;
 
 export interface PaneScreenshotReadinessSignals {
   rowCount: number;
@@ -470,12 +406,6 @@ export async function buildDesktopShotPayload(
   const tickers: TickerRecord[] = [];
   const financials: Array<[string, TickerFinancials]> = [];
   const intradayHistories: DesktopPaneShotIntradayHistory[] = [];
-  const optionsChains: Array<[string, OptionsChain]> = [];
-  const [valuationSeries, statSeries] = await Promise.all([
-    collectShotValuationSeries(resolved),
-    collectShotStatSeries(resolved),
-  ]);
-  const includeOptionsChains = resolved.pane.id === OPTIONS_PANE_ID || resolved.template?.paneId === OPTIONS_PANE_ID;
   let chartModel: ChartPaneModel | undefined;
   if (resolved.pane.id === CHART_COMPOSER_PANE_ID) {
     const loaded = await loadResolvedHeadlessPaneModel(resolved, context, rawArg);
@@ -519,10 +449,6 @@ export async function buildDesktopShotPayload(
     }
     tickers.push(entry.tickerFile ?? createFallbackTicker(symbol, data, context));
     financials.push([symbol, data]);
-    if (includeOptionsChains && context.dataProvider.getOptionsChain) {
-      const chain = await context.dataProvider.getOptionsChain(entry.instrument.symbol, exchange);
-      optionsChains.push([symbol, chain]);
-    }
   }
   layout.instances[0] = shotInstance;
   config.layout.instances[0] = shotInstance;
@@ -540,9 +466,6 @@ export async function buildDesktopShotPayload(
     tickers,
     financials,
     intradayHistories,
-    optionsChains,
-    valuationSeries,
-    statSeries,
     paneState,
   };
   if (chartModel) payload.chartModel = chartModel.chart;
@@ -707,7 +630,6 @@ function requiresStructuredDataEvidence(resolved: ResolvedPaneFunction): boolean
     "intraday-price-chart",
     "price-comparison",
     "fundamental-series",
-    "financial-statements",
   ].includes(resolved.capability.id);
 }
 
@@ -735,30 +657,6 @@ export function shotUnusableReasonFor(
   return "The pane did not produce verifiable screenshot evidence.";
 }
 
-const STATEMENT_EVIDENCE_KEYS: Record<string, ReadonlySet<string>> = {
-  income: new Set([
-    "totalRevenue",
-    "grossProfit",
-    "operatingIncome",
-    "netIncome",
-    "netIncomeCommonStockholders",
-    "eps",
-    "basicEps",
-  ]),
-  cashflow: new Set([
-    "operatingCashFlow",
-    "capitalExpenditure",
-    "freeCashFlow",
-  ]),
-  balance: new Set([
-    "totalAssets",
-    "totalLiabilities",
-    "cashAndCashEquivalents",
-    "totalDebt",
-    "totalEquity",
-    "commonStockEquity",
-  ]),
-};
 
 export function shotDataEvidenceFor(
   resolved: ResolvedPaneFunction,
@@ -860,45 +758,6 @@ export function shotDataEvidenceFor(
     return { kind: "fundamental-series", metric, period, series };
   }
 
-  if (resolved.capability.id === "financial-statements") {
-    const [symbol, financials] = payload.financials[0] ?? [];
-    if (!symbol || !financials) return null;
-    const table = buildFinancialTableModel(financials, {
-      period: resolved.options.period as FundamentalPeriod,
-      statement: String(resolved.options.statement),
-    });
-    if (!table || table.statements.length === 0) return null;
-    const allowedKeys = STATEMENT_EVIDENCE_KEYS[table.subTab.key] ?? new Set<string>();
-    const latestPopulated = table.statements.flatMap((statement, statementIndex) => {
-      const seenKeys = new Set<string>();
-      const metrics = table.rows.flatMap((row) => {
-        const key = String(row.key ?? row.summaryKey ?? "");
-        const value = row.cells[statementIndex]?.value;
-        if (!allowedKeys.has(key) || seenKeys.has(key) || typeof value !== "number" || !Number.isFinite(value)) {
-          return [];
-        }
-        seenKeys.add(key);
-        return [{
-          id: row.id,
-          key,
-          label: row.unitLabel,
-          value,
-        }];
-      });
-      return metrics.length > 0 ? [{ statement, metrics }] : [];
-    })[0];
-    if (!latestPopulated) return null;
-    return {
-      kind: "financial-statement",
-      symbol,
-      statement: table.subTab.key,
-      period: table.period,
-      latest: {
-        date: latestPopulated.statement.date,
-        metrics: latestPopulated.metrics,
-      },
-    };
-  }
 
   return null;
 }
@@ -1334,14 +1193,6 @@ export function shotUnavailableSymbols(
   if (["price-comparison", "return-correlation", "security-relationship"].includes(resolved.capability.id)) {
     return payload.financials.flatMap(([symbol, financials]) => financials.priceHistory.length > 1 ? [] : [symbol]);
   }
-  if (resolved.capability.id === "financial-statements") {
-    return payload.financials.flatMap(([symbol, financials]) => {
-      const count = resolved.options.period === "quarterly"
-        ? financials.quarterlyStatements.length
-        : financials.annualStatements.length;
-      return count > 0 ? [] : [symbol];
-    });
-  }
   return payload.financials.flatMap(([symbol, financials]) => financials.quote ? [] : [symbol]);
 }
 
@@ -1391,13 +1242,6 @@ export function shotSemanticRowCount(
   if (["price-comparison", "return-correlation", "security-relationship"].includes(resolved.capability.id)) {
     return payload.financials.filter(([, financials]) => financials.priceHistory.length > 1).length;
   }
-  if (resolved.capability.id === "financial-statements") {
-    const financials = payload.financials[0]?.[1];
-    const period = resolved.options.period;
-    return period === "quarterly"
-      ? financials?.quarterlyStatements.length ?? 0
-      : financials?.annualStatements.length ?? 0;
-  }
   return payload.financials.filter(([, financials]) => !!financials.quote).length;
 }
 
@@ -1431,25 +1275,6 @@ export function shotExpectedText(
         expected.push(definition.format(latestRow.value));
       }
     }
-  } else if (resolved.capability.id === "financial-statements") {
-    const statementLabels: Record<string, string> = {
-      income: "Income",
-      balance: "Balance",
-      cashflow: "Cash Flow",
-    };
-    expected.push(statementLabels[String(resolved.options.statement)] ?? "");
-    expected.push(resolved.options.period === "annual" ? "Annual" : "Quarterly");
-    const financials = payload.financials[0]?.[1];
-    if (financials) {
-      const table = buildFinancialTableModel(financials, {
-        period: resolved.options.period as FundamentalPeriod,
-        statement: String(resolved.options.statement),
-      });
-      const latestStatement = table?.statements[0];
-      const firstMetric = table?.rows[0];
-      if (latestStatement) expected.push(formatFinancialHeader(latestStatement.date).trim());
-      if (firstMetric) expected.push(firstMetric.unitLabel);
-    }
   }
   return expected.filter(Boolean);
 }
@@ -1464,22 +1289,7 @@ function shotExpectedSelections(
       value: String(resolved.options.metric),
     }];
   }
-  if (resolved.capability.id !== "financial-statements") return [];
-  const labels: Record<string, string> = {
-    income: "Income",
-    cashflow: "Cash Flow",
-    balance: "Balance Sheet",
-  };
-  return [
-    {
-      control: "statement",
-      label: labels[String(resolved.options.statement)] ?? String(resolved.options.statement),
-    },
-    {
-      control: "period",
-      value: String(resolved.options.period),
-    },
-  ];
+  return [];
 }
 
 export function missingActiveTabSelections(

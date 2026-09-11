@@ -227,11 +227,6 @@ export function StatusBar({ onOpenChangelog }: { onOpenChangelog?: (version: str
       },
       contextMenuDivider("layout:actions-divider"),
       {
-        id: "layout:gallery",
-        label: "Browse Layouts...",
-        onSelect: () => registry?.showPane("layout-marketplace"),
-      },
-      {
         id: "layout:actions",
         label: "Layout Actions...",
         onSelect: () => registry?.openCommandBar("LMA "),

@@ -111,21 +111,21 @@ describe("FuturesPane", () => {
     await renderSettled();
 
     // Selection starts on the first contract, so step up onto its header.
-    expect(testSetup.captureCharFrame()).toContain("E-Mini S&P 500");
-    expect(testSetup.captureCharFrame()).toContain("▼ Equity Index");
+    expect(testSetup.captureCharFrame()).toContain("Brent Crude Oil");
+    expect(testSetup.captureCharFrame()).toContain("▼ Oil & Products");
 
     await emitKeypress({ name: "up", sequence: "\u001B[A" });
     await emitKeypress({ name: "enter", sequence: "\r" });
     await renderSettled();
     const collapsed = testSetup.captureCharFrame();
-    expect(collapsed).toContain("▶ Equity Index");
-    expect(collapsed).not.toContain("E-Mini S&P 500");
+    expect(collapsed).toContain("▶ Oil & Products");
+    expect(collapsed).not.toContain("Brent Crude Oil");
     // Other sectors keep their contracts.
-    expect(collapsed).toContain("WTI Crude Oil");
+    expect(collapsed).toContain("Dutch TTF Natural Gas");
 
     await emitKeypress({ name: "enter", sequence: "\r" });
     await renderSettled();
-    expect(testSetup.captureCharFrame()).toContain("E-Mini S&P 500");
+    expect(testSetup.captureCharFrame()).toContain("Brent Crude Oil");
   });
 
   test("clicking a sector header collapses it, and clicking again expands it", async () => {
@@ -134,7 +134,7 @@ describe("FuturesPane", () => {
 
     const headerRow = () => testSetup!.captureCharFrame()
       .split("\n")
-      .findIndex((line) => line.includes("Equity Index"));
+      .findIndex((line) => line.includes("Oil & Products"));
     const row = headerRow();
     expect(row).toBeGreaterThanOrEqual(0);
 
@@ -145,8 +145,8 @@ describe("FuturesPane", () => {
     await renderSettled();
 
     const collapsed = testSetup.captureCharFrame();
-    expect(collapsed).toContain("▶ Equity Index");
-    expect(collapsed).not.toContain("E-Mini S&P 500");
+    expect(collapsed).toContain("▶ Oil & Products");
+    expect(collapsed).not.toContain("Brent Crude Oil");
     // A header click must not also open the pinned-ticker pane.
     expect(pinned).toEqual([]);
 
@@ -156,7 +156,7 @@ describe("FuturesPane", () => {
     });
     await renderSettled();
 
-    expect(testSetup.captureCharFrame()).toContain("E-Mini S&P 500");
+    expect(testSetup.captureCharFrame()).toContain("Brent Crude Oil");
     expect(pinned).toEqual([]);
   });
 
@@ -164,14 +164,14 @@ describe("FuturesPane", () => {
     testSetup = await testRender(<Harness />, { width: 80, height: 24 });
     await renderSettled();
 
-    // Collapse Equity Index from its header, then search for one of its rows.
+    // Collapse Oil & Products from its header, then search for one of its rows.
     await emitKeypress({ name: "up", sequence: "\u001B[A" });
     await emitKeypress({ name: "enter", sequence: "\r" });
     await renderSettled();
-    expect(testSetup.captureCharFrame()).not.toContain("E-Mini Dow");
+    expect(testSetup.captureCharFrame()).not.toContain("RBOB Gasoline");
 
     await emitKeypress({ name: "/", sequence: "/" });
-    for (const character of "dow") {
+    for (const character of "rbob") {
       await emitKeypress({ name: character, sequence: character });
     }
     await act(async () => {
@@ -181,8 +181,8 @@ describe("FuturesPane", () => {
     await renderSettled();
 
     const searching = testSetup.captureCharFrame();
-    expect(searching).toContain("E-Mini Dow");
-    expect(searching).toContain("▼ Equity Index");
+    expect(searching).toContain("RBOB Gasoline");
+    expect(searching).toContain("▼ Oil & Products");
   });
 
   test("opens the selected contract in ticker research", async () => {
@@ -193,7 +193,7 @@ describe("FuturesPane", () => {
     await renderSettled();
 
     expect(pinned).toHaveLength(1);
-    expect(pinned[0]!.symbol).toBe("ES=F");
+    expect(pinned[0]!.symbol).toBe("BZ=F");
     expect(pinned[0]!.options).toMatchObject({ floating: true });
   });
 
@@ -214,6 +214,6 @@ describe("FuturesPane", () => {
 
     const filtered = testSetup.captureCharFrame();
     expect(filtered).toContain("Gold");
-    expect(filtered).not.toContain("E-Mini S&P 500");
+    expect(filtered).not.toContain("Brent Crude Oil");
   });
 });

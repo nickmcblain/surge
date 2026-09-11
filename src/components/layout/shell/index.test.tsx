@@ -12,6 +12,7 @@ import {
   usePaneTicker,
 } from "../../../state/app/context";
 import { TICKER_RESEARCH_PANE_ID, cloneLayout, createDefaultConfig, type LayoutConfig } from "../../../types/config";
+import { createResearchTestConfig } from "../../../test-support/research-layout";
 import type { PaneProps } from "../../../types/plugin";
 import { Text, Textarea } from "../../../ui";
 import { TransientLayoutProvider, useTransientLayout, type TransientLayoutState } from "../transient-layout";
@@ -163,7 +164,7 @@ function findUpdateLayout(actions: ShellTestAction[]) {
 
 describe("Shell", () => {
   test.each([false, true])("keeps both numeric edges visible under terminal focus borders (floating=%s)", async (floating) => {
-    const config = createDefaultConfig("/tmp/gloomberb-pane-border-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-pane-border-test");
     const main = requireLayoutInstance(config, "portfolio-list:main");
     const detail = requireLayoutInstance(config, "ticker-detail:main");
     const layout: LayoutConfig = {
@@ -218,7 +219,7 @@ describe("Shell", () => {
   });
 
   test("opens the pane menu when clicking the docked header action area", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-test");
     const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
     if (!mainPane) throw new Error("missing default portfolio pane");
 
@@ -260,7 +261,7 @@ describe("Shell", () => {
   });
 
   test("shows a Pop Out action in the pane menu when a desktop bridge is available", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-test");
     const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
     if (!mainPane) throw new Error("missing default portfolio pane");
 
@@ -307,7 +308,7 @@ describe("Shell", () => {
   });
 
   test("shows the pane menu above a high z-index floating pane", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-test");
     const detailPane = config.layout.instances.find((instance) => instance.instanceId === "ticker-detail:main");
     if (!detailPane) throw new Error("missing default Ticker Research pane");
 
@@ -358,8 +359,6 @@ describe("Shell", () => {
     expect(resolvePaneManagementShortcut({ ...base, name: "D", key: "D" })).toBe("toggle-floating");
     expect(resolvePaneManagementShortcut({ ...base, name: "o", key: "o" })).toBe("pop-out");
     expect(resolvePaneManagementShortcut({ ...base, name: "c", key: "c" })).toBe("copy-screenshot");
-    expect(resolvePaneManagementShortcut({ ...base, name: "s", key: "s" })).toBe("share");
-    expect(resolvePaneManagementShortcut({ ...base, name: "l", key: "l" })).toBe("layout-gallery");
     expect(resolvePaneManagementShortcut({ ...base, name: "f", key: "f" })).toBe("toggle-fullscreen");
     expect(resolvePaneManagementShortcut({ ...base, name: "g", key: "g" })).toBe("gridlock-all");
     expect(resolvePaneManagementShortcut({ ...base, name: "m", key: "m" })).toBe("window-mode");
@@ -369,20 +368,8 @@ describe("Shell", () => {
     expect(resolvePaneManagementShortcut({ ...base, name: "d", key: "d", meta: false, super: false })).toBeNull();
   });
 
-  test("opens the layout browser from the primary Shift-L shortcut", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-layout-browser-shortcut-test");
-    const opened: string[] = [];
-    const registry = createShellPluginRegistry();
-    registry.showPane = (paneId) => opened.push(paneId);
-    await renderShellForWindowModeTest(createInitialState(config), { registry });
-
-    await emitKeypress({ name: "l", ctrl: true, shift: true });
-
-    expect(opened).toEqual(["layout-marketplace"]);
-  });
-
   test("toggles the focused pane fullscreen without persisting layout", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-fullscreen-shortcut-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-fullscreen-shortcut-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const dockedLayout = {
@@ -402,12 +389,12 @@ describe("Shell", () => {
       { width: 80, height: 18 },
     );
 
-    expect(testSetup.captureCharFrame()).toContain("Main Portfolio");
+    expect(testSetup.captureCharFrame()).toContain("Portfolio List");
     expect(testSetup.captureCharFrame()).toContain("Ticker Research Body");
 
     await emitKeypress({ name: "f", ctrl: true, shift: true });
     let frame = testSetup.captureCharFrame();
-    expect(frame).toContain("Main Portfolio");
+    expect(frame).toContain("Portfolio List");
     expect(frame).not.toContain("Ticker Research Body");
     expect(actions.some((action) => action.type === "UPDATE_LAYOUT")).toBe(false);
 
@@ -416,13 +403,13 @@ describe("Shell", () => {
       await testSetup!.renderOnce();
     });
     frame = testSetup.captureCharFrame();
-    expect(frame).toContain("Main Portfolio");
+    expect(frame).toContain("Portfolio List");
     expect(frame).toContain("Ticker Research Body");
     expect(actions.some((action) => action.type === "UPDATE_LAYOUT")).toBe(false);
   });
 
   test("captures the source layout for transient pane focus", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-fullscreen-layout-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-fullscreen-layout-test");
     const layout = cloneLayout(config.layout);
     layout.dockRoot = { kind: "pane", instanceId: "portfolio-list:main" };
     layout.floating = [{ instanceId: "ticker-detail:main", x: 8, y: 2, width: 32, height: 10, zIndex: 75 }];
@@ -440,7 +427,7 @@ describe("Shell", () => {
   });
 
   test("locks layout-changing mouse drags while fullscreen is active", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-fullscreen-drag-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-fullscreen-drag-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const dockedLayout = {
@@ -468,13 +455,13 @@ describe("Shell", () => {
     });
 
     const frame = testSetup.captureCharFrame();
-    expect(frame).toContain("Main Portfolio");
+    expect(frame).toContain("Portfolio List");
     expect(frame).not.toContain("Ticker Research Body");
     expect(actions.some((action) => action.type === "UPDATE_LAYOUT")).toBe(false);
   });
 
   test("updates the floating pane preview before mouse release", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-live-floating-drag-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-live-floating-drag-test");
     const floatingLayout = cloneLayout(config.layout);
     floatingLayout.dockRoot = { kind: "pane", instanceId: "portfolio-list:main" };
     floatingLayout.floating = [{ instanceId: "ticker-detail:main", x: 8, y: 2, width: 32, height: 10, zIndex: 75 }];
@@ -503,7 +490,7 @@ describe("Shell", () => {
   });
 
   test("keeps the focused textarea cursor visible when it is not covered", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-cursor-visible-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-cursor-visible-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const registry = createShellPluginRegistry({
@@ -533,7 +520,7 @@ describe("Shell", () => {
   });
 
   test("hides the textarea cursor when a higher floating pane covers it", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-cursor-occlusion-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-cursor-occlusion-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const registry = createShellPluginRegistry({
@@ -563,7 +550,7 @@ describe("Shell", () => {
   });
 
   test("keeps focused pane local detail state when maximizing a floating pane", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-fullscreen-local-state-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-fullscreen-local-state-test");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     let openDetail: (() => void) | null = null;
     const registry = createShellPluginRegistry({
@@ -598,7 +585,7 @@ describe("Shell", () => {
   });
 
   test("allows pane fullscreen shortcut while text input is captured on desktop", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-fullscreen-captured-input-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-fullscreen-captured-input-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const dockedLayout = {
@@ -630,13 +617,13 @@ describe("Shell", () => {
     } as any);
 
     const frame = testSetup.captureCharFrame();
-    expect(frame).toContain("Main Portfolio");
+    expect(frame).toContain("Portfolio List");
     expect(frame).not.toContain("Ticker Research Body");
     expect(actions.some((action) => action.type === "UPDATE_LAYOUT")).toBe(false);
   });
 
   test("keeps the transient focus layout available after switching saved layouts", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-transient-focus-layout-tab-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-transient-focus-layout-tab-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const defaultLayout = {
@@ -685,7 +672,7 @@ describe("Shell", () => {
     await emitKeypress({ name: "f", ctrl: true, shift: true });
 
     let frame = testSetup.captureCharFrame();
-    expect(frame).toContain("Main Portfolio");
+    expect(frame).toContain("Portfolio List");
     expect(frame).not.toContain("Ticker Research Body");
     expect(controls.transientLayout).toMatchObject({
       id: "pane-focus",
@@ -719,7 +706,7 @@ describe("Shell", () => {
   });
 
   test("restores the focus source layout state when reactivating transient focus", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-transient-focus-state-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-transient-focus-state-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const defaultLayout = {
@@ -816,7 +803,7 @@ describe("Shell", () => {
   });
 
   test("exits window mode on Enter without changes", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-window-mode-resize-shortcut-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-window-mode-resize-shortcut-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const dockedLayout = {
@@ -847,7 +834,7 @@ describe("Shell", () => {
   });
 
   test("starts resize mode directly from the resize shortcut", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-window-mode-resize-shortcut-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-window-mode-resize-shortcut-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const dockedLayout = {
@@ -879,7 +866,7 @@ describe("Shell", () => {
   });
 
   test("moves a floating pane in window mode and commits once", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-window-mode-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-window-mode-test");
     const floatingLayout = cloneLayout(config.layout);
     floatingLayout.dockRoot = { kind: "pane", instanceId: "portfolio-list:main" };
     floatingLayout.floating = [{ instanceId: "ticker-detail:main", x: 8, y: 2, width: 32, height: 10, zIndex: 75 }];
@@ -905,7 +892,7 @@ describe("Shell", () => {
   });
 
   test("returns to window selection after commit for editing another window", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-window-mode-repeat-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-window-mode-repeat-test");
     const floatingLayout = cloneLayout(config.layout);
     floatingLayout.dockRoot = null;
     floatingLayout.floating = [
@@ -946,7 +933,7 @@ describe("Shell", () => {
   });
 
   test("cycles windows with Tab while staying in window move mode", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-window-mode-cycle-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-window-mode-cycle-test");
     const floatingLayout = cloneLayout(config.layout);
     floatingLayout.dockRoot = { kind: "pane", instanceId: "portfolio-list:main" };
     floatingLayout.floating = [{ instanceId: "ticker-detail:main", x: 8, y: 2, width: 32, height: 10, zIndex: 75 }];
@@ -967,7 +954,7 @@ describe("Shell", () => {
   });
 
   test("toggles the selected window between docked and floating in window move mode", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-window-mode-dock-toggle-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-window-mode-dock-toggle-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const dockedLayout = {
       dockRoot: { kind: "pane" as const, instanceId: "portfolio-list:main" },
@@ -994,7 +981,7 @@ describe("Shell", () => {
   });
 
   test("previews a directional docked window move before committing it", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-window-mode-docked-move-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-window-mode-docked-move-test");
     const mainPane = requireLayoutInstance(config, "portfolio-list:main");
     const detailPane = requireLayoutInstance(config, "ticker-detail:main");
     const dockedLayout = {
@@ -1044,7 +1031,7 @@ describe("Shell", () => {
     };
 
     try {
-      const config = createDefaultConfig("/tmp/gloomberb-shell-native-window-mode-test");
+      const config = createResearchTestConfig("/tmp/gloomberb-shell-native-window-mode-test");
       const desktopLayout = cloneLayout(config.layout);
       desktopLayout.dockRoot = {
         kind: "split",
@@ -1068,7 +1055,7 @@ describe("Shell", () => {
 
       const frame = testSetup.captureCharFrame();
       expect(frame).toContain("WINDOW MOVE");
-      expect(frame).toContain("WINDOW MOVE · Main Portfolio");
+      expect(frame).toContain("WINDOW MOVE · Portfolio List");
       expect(frame).toContain("Tab/w window");
     } finally {
       openTuiUiHost.capabilities = previousCapabilities;
@@ -1076,7 +1063,7 @@ describe("Shell", () => {
   });
 
   test("closes the focused docked pane with Ctrl+W", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-test");
     const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
     if (!mainPane) throw new Error("missing default portfolio pane");
 
@@ -1118,7 +1105,7 @@ describe("Shell", () => {
   });
 
   test("closes the focused pane after double Escape", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-test");
     const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
     if (!mainPane) throw new Error("missing default portfolio pane");
 
@@ -1160,7 +1147,7 @@ describe("Shell", () => {
   });
 
   test("closes the focused floating pane with Ctrl+W", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-test");
     const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
     const detailPane = config.layout.instances.find((instance) => instance.instanceId === "ticker-detail:main");
     if (!mainPane || !detailPane) throw new Error("missing default panes");
@@ -1206,7 +1193,7 @@ describe("Shell", () => {
   });
 
   test("closes the focused floating pane with Cmd+W", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-test");
     const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
     const detailPane = config.layout.instances.find((instance) => instance.instanceId === "ticker-detail:main");
     if (!mainPane || !detailPane) throw new Error("missing default panes");
@@ -1245,7 +1232,7 @@ describe("Shell", () => {
   });
 
   test("closes all floating panes with Ctrl+Alt+W", async () => {
-    const config = createDefaultConfig("/tmp/gloomberb-shell-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-shell-test");
     const mainPane = config.layout.instances.find((instance) => instance.instanceId === "portfolio-list:main");
     const firstDetailPane = config.layout.instances.find((instance) => instance.instanceId === "ticker-detail:main");
     if (!mainPane || !firstDetailPane) throw new Error("missing default panes");

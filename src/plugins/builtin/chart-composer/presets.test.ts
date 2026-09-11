@@ -48,21 +48,14 @@ describe("chart composer expressions", () => {
     expect(parseSeriesExpression(`CAP:provider:${"x".repeat(241)}`)).toBeNull();
   });
 
-  test("maps futures and Treasury aliases onto existing core source kinds", () => {
-    expect(parseSeriesExpression("fut:es")).toEqual({
+  test("maps futures aliases onto existing core source kinds", () => {
+    expect(parseSeriesExpression("fut:bz")).toEqual({
       kind: "security",
-      symbol: "ES=F",
+      symbol: "BZ=F",
       fieldId: "market.ohlcv",
-      label: "E-Mini S&P 500",
-    });
-    expect(parseSeriesExpression("ust:10y")).toEqual({
-      kind: "economic",
-      provider: "fred",
-      seriesId: "DGS10",
-      label: "10Y Treasury Yield",
+      label: "Brent Crude Oil",
     });
     expect(parseSeriesExpression("FUT:UNKNOWN")).toBeNull();
-    expect(parseSeriesExpression("UST:4Y")).toBeNull();
   });
 
   test("appends catalog series with required panels and collision-safe IDs", () => {
@@ -204,7 +197,7 @@ describe("chart composer expressions", () => {
   });
 
   test("preserves futures and forex identifiers in direct and custom chart presets", () => {
-    for (const symbol of ["ES=F", "6J=F", "JPY=X", "EURUSD=X", "EUR/USD"]) {
+    for (const symbol of ["BZ=F", "6J=F", "JPY=X", "EURUSD=X", "EUR/USD"]) {
       const spec = buildPriceChartPreset(symbol);
       expect(spec.series[0]?.source).toMatchObject({ kind: "security", instrument: { symbol } });
       expect(parseSeriesExpression(formatSeriesExpression(spec.series[0]!)))

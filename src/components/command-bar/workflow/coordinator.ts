@@ -4,7 +4,7 @@ import type { AppTickerRepositoryPort } from "../../../core/app-service-ports";
 import type { PluginRegistry } from "../../../plugins/registry";
 import type { AppAction, AppState } from "../../../state/app/context";
 import type { TickerRecord } from "../../../types/ticker";
-import { buildAddToPortfolioWorkflow } from "../../../plugins/builtin/portfolio-list/command-bar";
+import { buildAddToPortfolioWorkflow } from "./portfolio";
 import { getFirstVisibleFieldId } from "../helpers";
 import {
   buildBrokerChoices,

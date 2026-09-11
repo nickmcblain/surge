@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createDefaultConfig, createPaneInstance } from "../types/config";
+import { createResearchTestConfig } from "../test-support/research-layout";
 import type { TickerFinancials } from "../types/financials";
 import type { TickerRecord } from "../types/ticker";
 import { buildAppSessionSnapshot, reconcileAppSessionSnapshot } from "../core/state/session-persistence";
@@ -23,7 +24,7 @@ function createTicker(symbol: string, exchange = "NASDAQ"): TickerRecord {
 
 describe("session persistence", () => {
   test("builds a working-set snapshot from runtime state", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-test");
     const tickers = new Map<string, TickerRecord>([
       ["AAPL", createTicker("AAPL")],
       ["MSFT", createTicker("MSFT")],
@@ -77,7 +78,7 @@ describe("session persistence", () => {
   });
 
   test("reconciles pane state and broker references against the current config", () => {
-    const config = createDefaultConfig("/tmp/gloomberb-test");
+    const config = createResearchTestConfig("/tmp/gloomberb-test");
     config.brokerInstances.push({
       id: "ibkr-live",
       brokerType: "ibkr",
@@ -103,8 +104,8 @@ describe("session persistence", () => {
         "ticker-detail:main": {
           activeTabId: "chart",
           pluginState: {
-            "ticker-detail": { detailMetric: "revenue", shared: "legacy" },
-            "ticker-research": { shared: "canonical" },
+            "chart-composer": { detailMetric: "revenue", shared: "legacy" },
+            "market-overview": { shared: "canonical" },
           },
         },
         "missing:pane": { cursorSymbol: "MSFT" },
@@ -131,7 +132,7 @@ describe("session persistence", () => {
     expect(reconciled?.paneState["ticker-detail:main"]).toEqual({
       activeTabId: "chart",
       pluginState: {
-        "ticker-research": { detailMetric: "revenue", shared: "canonical" },
+        "market-overview": { detailMetric: "revenue", shared: "canonical" },
       },
     });
     expect(reconciled?.paneState["missing:pane"]).toBeUndefined();

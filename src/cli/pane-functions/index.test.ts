@@ -1,12 +1,7 @@
 import { paneSchemas as chartSchemas } from "../../plugins/builtin/chart-composer/headless-schema";
-import { paneSchemas as tickerSchemas } from "../../plugins/builtin/ticker-detail/headless-schema";
-import { paneSchemas as correlationSchemas } from "../../plugins/builtin/correlation/headless-schema";
-import { paneSchemas as researchSchemas } from "../../plugins/builtin/research/headless-schema";
 import type { HeadlessPaneDefinition } from "../../types/headless";
 import { describe, expect, test } from "bun:test";
 import { paneFunctionTestInternals } from "./index";
-import { parseCliGlobalArgs } from "../options";
-import { thirteenFHeadless } from "../../plugins/builtin/thirteenf/headless";
 
 const {
   parsePaneFunctionArgs,
@@ -31,7 +26,7 @@ const dummyPane = {
 
 function capabilityFor(templateId: string) {
   const schemas: Record<string, Pick<HeadlessPaneDefinition, "argument" | "options" | "discovery">> = {
-    ...chartSchemas, ...tickerSchemas, ...correlationSchemas, ...researchSchemas,
+    ...chartSchemas,
   };
   const schema = schemas[templateId];
   return getPaneFunctionCapability({
@@ -44,18 +39,6 @@ function capabilityFor(templateId: string) {
 }
 
 describe("pane function CLI args", () => {
-  test("passes global limits through the pane schema instead of silently using its default", () => {
-    const capability = getPaneFunctionCapability({
-      id: "funds", paneId: dummyPane.id, label: "Funds", description: "Funds", headless: thirteenFHeadless,
-    }, dummyPane);
-    for (const flags of [["--limit", "15"], ["--limit=15"]]) {
-      const global = parseCliGlobalArgs(["fn", "13F", "1067983", ...flags, "--json"]);
-      const parsed = parsePaneFunctionArgs(global.args.slice(1), global.options);
-      expect(normalizeCapabilityOptions(capability, parsed.options, { strict: true }).limit).toBe(15);
-    }
-    const parsed = parsePaneFunctionArgs(["13F", "1067983"], { limit: 201 });
-    expect(() => normalizeCapabilityOptions(capability, parsed.options, { strict: true })).toThrow();
-  });
   test("inline options do not consume the next positional instrument", () => {
     expect(parsePaneFunctionArgs(["GP", "--range=1M", "ES=F"])).toMatchObject({
       target: "GP", arg: "ES=F", options: { range: "1M" },
@@ -111,16 +94,6 @@ describe("pane function CLI args", () => {
     });
   });
 
-  test("maps financial statement options into reusable pane state", () => {
-    expect(optionPaneState({
-      statement: "balance sheet",
-      period: "quarterly",
-    })).toEqual({
-      financialSubTab: "balance",
-      financialPeriod: "quarterly",
-    });
-  });
-
   test("parses catalog queries and limit options", () => {
     expect(parsePaneCatalogArgs(["chart", "price", "--limit", "3"])).toEqual({
       query: "chart price",
@@ -170,55 +143,6 @@ describe("pane function CLI args", () => {
     expect(renderPaneCatalogReport(matches, { query: "price chart", limit: 10, botSafeOnly: false })).toContain("gloomberb shot GP <ticker>");
   });
 
-  test("finds the semantic financial comparison capability from natural wording", () => {
-    const matches = filterPaneCatalogEntries([
-      {
-        token: "GF",
-        label: "Fundamental Graph",
-        description: "Graph statement metrics for one or more tickers.",
-        paneId: "fundamental-graph",
-        paneName: "Fundamental Graph",
-        templateId: "fundamental-graph-pane",
-        shortcut: "GF",
-        argKind: "ticker-list",
-        argPlaceholder: "tickers",
-        keywords: ["fundamental", "graph", "financials", "statements"],
-        defaultSettings: {},
-        capability: capabilityFor("fundamental-graph-pane"),
-      },
-      {
-        token: "CMP",
-        label: "Comparison Chart",
-        description: "Compare stock prices.",
-        paneId: "comparison-chart",
-        paneName: "Compare",
-        templateId: "comparison-chart-pane",
-        shortcut: "CMP",
-        argKind: "ticker-list",
-        argPlaceholder: "tickers",
-        keywords: ["compare", "price"],
-        defaultSettings: {},
-        capability: capabilityFor("comparison-chart-pane"),
-      },
-    ], "cash flow comparison");
-
-    expect(matches.map(({ token }) => token)).toEqual(["GF", "CMP"]);
-  });
-
-  test("normalizes GF options without creating retired plugin state", () => {
-    const capability = capabilityFor("fundamental-graph-pane");
-    const options = normalizeCapabilityOptions(capability, {
-      metric: "operating cash flow",
-      period: "yearly",
-    });
-
-    expect(options).toEqual({
-      metric: "operatingCashFlow",
-      period: "annual",
-    });
-    expect(capabilityPluginState(capability, options)).toEqual({});
-  });
-
   test("exposes custom G as a bot-safe mixed-series capability", () => {
     const capability = capabilityFor("chart-composer-pane");
 
@@ -257,10 +181,4 @@ describe("pane function CLI args", () => {
     expect(isDataPaneForDomFallback(helpPane)).toBe(false);
   });
 
-  test("rejects financial statement options on a price comparison", () => {
-    const capability = capabilityFor("comparison-chart-pane");
-    expect(() => normalizeCapabilityOptions(capability, {
-      tab: "cashflow",
-    })).toThrow("price-comparison does not support --tab");
-  });
 });

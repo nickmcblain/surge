@@ -17,15 +17,9 @@ import { search, searchCandidatesForCli, buildSearchReport } from "./commands/se
 import { ticker } from "./commands/ticker";
 import { apiCliCommand } from "./commands/api";
 import { marketDataCliCommands } from "./commands/market";
-import { overviewCliCommands } from "./commands/overview";
 import { remoteCliCommand } from "./commands/remote";
 import { createSystemCliCommands } from "./commands/system";
-import {
-  aiCliCommand,
-  brokerCliCommand,
-  ibkrCliCommand,
-  rssCliCommand,
-} from "./commands/automation";
+import { rssCliCommand } from "./commands/automation";
 import {
   installPlugin,
   listPlugins,
@@ -190,12 +184,8 @@ function createCoreCliCommands(
     },
     apiCliCommand,
     ...marketDataCliCommands,
-    ...overviewCliCommands,
     remoteCliCommand,
     ...createSystemCliCommands(allCommands),
-    brokerCliCommand,
-    ibkrCliCommand,
-    aiCliCommand,
     rssCliCommand,
   ];
   return commands;

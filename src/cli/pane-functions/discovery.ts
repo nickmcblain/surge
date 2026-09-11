@@ -84,8 +84,6 @@ function buildDiscoveryContext({
     registerShortcut: () => {},
     registerTickerAction: () => {},
     registerContextMenuProvider: () => {},
-    registerSyncContributor: () => () => {},
-    registerSyncTransport: () => () => {},
     watchNewsQuery: () => () => {},
     getData: () => null,
     getTicker: () => null,

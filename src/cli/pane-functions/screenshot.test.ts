@@ -410,7 +410,7 @@ describe("pane screenshot structured data evidence", () => {
     });
   });
 
-  test("captures rendered fundamental rows and headline statement values", () => {
+  test("captures rendered fundamental rows", () => {
     const financials = {
       priceHistory: [],
       annualStatements: [
@@ -452,24 +452,6 @@ describe("pane screenshot structured data evidence", () => {
       }],
     });
 
-    const statementEvidence = shotDataEvidenceFor(
-      resolved("financial-statements", { statement: "cashflow", period: "annual" }),
-      payload([["NVDA", financials]]),
-    );
-    expect(statementEvidence).toMatchObject({
-      kind: "financial-statement",
-      symbol: "NVDA",
-      statement: "cashflow",
-      period: "annual",
-      latest: {
-        date: "2026-01-31",
-        metrics: expect.arrayContaining([
-          expect.objectContaining({ key: "operatingCashFlow", value: 42 }),
-          expect.objectContaining({ key: "capitalExpenditure", value: -12 }),
-          expect.objectContaining({ key: "freeCashFlow", value: 30 }),
-        ]),
-      },
-    });
   });
 });
 

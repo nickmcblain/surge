@@ -69,9 +69,6 @@ import {
 import { resolveChartComposerShortcut } from "./shortcuts";
 import { ChartSeriesQuickAdd } from "./quick-add";
 import { useLiveStreamingSetting } from "../shared/live-streaming";
-import { usePublicShare } from "../shared/public-share";
-import { buildChartShareData } from "../../../shares/chart-snapshot";
-import { isPlainKey } from "../../../utils/keyboard";
 
 const RANGE_TABS = RANGES.map((range, index) => ({ label: `${index + 1}:${range}`, value: range }));
 const AUTO_VIEWPORT_DEBOUNCE_MS = 350;
@@ -139,7 +136,7 @@ function ChartComposerSurface({
   const dialog = useDialog();
   const dispatch = useAppDispatch();
   const isDesktopWeb = useUiHost().kind === "desktop-web";
-  const { publicSharing, cellWidthPx = 8 } = useUiCapabilities();
+  const { cellWidthPx = 8 } = useUiCapabilities();
   const paneId = usePaneInstanceId();
   const liveStreaming = useLiveStreamingSetting();
   const dialogOpen = useDialogState((state) => state.isOpen);
@@ -269,18 +266,6 @@ function ChartComposerSurface({
     ),
     [resolution.bufferedSeries, resolution.legendSeries, resolution.series, spec],
   );
-  const shareWarnings = useMemo(() => [...resolution.errors, ...resolution.warnings], [resolution.errors, resolution.warnings]);
-  const shareData = useMemo(() => buildChartShareData(plottedSeries, activeRuntimeViewport?.requestViewport ?? viewport, shareWarnings),
-    [plottedSeries, activeRuntimeViewport?.requestViewport, viewport, shareWarnings]);
-  const createPublicShare = usePublicShare();
-  const shareChart = useCallback(() => {
-    // Read the latest gesture immediately, even before its history request's
-    // debounce commits. Sharing should match the window visible at the click.
-    const visibleWindow = requestViewportOwnerRef.current === authoredViewportKey
-      ? requestViewportRef.current ?? viewport : viewport;
-    const data = buildChartShareData(plottedSeries, visibleWindow, shareWarnings);
-    if (data) void createPublicShare({ kind: "chart", data });
-  }, [createPublicShare, plottedSeries, viewport, shareWarnings, authoredViewportKey]);
   const [interactionCaptured, setInteractionCapturedState] = useState(false);
   // Typing in quick-add must not freeze the plot: it only takes the keyboard.
   const [modalCaptured, setModalCaptured] = useState(false);
@@ -470,12 +455,6 @@ function ChartComposerSurface({
   );
   useShortcut((event) => {
     if (interactionCaptureRef.current || dialogOpen) return;
-    if (publicSharing && shareData && isPlainKey(event, "y")) {
-      event.preventDefault();
-      event.stopPropagation();
-      shareChart();
-      return;
-    }
     const shortcut = resolveChartComposerShortcut(event, RANGES.length);
     if (!shortcut) return;
     event.preventDefault();
@@ -612,8 +591,6 @@ function ChartComposerSurface({
             <Button label="Formulas" compact disabled={disabled} onPress={() => openDialog()} />
           )}
         />
-
-        {publicSharing && <Button label="Share" compact onPress={shareChart} disabled={!shareData} />}
       </Box>
       {showVintageNotice && <Box paddingX={1} flexShrink={0}>
         <Prose text={financialNotice} width={Math.max(8, width - 2)} color={colors.textDim} />

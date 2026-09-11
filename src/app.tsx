@@ -17,7 +17,6 @@ import { DetachedPaneShell } from "./components/layout/detached-pane-shell";
 import { TransientLayoutProvider } from "./components/layout/transient-layout";
 import { CommandBar } from "./components/command-bar/surface";
 import { OnboardingWizard } from "./components/onboarding/onboarding-wizard";
-import { SignInGate } from "./components/sign-in-gate";
 import { useDialog } from "./ui/dialog";
 import { PluginRegistry } from "./plugins/registry";
 import type { LoadedExternalPlugin } from "./plugins/loader";
@@ -33,7 +32,6 @@ import type { LayoutBounds } from "./plugins/pane-manager";
 import type { AppSessionSnapshot } from "./core/state/session-persistence";
 import type { MarketDataCoordinator } from "./market-data/coordinator";
 import { createAppNotifier } from "./notifications/app-notifier";
-import { useBrokerImportRuntime } from "./app/runtime/broker-import";
 import { useDesktopDeepLinkRuntime } from "./app/runtime/desktop-deeplink";
 import { useDesktopApplicationMenuRuntime } from "./app/runtime/desktop-menu";
 import { useAppGlobalShortcuts } from "./app/global-shortcuts";
@@ -42,8 +40,6 @@ import { bindPluginRegistryRuntimeAccess } from "./app/runtime/plugin-bindings";
 import { useAppStartupRuntime } from "./app/runtime/startup";
 import { useTickerRefreshRuntime } from "./app/runtime/ticker-refresh";
 import { useAppUpdateRuntime } from "./app/runtime/update";
-import { createCoreSyncContributors } from "./sync/core-contributors";
-import { useCloudSyncRuntime } from "./sync/react";
 import { RemoteControlHost, type RemoteControlAdapter } from "./remote/app-host";
 import { RemoteUiRegistryProvider } from "./remote/semantic-tree";
 import {
@@ -55,8 +51,6 @@ import { scheduleConfigSave } from "./state/config-save-scheduler";
 import { measurePerf } from "./utils/perf-marks";
 import { useAppLanguage } from "./i18n/react";
 import { AppLanguageConfigObserver } from "./app/language-observer";
-import { isPaneShareHandoff } from "./shares/location";
-import { apiClient } from "./api-client";
 
 const EMPTY_EXTERNAL_PLUGINS: LoadedExternalPlugin[] = [];
 
@@ -74,8 +68,6 @@ interface AppInnerProps {
   updatesEnabled?: boolean;
   onboardingActive?: boolean;
   onOnboardingComplete?: (config: AppConfig) => void | Promise<void>;
-  /** Hosted browser terminal: nothing is reachable until a session exists. */
-  signInGateActive?: boolean;
 }
 
 function ThemedAppRoot({ children }: { children: ReactNode }) {
@@ -110,7 +102,6 @@ function AppInner({
   updatesEnabled = true,
   onboardingActive = false,
   onOnboardingComplete,
-  signInGateActive = false,
 }: AppInnerProps) {
   const dispatch = useAppDispatch();
   const stateRef = useAppStateRef();
@@ -206,15 +197,6 @@ function AppInner({
     });
   }, [desktopWindowBridge]);
 
-  useEffect(() => {
-    const disposers = createCoreSyncContributors().map((contributor) => (
-      pluginRegistry.registerSyncContributorForPlugin("core", contributor)
-    ));
-    return () => {
-      for (const dispose of disposers) dispose();
-    };
-  }, [pluginRegistry]);
-
   const {
     primeCachedFinancials,
     refreshQuote,
@@ -228,14 +210,6 @@ function AppInner({
     marketData,
     pluginRegistry,
     tickers: state.tickers,
-  });
-
-  const { importBrokerPositions, autoImportBrokerPositions } = useBrokerImportRuntime({
-    dispatch,
-    pluginRegistry,
-    refreshQuote,
-    stateRef,
-    tickerRepository,
   });
 
   const { runUpdateCheck, startUpdate } = useAppUpdateRuntime({
@@ -263,10 +237,7 @@ function AppInner({
     desktopDeepLinkBridge,
     desktopWindowKind: desktopWindowBridge?.kind,
     dispatch,
-    // The browser bridge re-emits from the URL on subscribe and nothing rewrites
-    // it, so a `?layout=` / `?share=` intent survives the gate and lands once a
-    // session exists. Running it earlier would only 401 behind the scrim.
-    initialized: state.initialized && !signInGateActive,
+    initialized: state.initialized,
     pluginRegistry,
     stateRef,
   });
@@ -274,7 +245,6 @@ function AppInner({
   const focusedTickerSymbol = getFocusedTickerSymbol(state);
   useAppStartupRuntime({
     appActive,
-    autoImportBrokerPositions,
     dataProvider,
     dispatch,
     focusedTickerSymbol,
@@ -293,26 +263,10 @@ function AppInner({
   bindPluginRegistryRuntimeAccess({
     dataProvider,
     dispatch,
-    importBrokerPositions,
     marketData,
     pluginRegistry,
     stateRef,
     tickerRepository,
-  });
-
-  useCloudSyncRuntime({
-    state,
-    getState: getRemoteState,
-    dispatch,
-    tickerRepository,
-    pluginRegistry,
-    appActive,
-    // Keep a first-run workspace stable while the local guide is active. Once
-    // onboarding finishes, the normal pull-before-push sync starts immediately.
-    initialized: state.initialized
-      && desktopWindowBridge?.kind !== "detached"
-      && !onboardingActive
-      && !signInGateActive,
   });
 
   const persistConfig = useCallback((nextConfig: AppState["config"]) => {
@@ -417,13 +371,8 @@ function AppInner({
             />
           </TransientLayoutProvider>
           {onboardingActive && onOnboardingComplete ? (
-            <OnboardingWizard
-              pluginRegistry={pluginRegistry}
-              importBrokerPositions={importBrokerPositions}
-              onComplete={onOnboardingComplete}
-            />
+            <OnboardingWizard onComplete={onOnboardingComplete} />
           ) : null}
-          {signInGateActive ? <SignInGate /> : null}
           {state.commandBarOpen && (
             <CommandBar
               dataProvider={dataProvider}
@@ -454,11 +403,6 @@ interface AppProps {
   desktopThemePreview?: DesktopThemePreviewState | null;
   remoteControlAdapter?: RemoteControlAdapter;
   updatesEnabled?: boolean;
-  /**
-   * Requires a Gloom Cloud session before the app is usable. The hosted browser
-   * terminal sets this; desktop and the TUI keep sign-in optional.
-   */
-  requireSignIn?: boolean;
 }
 
 export function App({
@@ -474,7 +418,6 @@ export function App({
   desktopThemePreview = null,
   remoteControlAdapter,
   updatesEnabled = true,
-  requireSignIn = false,
 }: AppProps) {
   useAppLanguage();
   const externalPlugins = providedExternalPlugins ?? EMPTY_EXTERNAL_PLUGINS;
@@ -499,20 +442,8 @@ export function App({
   const [config, setConfig] = useState(() => {
     return initialCliLaunch.config;
   });
-  // Only the surfaces that require a session subscribe, so desktop and the
-  // terminal keep their current render profile.
-  const [signedIn, setSignedIn] = useState(() => !requireSignIn || apiClient.isSignedIn());
-  useEffect(() => {
-    if (!requireSignIn) return;
-    const sync = () => setSignedIn(apiClient.isSignedIn());
-    sync();
-    return apiClient.subscribeCurrentUser(sync);
-  }, [requireSignIn]);
-  const signInGateActive = requireSignIn && !signedIn;
-  const shareHandoff = isPaneShareHandoff();
   const [showOnboarding, setShowOnboarding] = useState(() => (
     desktopWindowBridge?.kind !== "detached"
-    && !shareHandoff
     && (!effectiveInitialConfig.onboardingComplete || !!effectiveInitialConfig.onboardingProgress)
   ));
 
@@ -570,7 +501,6 @@ export function App({
           remoteControlAdapter={remoteControlAdapter}
           updatesEnabled={updatesEnabled}
           onboardingActive={showOnboarding}
-          signInGateActive={signInGateActive}
           onOnboardingComplete={(updatedConfig) => {
             setConfig(updatedConfig);
             setShowOnboarding(false);

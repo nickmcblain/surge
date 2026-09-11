@@ -11,6 +11,7 @@ import {
   findPaneInstance,
 } from "../../../types/config";
 import { getDockedPaneIds } from "../../../plugins/pane-manager";
+import { RESEARCH_TEST_LAYOUT } from "../../../test-support/research-layout";
 import { EXTRACTED_PLUGINS, seedExtractedPlugins } from "../../../plugins/seed";
 
 const tempDirs: string[] = [];
@@ -116,40 +117,30 @@ describe("sanitizeLayout", () => {
     ]);
   });
 
-  test("ships a focused Home layout with portfolio, chat, and following research", () => {
+  test("ships a Home layout with the zone board, generation, overview, wire, day-ahead chart and schedule", () => {
     expect(DEFAULT_LAYOUT.instances.map((instance) => instance.instanceId)).toEqual([
-      "portfolio-list:main",
-      "ticker-detail:main",
-      "chat:main",
+      "energy-zone-board:main",
+      "energy-generation:main",
+      "energy-zone-overview:main",
+      "news-feed:main",
+      "energy-day-ahead:main",
+      "energy-calendar:main",
     ]);
     expect(getDockedPaneIds(DEFAULT_LAYOUT)).toEqual([
-      "portfolio-list:main",
-      "chat:main",
-      "ticker-detail:main",
+      "energy-zone-board:main",
+      "energy-generation:main",
+      "energy-zone-overview:main",
+      "news-feed:main",
+      "energy-day-ahead:main",
+      "energy-calendar:main",
     ]);
     expect(DEFAULT_LAYOUT.dockRoot).toMatchObject({
       kind: "split",
       axis: "horizontal",
-      ratio: 0.34,
-      first: {
-        kind: "split",
-        axis: "vertical",
-        ratio: 0.6,
-      },
-      second: { kind: "pane", instanceId: "ticker-detail:main" },
+      first: { kind: "split", axis: "vertical", first: { kind: "pane", instanceId: "energy-zone-board:main" } },
+      second: { kind: "split", axis: "horizontal" },
     });
     expect(DEFAULT_LAYOUT.floating).toEqual([]);
-  });
-
-  test("keeps the default research layout free of retired chart settings", () => {
-    const researchPanes = DEFAULT_LAYOUT.instances.filter((instance) => instance.paneId === "ticker-research");
-    expect(researchPanes.length).toBeGreaterThan(0);
-    for (const pane of researchPanes) {
-      expect(pane.settings).not.toHaveProperty("chartRangePreset");
-      expect(pane.settings).not.toHaveProperty("chartResolution");
-      expect(pane.settings).not.toHaveProperty("chartAxisMode");
-      expect(pane.settings).not.toHaveProperty("chartRenderMode");
-    }
   });
 
   test("rewrites unbound ticker-detail panes to follow the first portfolio pane", () => {
@@ -391,7 +382,7 @@ describe("loadConfig", () => {
     const legacyLayout = {
       ...DEFAULT_LAYOUT,
       instances: [
-        ...DEFAULT_LAYOUT.instances.map((instance) => instance.instanceId === "chat:main"
+        ...DEFAULT_LAYOUT.instances.map((instance) => instance.instanceId === "energy-calendar:main"
           ? {
             ...instance,
             placementMemory: {
@@ -417,7 +408,7 @@ describe("loadConfig", () => {
         name: "Default",
         layout: legacyLayout,
         paneState: {
-          "chat:main": { draft: "keep" },
+          "energy-calendar:main": { draft: "keep" },
           [hiddenPaneId]: { activeTabId: "overview" },
         },
         focusedPaneId: hiddenPaneId,
@@ -429,9 +420,9 @@ describe("loadConfig", () => {
     expect(config.configVersion).toBe(CURRENT_CONFIG_VERSION);
     expect(config.layout.instances.some((instance) => instance.instanceId === hiddenPaneId)).toBe(false);
     expect(config.layouts[0]?.layout.instances.some((instance) => instance.instanceId === hiddenPaneId)).toBe(false);
-    expect(config.layouts[0]?.paneState).toEqual({ "chat:main": { draft: "keep" } });
+    expect(config.layouts[0]?.paneState).toEqual({ "energy-calendar:main": { draft: "keep" } });
     expect(config.layouts[0]?.focusedPaneId).toBeNull();
-    expect(findPaneInstance(config.layout, "chat:main")?.placementMemory?.docked).toEqual({
+    expect(findPaneInstance(config.layout, "energy-calendar:main")?.placementMemory?.docked).toEqual({
       anchorInstanceId: undefined,
       path: undefined,
       position: "right",
@@ -919,7 +910,7 @@ describe("loadConfig", () => {
       configVersion: 19,
       layouts: [{
         name: "Chart",
-        layout: DEFAULT_LAYOUT,
+        layout: RESEARCH_TEST_LAYOUT,
         paneState: {
           "ticker-detail:main": {
             activeTabId: "fundamental-graphs",
@@ -968,8 +959,8 @@ describe("loadConfig", () => {
     const dataDir = await createTempConfigDir();
     const selectedPortfolioColumns = DEFAULT_COLUMNS.map((column) => column.id);
     const currentLayout = {
-      ...DEFAULT_LAYOUT,
-      instances: DEFAULT_LAYOUT.instances.map((instance) => (
+      ...RESEARCH_TEST_LAYOUT,
+      instances: RESEARCH_TEST_LAYOUT.instances.map((instance) => (
         instance.instanceId === "ticker-detail:main"
           ? {
             ...instance,
@@ -1042,8 +1033,8 @@ describe("loadConfig", () => {
     const dataDir = await createTempConfigDir();
     const legacyColumnIds = DEFAULT_COLUMNS.map((column) => column.id);
     const legacyLayout = {
-      ...DEFAULT_LAYOUT,
-      instances: DEFAULT_LAYOUT.instances.map((instance) => (
+      ...RESEARCH_TEST_LAYOUT,
+      instances: RESEARCH_TEST_LAYOUT.instances.map((instance) => (
         instance.instanceId === "portfolio-list:main"
           ? {
             ...instance,
@@ -1065,7 +1056,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(dataDir);
 
     expect(findPaneInstance(config.layout, "portfolio-list:main")?.settings?.columnIds).toEqual(DEFAULT_PORTFOLIO_COLUMN_IDS);
-    expect(findPaneInstance(config.layouts[0]?.layout ?? DEFAULT_LAYOUT, "portfolio-list:main")?.settings?.columnIds)
+    expect(findPaneInstance(config.layouts[0]?.layout ?? RESEARCH_TEST_LAYOUT, "portfolio-list:main")?.settings?.columnIds)
       .toEqual(DEFAULT_PORTFOLIO_COLUMN_IDS);
   });
 
@@ -1073,8 +1064,8 @@ describe("loadConfig", () => {
     const dataDir = await createTempConfigDir();
     const selectedColumnIds = DEFAULT_COLUMNS.map((column) => column.id);
     const layout = {
-      ...DEFAULT_LAYOUT,
-      instances: DEFAULT_LAYOUT.instances.map((instance) => (
+      ...RESEARCH_TEST_LAYOUT,
+      instances: RESEARCH_TEST_LAYOUT.instances.map((instance) => (
         instance.instanceId === "portfolio-list:main"
           ? {
             ...instance,
@@ -1096,7 +1087,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(dataDir);
 
     expect(findPaneInstance(config.layout, "portfolio-list:main")?.settings?.columnIds).toEqual(selectedColumnIds);
-    expect(findPaneInstance(config.layouts[0]?.layout ?? DEFAULT_LAYOUT, "portfolio-list:main")?.settings?.columnIds)
+    expect(findPaneInstance(config.layouts[0]?.layout ?? RESEARCH_TEST_LAYOUT, "portfolio-list:main")?.settings?.columnIds)
       .toEqual(selectedColumnIds);
   });
 

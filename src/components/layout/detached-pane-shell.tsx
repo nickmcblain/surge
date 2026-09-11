@@ -21,13 +21,7 @@ import {
   recordDoubleEscapeClose,
   resetDoubleEscapeClose,
 } from "../../utils/double-escape-close";
-import { createShare, openLiveShareUrl } from "../../shares/api";
-import { buildPaneSharePayload } from "../../shares/pane";
 import type { ContextMenuItem } from "../../types/context-menu";
-import {
-  PANE_MANAGEMENT_ACCELERATORS,
-  resolvePaneManagementShortcut,
-} from "./shell/shortcuts";
 
 interface DetachedPaneShellProps {
   pluginRegistry: PluginRegistry;
@@ -55,7 +49,6 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
   const {
     cellHeightPx = 18,
     nativePaneChrome,
-    publicSharing,
     titleBarOverlay,
     nativeWindowChrome = titleBarOverlay,
     windowControls,
@@ -72,14 +65,6 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
     () => ({ config, paneState }) as Parameters<typeof resolveTickerForPane>[0],
     [config, paneState],
   );
-  const sharePayload = useMemo(() => instance && publicSharing
-    ? buildPaneSharePayload(
-        pluginRegistry,
-        instance,
-        paneState[instance.instanceId] ?? {},
-        resolveTickerForPane(titleState, instance.instanceId),
-      )
-    : null, [instance, paneState, pluginRegistry, publicSharing, titleState]);
   const quickSettings = instance ? pluginRegistry.resolvePaneQuickSettings(instance.instanceId) : [];
   const title = instance && paneDef
     ? getPaneDisplayTitle(titleState, instance, paneDef, pluginRegistry.panes)
@@ -142,28 +127,6 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
     if (nativeWindowChrome) void rendererHost.startWindowDrag?.();
   }, [focusPane, nativeWindowChrome, rendererHost]);
 
-  const sharePane = useCallback(async () => {
-    if (!sharePayload) return;
-    try {
-      const { id } = await createShare(sharePayload);
-      await rendererHost.copyText(openLiveShareUrl(id));
-      pluginRegistry.notify({ body: "Share link copied to clipboard", type: "success" });
-    } catch (error) {
-      pluginRegistry.notify({
-        body: error instanceof Error ? error.message : "Could not share this pane.",
-        type: "error",
-      });
-    }
-  }, [pluginRegistry, rendererHost, sharePayload]);
-
-  useShortcut((event) => {
-    if (resolvePaneManagementShortcut(event) !== "share" || !sharePayload) return;
-    if (inputCaptured && event.ctrl && !event.meta && !event.super) return;
-    event.preventDefault();
-    event.stopPropagation();
-    void sharePane();
-  });
-
   const openActions = useCallback((event?: { stopPropagation?: () => void; preventDefault?: () => void }) => {
     stopMouse(event);
     focusPane();
@@ -175,12 +138,6 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
         onSelect: () => pluginRegistry.openPaneSettingsFn(desktopWindowBridge.paneId),
       });
     }
-    if (sharePayload) items.push({
-      id: "share-pane",
-      label: "Share Pane",
-      accelerator: PANE_MANAGEMENT_ACCELERATORS.share,
-      onSelect: sharePane,
-    });
     void showContextMenu({
       kind: "pane",
       paneId: desktopWindowBridge.paneId,
@@ -189,9 +146,8 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
       floating: true,
     }, items, event).then((shown) => {
       if (!shown && hasPaneSettings) pluginRegistry.openPaneSettingsFn(desktopWindowBridge.paneId);
-      else if (!shown && sharePayload) void sharePane();
     });
-  }, [desktopWindowBridge.paneId, focusPane, hasPaneSettings, instance?.paneId, pluginRegistry, sharePane, sharePayload, showContextMenu, title]);
+  }, [desktopWindowBridge.paneId, focusPane, hasPaneSettings, instance?.paneId, pluginRegistry, showContextMenu, title]);
   const toggleQuickSetting = useCallback((key: string, event?: { stopPropagation?: () => void; preventDefault?: () => void }) => {
     stopMouse(event);
     focusPane();
@@ -297,7 +253,7 @@ export function DetachedPaneShell({ pluginRegistry, desktopWindowBridge }: Detac
                   </Box>
                 ))}
                 <Box flexGrow={1} minWidth={0} />
-                {(hasPaneSettings || sharePayload) && (
+                {hasPaneSettings && (
                   <Text
                     fg={paneTitleText(focused, true, colors)}
                     selectable={false}

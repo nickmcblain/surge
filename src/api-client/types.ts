@@ -9,7 +9,6 @@ import type {
   PriceHistorySource,
   Quote,
 } from "../types/financials";
-import type { SyncSettings, SyncSnapshot } from "../sync/types";
 
 export interface ChatUserSummary {
   id: string;
@@ -186,30 +185,6 @@ export interface CloudPricing {
   yearly: CloudPricingTier;
 }
 
-/** One command-bar prefix described for `/assist/command`. */
-export interface AssistCommandDescriptor {
-  prefix: string;
-  name: string;
-  description?: string;
-  arg?: {
-    placeholder?: string;
-    kind: "text" | "ticker" | "ticker-list";
-  };
-}
-
-/** A command-bar line the assistant believes answers the query. */
-export interface AssistCommandCandidate {
-  /** Exact command-bar text to run, e.g. "G NVDA AMD". */
-  input: string;
-  title: string;
-  prefix: string;
-  confidence: number;
-}
-
-export interface AssistCommandResponse {
-  candidates: AssistCommandCandidate[];
-}
-
 export type AccountProfileUpdate = Partial<{
   username: string;
   name: string;
@@ -227,28 +202,6 @@ export type AccountProfileUpdate = Partial<{
   weeklyRoundupEnabled: boolean;
   positionAlertsEnabled: boolean;
 }>;
-
-export interface CloudSyncSnapshotResponse {
-  snapshot: SyncSnapshot | null;
-  revision: number | null;
-  updatedAt: string | null;
-  settings: SyncSettings;
-}
-
-export interface CloudSyncPushResponse {
-  revision: number;
-  updatedAt: string;
-  settings: SyncSettings;
-}
-
-export interface CloudRoundupPreviewResponse {
-  subject: string;
-  text: string;
-  html: string;
-  sender: string;
-  replyTo: string;
-  recipient: string;
-}
 
 export interface CloudQuotePayload extends Quote {
   providerId: "gloomberb-cloud";

@@ -1,6 +1,5 @@
 import { expect, test } from "bun:test";
 import type { Quote } from "../../types/financials";
-import { mapQuote } from "../../sources/gloomberb-cloud/normalizers";
 import { mergeQuoteContribution, normalizeQuoteContribution } from "./contributions";
 import { reconcileQuoteDayRange } from "./day-range";
 import { resolveCanonicalQuote } from "./resolution";
@@ -15,21 +14,6 @@ function quote(overrides: Partial<Quote> = {}): Quote {
     ...overrides,
   };
 }
-
-test("cloud snapshots include the latest regular trade beyond a lagging daily bar", () => {
-  // The production Alpaca quote had no venue, only an explicit session date.
-  const nvda = mapQuote(quote({ price: 217.77, low: 217.79, listingExchangeName: undefined,
-    sessionConfidence: "derived", changeSessionDate: "2026-09-10" }));
-  expect(nvda).toMatchObject({ high: 220.99, low: 217.77 });
-  const contribution = normalizeQuoteContribution(nvda)!;
-  expect(resolveCanonicalQuote({ "gloomberb-cloud": contribution }, now).quote?.changeSessionDate).toBe("2026-09-10");
-  expect(mergeQuoteContribution(contribution, { ...nvda, price: 217, high: undefined, low: undefined }))
-    .toMatchObject({ high: 220.99, low: 217 });
-  expect(mapQuote(quote({ price: 222 }))).toMatchObject({ high: 222, low: 218.05 });
-  // Apply the same correction after converting London pence to pounds.
-  expect(mapQuote(quote({ currency: "GBp", listingExchangeName: "LSE", price: 230, high: 225, low: 210 })))
-    .toMatchObject({ currency: "GBP", price: 2.3, high: 2.3, low: 2.1 });
-});
 
 test("sparse regular ticks widen cached extrema and later snapshots cannot shrink them", () => {
   const current = normalizeQuoteContribution(quote())!;

@@ -1,0 +1,49 @@
+name: Pages
+
+# Publishes the landing page and the curl installer to GitHub Pages, so
+# https://nickmcblain.github.io/surge/install.sh always matches scripts/install.sh
+# on main.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "scripts/install.sh"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp -R site/. _site/
+          cp scripts/install.sh _site/install.sh
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surge — the energy trader's terminal</title>
+  <meta name="description" content="Open-source energy markets terminal. Day-ahead prices, load, renewables, flows and the generation stack for every European bidding zone, in your terminal or on your desktop.">
+  <meta property="og:title" content="Surge — the energy trader's terminal">
+  <meta property="og:description" content="Open-source energy markets terminal for European power and gas. Free. No account.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nickmcblain.github.io/surge/">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Cpath d='M3 3h10v2H5v2h8v6H3v-2h8V9H3z' fill='%23ff8800'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#">SURGE</a>
+  <nav>
+    <a href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md">Docs</a>
+    <a href="https://github.com/nickmcblain/surge">GitHub</a>
+    <a class="btn btn-primary" href="#install">Install</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <pre class="wordmark" aria-label="Surge">▞▀▖            
+▚▄ ▌ ▌▙▀▖▞▀▌▞▀▖
+▖ ▌▌ ▌▌  ▌ ▌▛▀ 
+▝▀ ▝▀▘▘  ▝▀▌▝▀▘</pre>
+    <h1>The energy trader's terminal.</h1>
+    <p class="lede">Day-ahead prices, load, renewables, flows and the generation stack for every European bidding zone — in your terminal or on your desktop. Open source. Free. No account.</p>
+
+    <div class="install-line">
+      <code id="install-cmd"><span class="prompt">$ </span>curl -fsSL https://nickmcblain.github.io/surge/install.sh | sh</code>
+      <button class="btn btn-secondary copy" data-copy="curl -fsSL https://nickmcblain.github.io/surge/install.sh | sh">Copy</button>
+    </div>
+    <p class="hero-links">
+      <a href="https://github.com/nickmcblain/surge">View on GitHub</a>
+      <span class="sep">·</span>
+      <a href="#install">Other install options</a>
+    </p>
+  </section>
+
+  <section class="terminal-wrap" aria-label="Surge home layout">
+    <div class="terminal">
+      <div class="t-header">
+        <span><span class="dim">&gt;</span> Search or run a command <span class="dim">Ctrl+P</span></span>
+        <span class="dim">TTF 33.41 <span class="pos">+1.2%</span> · Brent 71.08 <span class="neg">-0.6%</span> · EUA 68.90 <span class="pos">+0.4%</span></span>
+      </div>
+      <div class="t-grid">
+        <div class="pane">
+          <div class="p-title">:: Zone Prices <span class="dim">EUR/MWh</span></div>
+          <table>
+            <thead><tr><th>Zone</th><th>Now</th><th>Base</th><th>Peak</th><th>vs Yday</th></tr></thead>
+            <tbody>
+              <tr class="sel"><td>DE-LU</td><td>84.32</td><td>78.10</td><td>96.44</td><td class="pos">+3.4%</td></tr>
+              <tr><td>FR</td><td>71.10</td><td>66.02</td><td>88.15</td><td class="neg">-1.8%</td></tr>
+              <tr><td>NL</td><td>82.90</td><td>77.35</td><td>95.01</td><td class="pos">+2.9%</td></tr>
+              <tr><td>BE</td><td>80.14</td><td>75.80</td><td>93.20</td><td class="pos">+2.1%</td></tr>
+              <tr><td>ES</td><td>52.33</td><td>48.90</td><td>63.77</td><td class="neg">-4.2%</td></tr>
+              <tr><td>NO2</td><td>38.05</td><td>36.40</td><td>41.12</td><td class="pos">+0.6%</td></tr>
+              <tr><td>SE3</td><td>29.80</td><td>27.15</td><td>35.60</td><td class="neg">-7.1%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pane">
+          <div class="p-title">:: Generation: DE-LU <span class="dim">GW</span></div>
+          <div class="bars">
+            <div class="bar"><span>Wind Onshore</span><i style="--w:41%"></i><b>14.8 <em>41%</em></b></div>
+            <div class="bar"><span>Solar</span><i style="--w:22%"></i><b>7.9 <em>22%</em></b></div>
+            <div class="bar"><span>Fossil Gas</span><i style="--w:14%"></i><b>5.1 <em>14%</em></b></div>
+            <div class="bar"><span>Nuclear</span><i style="--w:9%"></i><b>3.2 <em>9%</em></b></div>
+            <div class="bar"><span>Lignite</span><i style="--w:8%"></i><b>2.9 <em>8%</em></b></div>
+            <div class="bar"><span>Hydro</span><i style="--w:6%"></i><b>2.1 <em>6%</em></b></div>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="p-title">:: Zone: DE-LU</div>
+          <dl class="kv">
+            <dt>Day-ahead</dt><dd>84.32 <em class="pos">+3.4%</em></dd>
+            <dt>Load</dt><dd>58.4 GW <em class="dim">fc 57.9</em></dd>
+            <dt>Wind + Solar</dt><dd>22.7 GW <em class="dim">63% of load</em></dd>
+            <dt>Residual</dt><dd>35.7 GW</dd>
+            <dt>Net import</dt><dd class="neg">-2.1 GW</dd>
+            <dt>Spread vs FR</dt><dd>+13.22</dd>
+          </dl>
+        </div>
+        <div class="pane chart">
+          <div class="p-title">:: Day-Ahead: DE-LU <span class="dim">today vs yesterday</span></div>
+          <svg viewBox="0 0 240 90" preserveAspectRatio="none" aria-hidden="true">
+            <g class="grid">
+              <line x1="0" y1="22" x2="240" y2="22"/><line x1="0" y1="44" x2="240" y2="44"/><line x1="0" y1="66" x2="240" y2="66"/>
+              <line x1="60" y1="0" x2="60" y2="88"/><line x1="120" y1="0" x2="120" y2="88"/><line x1="180" y1="0" x2="180" y2="88"/>
+            </g>
+            <path class="yday" d="M0 60H10V64H20V66H30V62H40V58H50V50H60V40H70V34H80V38H90V46H100V52H110V56H120V58H130V54H140V46H150V36H160V28H170V30H180V38H190V48H200V54H210V58H220V62H230V64H240"/>
+            <path class="today" d="M0 56H10V60H20V62H30V58H40V52H50V42H60V30H70V22H80V28H90V40H100V50H110V56H120V60H130V52H140V40H150V26H160V14H170V18H180V30H190V44H200V52H210V56H220V60H230V62H240"/>
+          </svg>
+          <div class="axis"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span></div>
+        </div>
+        <div class="pane">
+          <div class="p-title">:: Market Schedule <span class="dim">CET</span></div>
+          <ul class="sched">
+            <li><span>12:00</span> Day-ahead gate closure <em>SDAC</em><b class="warn">in 00:41:12</b></li>
+            <li><span>12:45</span> DA results published <em>SDAC</em></li>
+            <li><span>14:30</span> AGSI storage update <em>GIE</em></li>
+            <li><span>15:00</span> IDA1 gate closure <em>SIDC</em></li>
+            <li><span>17:30</span> TTF settlement <em>ICE</em></li>
+            <li><span>22:00</span> IDA2 gate closure <em>SIDC</em></li>
+          </ul>
+        </div>
+        <div class="pane">
+          <div class="p-title">:: News Feed</div>
+          <ul class="news">
+            <li><span>11:02</span> German day-ahead clears above €80 as wind eases</li>
+            <li><span>10:47</span> TTF firms on Norwegian maintenance extension</li>
+            <li><span>10:15</span> Nordic hydro balance tightens after dry week</li>
+            <li><span>09:58</span> ENTSO-E publishes updated cross-border capacities</li>
+            <li><span>09:30</span> EU carbon steadies near €69 ahead of auction</li>
+          </ul>
+        </div>
+      </div>
+      <div class="t-footer"><span>ENTSO-E <span class="pos">live</span></span><span class="dim">Tab panes · j/k rows · ? help</span></div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <h2>What you get</h2>
+    <div class="grid">
+      <a class="cell" href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md"><span class="chip">ZP</span><h3>Zone price board</h3><p>Today, yesterday and tomorrow across every European bidding zone.</p></a>
+      <a class="cell" href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md"><span class="chip">DA</span><h3>Day-ahead curves</h3><p>Hourly and 15-minute prices with baseload, peak and yesterday overlay.</p></a>
+      <a class="cell" href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md"><span class="chip">LOAD</span><h3>Load vs forecast</h3><p>Actual demand against the ENTSO-E forecast, live.</p></a>
+      <a class="cell" href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md"><span class="chip">RES</span><h3>Wind and solar</h3><p>Forecast against actual for onshore, offshore and solar.</p></a>
+      <a class="cell" href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md"><span class="chip">FLOW</span><h3>Cross-border flows</h3><p>Scheduled and physical flows on any interconnector.</p></a>
+      <a class="cell" href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md"><span class="chip">GEN</span><h3>Generation stack</h3><p>The mix by fuel type, as a bar stack or over time.</p></a>
+      <a class="cell" href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md"><span class="chip">CAL</span><h3>Market schedule</h3><p>Countdowns to SDAC and IDA gates, publications and settlements.</p></a>
+      <a class="cell" href="https://github.com/nickmcblain/surge/blob/main/docs/usage.md"><span class="chip">FUT</span><h3>Wider market</h3><p>TTF, Brent, EUA, FX and rates plus an energy news wire.</p></a>
+    </div>
+  </section>
+
+  <section class="where">
+    <h2>Runs where you work</h2>
+    <div class="two">
+      <div class="card">
+        <h3>Terminal</h3>
+        <p>A single binary for macOS and Linux. Charts render with Kitty graphics in Ghostty, Kitty and WezTerm, and fall back to block characters everywhere else. Works over SSH.</p>
+        <pre><code><span class="prompt">$ </span>surge da DE-LU --json
+<span class="prompt">$ </span>surge quote TTF=F --csv</code></pre>
+      </div>
+      <div class="card">
+        <h3>Desktop <span class="tag">unsigned preview</span></h3>
+        <p>Native windows on macOS (Apple Silicon) and Windows with the same panes, command bar and plugins. The builds are not code-signed yet, so expect a Gatekeeper or SmartScreen warning on first launch.</p>
+        <p class="muted">Signed builds will follow once the project has a developer account.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="install" id="install">
+    <h2>Install</h2>
+    <div class="options">
+      <div class="opt">
+        <h3>macOS / Linux</h3>
+        <div class="code"><code><span class="prompt">$ </span>curl -fsSL https://nickmcblain.github.io/surge/install.sh | sh</code><button class="btn btn-secondary copy" data-copy="curl -fsSL https://nickmcblain.github.io/surge/install.sh | sh">Copy</button></div>
+        <p class="muted">Installs the terminal binary to <code>~/.local/bin</code>. Add <code>SURGE_DESKTOP=1</code> on Apple Silicon to install the desktop app instead.</p>
+      </div>
+      <div class="opt">
+        <h3>Homebrew</h3>
+        <div class="code"><code><span class="prompt">$ </span>brew install nickmcblain/tap/surge</code><button class="btn btn-secondary copy" data-copy="brew install nickmcblain/tap/surge">Copy</button></div>
+      </div>
+      <div class="opt">
+        <h3>Windows</h3>
+        <p>Download <a href="https://github.com/nickmcblain/surge/releases/latest">SurgeSetup.exe</a> from the latest release. Installs the desktop app and the <code>surge</code> command.</p>
+      </div>
+      <div class="opt">
+        <h3>From source</h3>
+        <div class="code"><code><span class="prompt">$ </span>git clone https://github.com/nickmcblain/surge &amp;&amp; cd surge
+<span class="prompt">$ </span>bun install &amp;&amp; bun run dev</code></div>
+        <p class="muted">Needs <a href="https://bun.sh">Bun</a> 1.4 or newer. <a href="https://github.com/nickmcblain/surge/blob/main/docs/installation.md">Full installation guide</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="data">
+    <h2>Bring your own ENTSO-E token</h2>
+    <p>Power data comes straight from the <a href="https://transparency.entsoe.eu/">ENTSO-E Transparency Platform</a>. Register there, email the helpdesk for <em>Restful API access</em>, and paste the token into Surge with the <span class="chip">ENTSOE</span> command or <code>SURGE_ENTSOE_TOKEN</code>. Everything else — futures, FX, news, the schedule — works without it.</p>
+    <p class="muted"><a href="https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html#_authentication_and_authorisation">How to get a token</a> · Nothing leaves your machine; Surge has no backend.</p>
+  </section>
+</main>
+
+<footer>
+  <span><a href="https://github.com/nickmcblain/surge/blob/main/LICENSE">MIT</a> · forked from <a href="https://github.com/gloom-sh/gloomberb">Gloomberb</a> · built with <a href="https://opentui.com/">OpenTUI</a> and <a href="https://electrobun.dev/">Electrobun</a></span>
+  <a href="https://github.com/nickmcblain/surge">github.com/nickmcblain/surge</a>
+</footer>
+
+<script>
+  for (const button of document.querySelectorAll(".copy")) {
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy);
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = "Select & copy";
+      }
+      setTimeout(() => { button.textContent = "Copy"; }, 1600);
+    });
+  }
+</script>
+</body>
+</html>

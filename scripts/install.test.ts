@@ -14,6 +14,8 @@ interface FakeMachine {
   procTranslated?: string;
   /** `sysctl -n hw.optional.arm64`, unset when the key does not exist. */
   hardwareArm64?: string;
+  /** Opt into the unsigned desktop app via SURGE_DESKTOP=1. */
+  desktop?: boolean;
 }
 
 interface InstallRun {
@@ -97,6 +99,7 @@ async function runInstall(machine: FakeMachine): Promise<InstallRun> {
       FAKE_PROC_TRANSLATED: machine.procTranslated ?? "",
       FAKE_HW_ARM64: machine.hardwareArm64 ?? "",
       FAKE_DOWNLOAD_LOG: downloadLog,
+      SURGE_DESKTOP: machine.desktop ? "1" : "0",
     },
     stdout: "pipe",
     stderr: "pipe",
@@ -117,20 +120,20 @@ async function runInstall(machine: FakeMachine): Promise<InstallRun> {
 }
 
 describe("install.sh architecture detection", () => {
-  // https://github.com/nickmc-lumion/surge/issues/539: an Intel Mac used to get
-  // the arm64 app and only found out at launch, with "Bad CPU type in
-  // executable". It now gets the x64 terminal build, never the app bundle.
+  // An Intel Mac used to get the arm64 app and only found out at launch, with
+  // "Bad CPU type in executable". It gets the x64 terminal build, never the app.
   test("installs the x64 terminal build on a genuine Intel Mac", async () => {
     const run = await runInstall({
       unameSystem: "Darwin",
       unameMachine: "x86_64",
+      desktop: true,
     });
 
     expect(run.downloadLog).toContain("surge-darwin-x64.gz");
     expect(run.downloadLog).not.toContain("stable-macos-arm64");
   });
 
-  test("explains itself when a release ships no Intel asset", async () => {
+  test("explains itself when a release ships no matching asset", async () => {
     const run = await runInstall({
       unameSystem: "Darwin",
       unameMachine: "x86_64",
@@ -138,25 +141,39 @@ describe("install.sh architecture detection", () => {
 
     expect(run.exitCode).not.toBe(0);
     expect(run.stderr).toContain("surge-darwin-x64.gz is not available");
-    expect(run.stderr).toContain("https://term.gloom.sh");
+    expect(run.stderr).toContain("https://github.com/nickmcblain/surge/releases");
   });
 
-  test("installs the arm64 app from an x86_64 shell translated by Rosetta", async () => {
-    const run = await runInstall({
-      unameSystem: "Darwin",
-      unameMachine: "x86_64",
-      procTranslated: "1",
-    });
-
-    expect(run.downloadLog).toContain("stable-macos-arm64-Surge.app.zip");
-    expect(run.stderr).not.toContain("does not support Intel Macs");
-  });
-
-  test("installs the arm64 app on an Apple Silicon Mac", async () => {
+  // The desktop app is unsigned for now, so Apple Silicon defaults to the
+  // terminal binary; the app is opt-in.
+  test("installs the arm64 terminal build on an Apple Silicon Mac by default", async () => {
     const run = await runInstall({
       unameSystem: "Darwin",
       unameMachine: "arm64",
       hardwareArm64: "1",
+    });
+
+    expect(run.downloadLog).toContain("surge-darwin-arm64.gz");
+    expect(run.downloadLog).not.toContain("stable-macos-arm64");
+  });
+
+  test("installs the arm64 app from a Rosetta shell when the desktop app is requested", async () => {
+    const run = await runInstall({
+      unameSystem: "Darwin",
+      unameMachine: "x86_64",
+      procTranslated: "1",
+      desktop: true,
+    });
+
+    expect(run.downloadLog).toContain("stable-macos-arm64-Surge.app.zip");
+  });
+
+  test("installs the arm64 app on Apple Silicon when SURGE_DESKTOP=1", async () => {
+    const run = await runInstall({
+      unameSystem: "Darwin",
+      unameMachine: "arm64",
+      hardwareArm64: "1",
+      desktop: true,
     });
 
     expect(run.downloadLog).toContain("stable-macos-arm64-Surge.app.zip");

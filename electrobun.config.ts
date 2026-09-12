@@ -1,8 +1,11 @@
 import type { ElectrobunConfig } from "electrobun/bun";
 import pkg from "./package.json";
 
-const RELEASE_BASE_URL = "https://github.com/nickmc-lumion/surge/releases/latest/download";
+const RELEASE_BASE_URL = "https://github.com/nickmcblain/surge/releases/latest/download";
 const GENERATE_RELEASE_PATCH = process.platform !== "win32";
+// Sign and notarize only when a Developer ID is configured; otherwise produce an
+// unsigned preview build so releases work without an Apple Developer account.
+const APPLE_SIGNING = Boolean(process.env.ELECTROBUN_DEVELOPER_ID);
 
 const config: ElectrobunConfig = {
   app: {
@@ -35,9 +38,9 @@ const config: ElectrobunConfig = {
       "node_modules/**",
     ],
     mac: {
-      codesign: true,
+      codesign: APPLE_SIGNING,
       createDmg: true,
-      notarize: true,
+      notarize: APPLE_SIGNING,
       icons: "icon.iconset",
       defaultRenderer: "native",
     },

@@ -20,7 +20,7 @@ const HELP_TABS = [
 ] as const;
 
 type HelpTabId = typeof HELP_TABS[number]["value"];
-const SURGE_ISSUES_URL = "https://github.com/nickmc-lumion/surge/issues";
+const SURGE_ISSUES_URL = "https://github.com/nickmcblain/surge/issues";
 
 function HelpPane({ focused, width, height }: PaneProps) {
   const registry = getSharedRegistry();

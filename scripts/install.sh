@@ -1,9 +1,13 @@
 #!/bin/sh
 set -e
 
-REPO="nickmc-lumion/surge"
+REPO="nickmcblain/surge"
 INSTALL_DIR="${SURGE_INSTALL_DIR:-$HOME/.local/bin}"
 APP_DIR="${SURGE_APP_DIR:-/Applications}"
+# The macOS desktop app is not yet signed or notarized, so Gatekeeper blocks it
+# on first launch. The default install is the terminal binary, which curl leaves
+# unquarantined. Set SURGE_DESKTOP=1 to install Surge.app instead.
+DESKTOP="${SURGE_DESKTOP:-0}"
 
 # Detect platform
 OS="$(uname -s)"
@@ -119,6 +123,10 @@ install_macos_app() {
     sudo mv "$APP_PATH" "$DEST_APP"
   fi
 
+  # Unsigned preview build: make sure nothing left a quarantine flag behind,
+  # otherwise Gatekeeper refuses to open it.
+  xattr -dr com.apple.quarantine "$DEST_APP" 2>/dev/null || true
+
   APP_CLI="${DEST_APP}/Contents/Resources/surge"
   if [ ! -x "$APP_CLI" ]; then
     echo "Error: installed app is missing the surge terminal shim" >&2
@@ -145,11 +153,7 @@ install_standalone_cli() {
   if ! download_file "$DOWNLOAD_URL" "$TMP"; then
     rm -f "$TMP"
     echo "Error: ${ASSET} is not available in the latest release." >&2
-    if [ "$os" = "darwin" ] && [ "$arch" = "x64" ]; then
-      echo "Intel Macs need a release that ships ${ASSET}." >&2
-      echo "Run Surge in the browser meanwhile: https://term.gloom.sh" >&2
-      echo "Intel support: https://github.com/nickmc-lumion/surge/issues/539" >&2
-    fi
+    echo "Releases: https://github.com/${REPO}/releases" >&2
     exit 1
   fi
 
@@ -163,10 +167,10 @@ install_standalone_cli() {
   echo "Installed surge to ${INSTALL_DIR}/surge"
 }
 
-if [ "$os" = "darwin" ] && [ "$arch" = "arm64" ]; then
+if [ "$os" = "darwin" ] && [ "$arch" = "arm64" ] && [ "$DESKTOP" = "1" ]; then
   install_macos_app
 else
-  if [ "$os" = "darwin" ]; then
+  if [ "$os" = "darwin" ] && [ "$DESKTOP" = "1" ]; then
     echo "Intel Mac detected. Surge.app is Apple Silicon only, so this installs"
     echo "the terminal app instead."
   fi

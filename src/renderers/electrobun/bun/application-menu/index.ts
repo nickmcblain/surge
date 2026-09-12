@@ -2,7 +2,7 @@ import type { ApplicationMenuItemConfig } from "electrobun/bun";
 import type { DesktopApplicationMenuCommand } from "../../../../types/desktop-menu";
 
 export const ELECTROBUN_APPLICATION_MENU_ACTION = "surge.application-menu.select";
-const GITHUB_ISSUE_URL = "https://github.com/nickmc-lumion/surge/issues/new/choose";
+const GITHUB_ISSUE_URL = "https://github.com/nickmcblain/surge/issues/new/choose";
 
 export type ElectrobunApplicationMenuCommand =
   | DesktopApplicationMenuCommand

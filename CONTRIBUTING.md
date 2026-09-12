@@ -5,7 +5,7 @@
 Requires [Bun](https://bun.sh).
 
 ```bash
-git clone https://github.com/nickmc-lumion/surge.git
+git clone https://github.com/nickmcblain/surge.git
 cd surge
 bun install
 bun run dev            # terminal UI

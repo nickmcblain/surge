@@ -1,6 +1,6 @@
 {
   "name": "surge",
-  "version": "0.13.3",
+  "version": "0.1.0",
   "packageManager": "bun@1.4.2",
   "description": "Open-source energy markets terminal for power and gas traders",
   "module": "src/index.tsx",
@@ -62,7 +62,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nickmc-lumion/surge"
+    "url": "https://github.com/nickmcblain/surge"
   },
   "keywords": [
     "terminal",

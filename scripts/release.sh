@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="nickmc-lumion/surge"
+REPO="nickmcblain/surge"
 
 usage() {
   cat <<'EOF'

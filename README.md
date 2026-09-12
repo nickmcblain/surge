@@ -23,19 +23,29 @@ The desktop app and TUI share the command language and plugin system.
 
 ## Install
 
-Requires [Bun](https://bun.sh) 1.4 or newer.
+macOS and Linux:
 
 ```bash
-git clone https://github.com/nickmc-lumion/surge
+curl -fsSL https://nickmcblain.github.io/surge/install.sh | sh
+```
+
+or with Homebrew: `brew install nickmcblain/tap/surge`. Windows and the desktop
+apps are on the [releases page](https://github.com/nickmcblain/surge/releases);
+the desktop builds are unsigned previews for now, see the
+[installation guide](docs/installation.md).
+
+From source (requires [Bun](https://bun.sh) 1.4 or newer):
+
+```bash
+git clone https://github.com/nickmcblain/surge
 cd surge
 bun install
 bun run dev            # terminal UI
 bun run desktop:dev    # desktop app
 ```
 
-For graphics in the terminal, use a Kitty-compatible terminal such as Ghostty,
-Kitty, or WezTerm. See the [installation guide](docs/installation.md) for
-packaged builds.
+For charts in the terminal, use a Kitty-compatible terminal such as Ghostty,
+Kitty, or WezTerm.
 
 ## ENTSO-E token
 

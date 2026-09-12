@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 
-import { EXTRACTED_PLUGINS, seedExtractedPlugins } from "./seed";
+import { seedExtractedPlugins, type ExtractedPlugin } from "./seed";
 import type { AppConfig } from "../types/config";
 
 /**
@@ -13,14 +13,20 @@ import type { AppConfig } from "../types/config";
  * a failure as done — being offline at startup is common, and marking it seeded
  * would drop the plugin permanently.
  */
+const ENTRIES: readonly ExtractedPlugin[] = [
+  { id: "tv", repo: "example/surge-tv", directory: "surge-tv", previousOwnerIds: ["macro", "macro-tv"] },
+  { id: "substack", repo: "example/surge-substack", directory: "surge-substack" },
+];
+
 function config(overrides: Partial<AppConfig> = {}): AppConfig {
   return { disabledPlugins: [], seededPlugins: [], ...overrides } as AppConfig;
 }
 
-async function withPluginsDir<T>(setup: (dir: string) => Promise<T> | T): Promise<T> {
+async function seed(cfg: AppConfig, installPlugin: (ref: string) => Promise<void>, prepare?: (dir: string) => void) {
   const dir = mkdtempSync(join(tmpdir(), "surge-seed-"));
   try {
-    return await setup(dir);
+    prepare?.(dir);
+    return await seedExtractedPlugins(cfg, installPlugin, dir, ENTRIES);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -29,81 +35,50 @@ async function withPluginsDir<T>(setup: (dir: string) => Promise<T> | T): Promis
 describe("seedExtractedPlugins", () => {
   test("installs an extracted plugin the user has not seen", async () => {
     const installs: string[] = [];
-    const result = await withPluginsDir((dir) => seedExtractedPlugins(config(), async (ref) => {
-      installs.push(ref);
-    }, dir));
+    const result = await seed(config(), async (ref) => { installs.push(ref); });
 
-    expect(installs).toEqual(EXTRACTED_PLUGINS.map((entry) => entry.repo));
-    expect(result.installed).toEqual(EXTRACTED_PLUGINS.map((entry) => entry.id));
-    expect(result.seeded).toEqual(EXTRACTED_PLUGINS.map((entry) => entry.id));
+    expect(installs).toEqual(ENTRIES.map((entry) => entry.repo));
+    expect(result.installed).toEqual(ENTRIES.map((entry) => entry.id));
+    expect(result.seeded).toEqual(ENTRIES.map((entry) => entry.id));
   });
 
   test("does nothing once a plugin has been seeded", async () => {
     const installs: string[] = [];
-    const seeded = EXTRACTED_PLUGINS.map((entry) => entry.id);
-    await withPluginsDir((dir) => seedExtractedPlugins(config({ seededPlugins: seeded }), async (ref) => {
-      installs.push(ref);
-    }, dir));
+    await seed(config({ seededPlugins: ENTRIES.map((entry) => entry.id) }), async (ref) => { installs.push(ref); });
 
     expect(installs).toEqual([]);
   });
 
   test("respects a plugin the user disabled before the move", async () => {
     const installs: string[] = [];
-    const result = await withPluginsDir((dir) => seedExtractedPlugins(
-      config({ disabledPlugins: ["substack"] }),
-      async (ref) => { installs.push(ref); },
-      dir,
-    ));
+    const result = await seed(config({ disabledPlugins: ["substack"] }), async (ref) => { installs.push(ref); });
 
-    expect(installs).not.toContain("surge-sh/surge-substack");
+    expect(installs).not.toContain("example/surge-substack");
     // Recorded, so we stop asking rather than retrying every launch.
     expect(result.seeded).toContain("substack");
   });
 
   test("records a plugin that is already installed without reinstalling it", async () => {
     const installs: string[] = [];
-    const result = await withPluginsDir((pluginsDir) => {
-      mkdirSync(join(pluginsDir, "surge-substack"), { recursive: true });
-      return seedExtractedPlugins(config(), async (ref) => { installs.push(ref); }, pluginsDir);
+    const result = await seed(config(), async (ref) => { installs.push(ref); }, (dir) => {
+      mkdirSync(join(dir, "surge-substack"), { recursive: true });
     });
 
-    expect(installs).not.toContain("surge-sh/surge-substack");
-    expect(result.seeded).toContain("substack");
-  });
-
-  /**
-   * The plugin repositories are renaming to `surge-`, so anyone who installed
-   * one before the rename has it in a directory under the old name. Seeding by
-   * the new name alone would clone a second copy, and the loader then refuses
-   * both for sharing an id.
-   */
-  test("finds an install made before the repository was renamed", async () => {
-    const installs: string[] = [];
-    const result = await withPluginsDir((pluginsDir) => {
-      mkdirSync(join(pluginsDir, "surge-substack"), { recursive: true });
-      return seedExtractedPlugins(config(), async (ref) => { installs.push(ref); }, pluginsDir);
-    });
-
-    expect(installs).not.toContain("surge-sh/surge-substack");
+    expect(installs).not.toContain("example/surge-substack");
     expect(result.seeded).toContain("substack");
   });
 
   test("keeps TV disabled when its former Macro owner was disabled", async () => {
     for (const owner of ["macro", "macro-tv", "tv"]) {
       const installs: string[] = [];
-      const result = await withPluginsDir((dir) => seedExtractedPlugins(
-        config({ disabledPlugins: [owner] }), async (ref) => { installs.push(ref); }, dir,
-      ));
-      expect(installs).not.toContain("surge-sh/surge-tv");
+      const result = await seed(config({ disabledPlugins: [owner] }), async (ref) => { installs.push(ref); });
+      expect(installs).not.toContain("example/surge-tv");
       expect(result.seeded).toContain("tv");
     }
   });
 
   test("retries next launch instead of recording a failed install", async () => {
-    const result = await withPluginsDir((dir) => seedExtractedPlugins(config(), async () => {
-      throw new Error("offline");
-    }, dir));
+    const result = await seed(config(), async () => { throw new Error("offline"); });
 
     expect(result.failed).toContain("substack");
     expect(result.seeded).not.toContain("substack");

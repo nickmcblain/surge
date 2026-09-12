@@ -1,4 +1,4 @@
-const SURGE_REPO = "nickmc-lumion/surge";
+const SURGE_REPO = "nickmcblain/surge";
 const GITHUB_RELEASES_API_URL = `https://api.github.com/repos/${SURGE_REPO}/releases`;
 export const GITHUB_LATEST_RELEASE_API_URL = `${GITHUB_RELEASES_API_URL}/latest`;
 

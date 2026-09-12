@@ -8,6 +8,15 @@ import { pluginDirectoryNames } from "./plugin-names";
 
 const log = debugLog.createLogger("plugin-seed");
 
+export interface ExtractedPlugin {
+  id: string;
+  /** GitHub `owner/repo` the plugin is installed from. */
+  repo: string;
+  directory: string;
+  /** Built-in ids that used to own this feature; disabling one of them disables the extracted plugin too. */
+  previousOwnerIds?: readonly string[];
+}
+
 /**
  * Plugins that used to ship inside Surge and now live in their own
  * repositories.
@@ -15,16 +24,11 @@ const log = debugLog.createLogger("plugin-seed");
  * Extracting one must not take a working feature away from someone who upgrades.
  * On first launch after the move, each of these is installed once, then recorded
  * so it is never reinstalled — including when the user removes it deliberately.
+ *
+ * Surge has not extracted anything yet; Gloomberb's broker and social plugins
+ * were removed outright rather than moved.
  */
-export const EXTRACTED_PLUGINS = [
-  { id: "tv", repo: "surge-sh/surge-tv", directory: "surge-tv", previousOwnerIds: ["macro", "macro-tv"] },
-  { id: "substack", repo: "surge-sh/surge-substack", directory: "surge-substack" },
-  { id: "ibkr", repo: "nickmc-lumion/surge-ibkr", directory: "surge-ibkr" },
-  { id: "ibkr-gateway", repo: "nickmc-lumion/surge-ibkr-gateway", directory: "surge-ibkr-gateway" },
-  { id: "public", repo: "surge-sh/surge-public", directory: "surge-public" },
-  { id: "robinhood", repo: "surge-sh/surge-robinhood", directory: "surge-robinhood" },
-  { id: "simplefin", repo: "surge-sh/surge-simplefin", directory: "surge-simplefin" },
-] as const;
+export const EXTRACTED_PLUGINS: readonly ExtractedPlugin[] = [];
 
 export interface SeedResult {
   installed: string[];
@@ -53,13 +57,14 @@ export async function seedExtractedPlugins(
   config: AppConfig,
   installPlugin: (ref: string) => Promise<void>,
   pluginsDir: string = getPluginsDir(),
+  entries: readonly ExtractedPlugin[] = EXTRACTED_PLUGINS,
 ): Promise<SeedResult> {
   const alreadySeeded = new Set(config.seededPlugins ?? []);
   const disabled = new Set(config.disabledPlugins ?? []);
 
   const result: SeedResult = { installed: [], failed: [], seeded: [...alreadySeeded] };
 
-  for (const entry of EXTRACTED_PLUGINS) {
+  for (const entry of entries) {
     if (alreadySeeded.has(entry.id)) continue;
 
     // Present already: either installed by hand or seeded before this record
@@ -70,7 +75,7 @@ export async function seedExtractedPlugins(
     }
 
     // Turned off before the move: restoring it would override that choice.
-    if (disabled.has(entry.id) || ("previousOwnerIds" in entry && entry.previousOwnerIds.some((id) => disabled.has(id)))) {
+    if (disabled.has(entry.id) || entry.previousOwnerIds?.some((id) => disabled.has(id))) {
       result.seeded.push(entry.id);
       continue;
     }

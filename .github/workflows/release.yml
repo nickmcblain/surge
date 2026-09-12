@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  id-token: write
 
 jobs:
   build:
@@ -43,12 +42,18 @@ jobs:
 
   desktop-macos:
     runs-on: macos-latest
+    # Signing and notarization run only when the Apple secrets are configured.
+    # Without them the job still ships an unsigned preview build; users clear
+    # the quarantine flag by hand (see docs/installation.md).
+    env:
+      APPLE_SIGNING: ${{ secrets.ELECTROBUN_DEVELOPER_ID != '' && 'true' || 'false' }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup-bun
 
       - name: Configure Apple signing
+        if: env.APPLE_SIGNING == 'true'
         env:
           APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
@@ -93,7 +98,7 @@ jobs:
 
           echo "ELECTROBUN_APPLEAPIKEYPATH=$NOTARY_KEY_PATH" >> "$GITHUB_ENV"
 
-      - name: Build signed desktop DMG
+      - name: Build desktop DMG
         env:
           ELECTROBUN_APPLEAPIISSUER: ${{ secrets.ELECTROBUN_APPLEAPIISSUER }}
           ELECTROBUN_APPLEAPIKEY: ${{ secrets.ELECTROBUN_APPLEAPIKEY }}
@@ -121,8 +126,12 @@ jobs:
           test -f artifacts/stable-macos-arm64-Surge.app.tar.zst
           test -f artifacts/stable-macos-arm64-Surge.app.zip
           test -f artifacts/stable-macos-arm64-update.json
-          codesign --verify --verbose=4 artifacts/stable-macos-arm64-Surge.dmg
-          xcrun stapler validate -v artifacts/stable-macos-arm64-Surge.dmg
+          if [ "$APPLE_SIGNING" = "true" ]; then
+            codesign --verify --verbose=4 artifacts/stable-macos-arm64-Surge.dmg
+            xcrun stapler validate -v artifacts/stable-macos-arm64-Surge.dmg
+          else
+            echo "Apple signing secrets not configured; shipping an unsigned preview build."
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
@@ -210,42 +219,36 @@ jobs:
           fi
 
           VERSION="${GITHUB_REF_NAME#v}"
-          ZIP_PATH="dist/stable-macos-arm64-Surge.app.zip"
-          if [ ! -f "$ZIP_PATH" ]; then
-            echo "macOS desktop zip is missing; skipping Homebrew tap update."
+
+          # The formula ships the standalone terminal binaries; pass a digest
+          # for every platform that actually built.
+          digest_args=()
+          for target in darwin-arm64 darwin-x64 linux-arm64 linux-x64; do
+            asset="dist/surge-${target}.gz"
+            if [ -f "$asset" ]; then
+              digest_args+=("--sha256-${target}" "$(sha256sum "$asset" | awk '{print $1}')")
+            fi
+          done
+          if [ ${#digest_args[@]} -eq 0 ]; then
+            echo "No terminal binaries were built; skipping Homebrew tap update."
             exit 0
           fi
-          SHA256="$(sha256sum "$ZIP_PATH" | awk '{print $1}')"
-          TAP_DIR="$RUNNER_TEMP/homebrew-tap"
 
+          TAP_DIR="$RUNNER_TEMP/homebrew-tap"
           git config --global user.name "surge-release"
           git config --global user.email "actions@users.noreply.github.com"
-          gh repo clone nickmc-lumion/homebrew-tap "$TAP_DIR"
-          git -C "$TAP_DIR" remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/nickmc-lumion/homebrew-tap.git"
-          bun run scripts/write-homebrew-cask.ts \
+          gh repo clone nickmcblain/homebrew-tap "$TAP_DIR"
+          git -C "$TAP_DIR" remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/nickmcblain/homebrew-tap.git"
+          bun run scripts/write-homebrew-formula.ts \
             --version "$VERSION" \
-            --sha256 "$SHA256" \
-            --output "$TAP_DIR/Casks/surge.rb"
+            "${digest_args[@]}" \
+            --output "$TAP_DIR/Formula/surge.rb"
 
           cd "$TAP_DIR"
-          git add Casks/surge.rb
+          git add Formula/surge.rb
           if git diff --cached --quiet; then
             echo "Homebrew tap already up to date."
             exit 0
           fi
           git commit -m "Update Surge to $VERSION"
           git push
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
-
-      - name: Install npm 11 (required for trusted publishing)
-        run: npm install -g npm@11
-
-      - name: Publish to npm
-        run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          node -e "const p=require('./package.json'); p.version='$VERSION'; require('fs').writeFileSync('./package.json', JSON.stringify(p,null,2)+'\n')"
-          npm publish --access public --provenance
